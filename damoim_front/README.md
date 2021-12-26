@@ -15,7 +15,7 @@
         - docs: 문서 작업
         - PR: PR 생성할 때 붙여주는 헤더
         - test : 페어 끼리 git 작업할때, integration test
-
+  
 ### Branch Convention
 
 - 브랜치 네이밍 컨벤션
