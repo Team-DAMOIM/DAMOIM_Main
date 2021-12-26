@@ -1,46 +1,44 @@
-# Getting Started with Create React App
+# DAMOIM
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Convention
 
-## Available Scripts
+### Commit Convention
 
-In the project directory, you can run:
+- task 하나 : 하나의 브랜치 = 1 : 1 로 작업을 한다.
+- task 의 하위 이슈(하위 작업)가 생길 경우 브랜치는 생성하지 않는다. (미정)
+- 커밋 메세지 첫 줄 컨벤션은 다음과 같다.
+    - [헤더]커밋 메세지
+    - 헤더 종류는 다음과 같다.
+        - add: 기능 구현
+        - fix: 코드/버그 수정
+        - hofix: hotfix 브랜치에서 생성되는 모든 커밋 헤더
+        - docs: 문서 작업
+        - PR: PR 생성할 때 붙여주는 헤더
+        - test : 페어 끼리 git 작업할때, integration test
 
-### `npm start`
+### Branch Convention
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- 브랜치 네이밍 컨벤션
+    - {branch name}-{work feature}
+  
+front-main
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+back-community
 
-### `npm test`
+front-community
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Code Review Convention
 
-### `npm run build`
+1. 궁금한 것
+   🤔(:thinking:)
+2. 제안 (수정 제안)
+   🤝 (악수)
+3. 칭찬?
+   👍 (+1)
+   좋아요
+4. 논의
+   💬 (말풍선)
+5. 이게 뭐람(오타, 버그 가능성)
+   🤷‍♂️ 🤷‍♀️ (어깨를 으쓱하는 남자, 여자)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Todo
