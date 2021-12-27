@@ -6,3 +6,12 @@
   margin: 0;
   padding: 0;
 }
+
+:root {
+  --primary-color: #15cdfc;
+  --color-2: #00DEF0;
+  --color-3: #00EBD4;
+  --color-4: #71F5AF;
+  --color-5: #B6F98A;
+  --color-6: #F9F871;
+}
