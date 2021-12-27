@@ -7,6 +7,10 @@ import wavveIcon from '../../assets/images/OTTIcons/wavveIcon.png'
 import tvingIcon from '../../assets/images/OTTIcons/tvingIcon.jpg'
 import disneyIcon from '../../assets/images/OTTIcons/disneyPlusIcon.png'
 import laftelIcon from '../../assets/images/OTTIcons/laftelIcon.png'
+import appleTVIcon from '../../assets/images/OTTIcons/appleTVIcon.jpg'
+import amazonIcon from '../../assets/images/OTTIcons/amazonIcon.png'
+import welaaaIcon from '../../assets/images/OTTIcons/welaaaIcon.png'
+
 
 interface OTTSelectBarProps {
     selectedOTTs: string[];
@@ -41,7 +45,19 @@ function OTTSelectBar(props: OTTSelectBarProps) {
         {
             img: laftelIcon,
             name: "laftel"
-        }
+        },
+        {
+            img: appleTVIcon,
+            name: "appleTV"
+        },
+        {
+            img: amazonIcon,
+            name: "amazon"
+        },
+        {
+            img: welaaaIcon,
+            name: "welaaa"
+        },
     ]
 
 

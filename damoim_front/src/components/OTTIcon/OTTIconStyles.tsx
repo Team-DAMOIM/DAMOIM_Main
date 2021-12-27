@@ -13,6 +13,7 @@ export const OTTIconContainer = styled.div<OTTIconContainerProps>`
     border-radius: 10px;
     cursor: pointer;
     width: 75px;
+    height: 75px;
     margin: 10px 15px;
     opacity: ${props => props.selected ? 1.0 : 0.2};
     transition: all 0.1s linear 0s;

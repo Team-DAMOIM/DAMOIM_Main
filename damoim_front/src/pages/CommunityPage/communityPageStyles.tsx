@@ -15,18 +15,31 @@ export const CommunityButtonContainer = styled.div`
 `
 
 export const CommunityLeftButtonContainer = styled.div`
+  width: 40%;
   text-align: start;
   margin-left: 4vw;
   display: flex;
-  button:first-child{
+  div:first-child{
     margin-right: 10px;
   }
 `
 export const CommunityRightButtonContainer = styled.div`
-  text-align: end;
   margin-right: 4vw;
   button:first-child{
     margin-right: 10px;
   }
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+`
+
+export const CommunityRightOnlyButtonContainer = styled.div`
+  display: flex;
+`
+
+
+export const CommunitySearchWordContainer= styled.div`
+  margin-top: 10px;
+  text-align: end;
 `
 

@@ -2,24 +2,22 @@ import React, {useState} from 'react';
 
 import {
     CommunityButtonContainer,
-    CommunityLeftButtonContainer,
     CommunityPageContainer,
-    CommunityRightButtonContainer
 } from "./communityPageStyles";
 import OTTSelectBar from "../../components/OTTSelectBar/OTTSelectBar";
 import HalfTextArea from "../../components/HalfTextArea/HalfTextArea";
 import SmallGuide from "../../components/SmallGuide/SmallGuide";
-import {Button} from "@mui/material";
-import FilterListIcon from '@mui/icons-material/FilterList';
-import SortIcon from '@mui/icons-material/Sort';
-import CreateIcon from '@mui/icons-material/Create';
-import SearchIcon from '@mui/icons-material/Search';
+import CommunityPageButtons from "./CommunityPageButtons";
 
-const initialSelectedOTTs = ["netflix", "watcha", "wavve", "tving", "disney", "laftel"]
+const initialSelectedOTTs = ["netflix", "watcha", "wavve", "tving", "disney", "laftel","appleTV","amazon","welaaa"]
 
 function CommunityPage(props: any) {
     // ["netflix","watcha"] <- 넷플릭스와 왓챠가 선택되었다면
     const [selectedOTTs, setSelectedOTTs] = useState<string[]>(initialSelectedOTTs);
+    const [classfication, setClassfication] = useState<string>("전체")
+    const [sortType, setSortType] = useState<string>("최신순")
+    const [searchWord, setSearchWord] = useState<string>("")
+
 
     return (
         <CommunityPageContainer>
@@ -27,22 +25,10 @@ function CommunityPage(props: any) {
             <OTTSelectBar selectedOTTs={selectedOTTs} setSelectedOTTs={setSelectedOTTs}/>
             <SmallGuide content={"아이콘을 클릭하여 원하는 정보를 확인하세요"}/>
             <CommunityButtonContainer>
-                <CommunityLeftButtonContainer>
-                    <Button variant="contained" endIcon={<FilterListIcon/>}>
-                        분류
-                    </Button>
-                    <Button variant="contained" endIcon={<SortIcon/>}>
-                        정렬
-                    </Button>
-                </CommunityLeftButtonContainer>
-                <CommunityRightButtonContainer>
-                    <Button variant="contained" endIcon={<CreateIcon/>}>
-                        글쓰기
-                    </Button>
-                    <Button variant="contained" endIcon={<SearchIcon/>}>
-                        검색
-                    </Button>
-                </CommunityRightButtonContainer>
+                <CommunityPageButtons classfication={classfication} setClassfication={setClassfication}
+                                      sortType={sortType} setSortType={setSortType}
+                                      searchWord={searchWord} setSearchWord={setSearchWord}
+                />
             </CommunityButtonContainer>
         </CommunityPageContainer>
     );
