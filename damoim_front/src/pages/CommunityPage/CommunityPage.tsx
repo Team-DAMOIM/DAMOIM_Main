@@ -2,14 +2,15 @@ import React, {useState} from 'react';
 
 import {
     CommunityButtonContainer,
-    CommunityPageContainer,
+    CommunityPageContainer, CommunityTableContainer,
 } from "./communityPageStyles";
 import OTTSelectBar from "../../components/OTTSelectBar/OTTSelectBar";
 import HalfTextArea from "../../components/HalfTextArea/HalfTextArea";
 import SmallGuide from "../../components/SmallGuide/SmallGuide";
 import CommunityPageButtons from "./CommunityPageButtons";
+import CommunityPageTable from "./CommunityPageTable";
 
-const initialSelectedOTTs = ["netflix", "watcha", "wavve", "tving", "disney", "laftel","appleTV","amazon","welaaa"]
+const initialSelectedOTTs = ["netflix", "watcha", "wavve", "tving", "disney", "laftel", "appleTV", "amazon", "welaaa"]
 
 function CommunityPage(props: any) {
     // ["netflix","watcha"] <- 넷플릭스와 왓챠가 선택되었다면
@@ -30,6 +31,9 @@ function CommunityPage(props: any) {
                                       searchWord={searchWord} setSearchWord={setSearchWord}
                 />
             </CommunityButtonContainer>
+            <CommunityTableContainer>
+                <CommunityPageTable/>
+            </CommunityTableContainer>
         </CommunityPageContainer>
     );
 }

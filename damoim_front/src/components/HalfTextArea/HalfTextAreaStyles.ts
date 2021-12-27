@@ -23,4 +23,13 @@ export const HalfTextAreaContentContainer = styled.div`
   p {
         
   }
+
+  @media screen and (max-width: 1000px) {
+    width: 70%;
+  }
+  
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
 `

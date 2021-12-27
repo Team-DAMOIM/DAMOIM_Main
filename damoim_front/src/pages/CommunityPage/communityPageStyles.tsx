@@ -19,15 +19,35 @@ export const CommunityLeftButtonContainer = styled.div`
   text-align: start;
   margin-left: 4vw;
   display: flex;
-  div:first-child{
+
+  div:first-child {
     margin-right: 10px;
   }
+
+
+  @media screen and (max-width: 1096px) {
+    width: 60%;
+  }
+
+  @media screen and (max-width: 730px) {
+    width: 80%;
+  }
+
+  @media screen and (max-width: 480px) {
+    flex-direction: column;
+    div:first-child {
+      margin-bottom: 10px;
+    }
+  }
+
 `
 export const CommunityRightButtonContainer = styled.div`
   margin-right: 4vw;
-  button:first-child{
+
+  button:first-child {
     margin-right: 10px;
   }
+
   display: flex;
   flex-direction: column;
   align-items: end;
@@ -35,11 +55,25 @@ export const CommunityRightButtonContainer = styled.div`
 
 export const CommunityRightOnlyButtonContainer = styled.div`
   display: flex;
+
+  @media screen and (max-width: 480px) {
+    flex-direction: column;
+    button:first-child {
+      margin-bottom: 25px;
+    }
+    button{
+      font-size: 1.10rem;
+    }
+  }
 `
 
 
-export const CommunitySearchWordContainer= styled.div`
+export const CommunitySearchWordContainer = styled.div`
   margin-top: 10px;
   text-align: end;
+`
+
+export const CommunityTableContainer = styled.div`
+  margin: 4vw;
 `
 
