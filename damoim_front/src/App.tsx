@@ -8,21 +8,21 @@ import {
 } from "react-router-dom";
 import GlobalStyles from './GlobalStyles';
 import PagesURL from './PagesURL';
+import Navbar from './components/Navbar/Navbar';
 
 function App() {
   return (
     <>
-      <GlobalStyles>
-        <Router>
-          {/* <Header/> */}
-          <Switch>
-            {PagesURL.map((route) => (
-              <Route path={route.path} exact component={route.component}/>
-            ))}
-            <Redirect from="*" to="/"/>
-          </Switch>
-        </Router>
-      </GlobalStyles>
+      <GlobalStyles />
+      <Router>
+        <Navbar />
+        <Switch>
+          {PagesURL.map((route) => (
+            <Route path={route.path} exact component={route.component}/>
+          ))}
+          <Redirect from="*" to="/"/>
+        </Switch>
+      </Router>
     </>
   );
 }
