@@ -18,7 +18,7 @@ function App() {
         <Navbar />
         <Switch>
           {PagesURL.map((route) => (
-            <Route path={route.path} exact component={route.component}/>
+            <Route key={route.path} path={route.path} exact component={route.component}/>
           ))}
           <Redirect from="*" to="/"/>
         </Switch>
