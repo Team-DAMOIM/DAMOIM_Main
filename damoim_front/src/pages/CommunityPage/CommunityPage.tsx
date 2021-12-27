@@ -23,7 +23,7 @@ function CommunityPage(props: any) {
     return (
         <CommunityPageContainer>
             <HalfTextArea title={"커뮤니티"} content={"여러분들끼리 소통하는 공간입니다😘"}/>
-            <OTTSelectBar selectedOTTs={selectedOTTs} setSelectedOTTs={setSelectedOTTs}/>
+            <OTTSelectBar selectedOTTs={selectedOTTs} setSelectedOTTs={setSelectedOTTs} selectOnlyOne={false}/>
             <SmallGuide content={"아이콘을 클릭하여 원하는 정보를 확인하세요"}/>
             <CommunityButtonContainer>
                 <CommunityPageButtons classfication={classfication} setClassfication={setClassfication}

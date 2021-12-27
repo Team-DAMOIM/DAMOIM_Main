@@ -7,19 +7,24 @@ interface OTTIconProps {
     selected: boolean
     selectedOTTs: string[]
     setSelectedOTTs: React.Dispatch<SetStateAction<string[]>>;
+    selectOnlyOne: boolean
 }
 
 function OTTIcon(props: OTTIconProps) {
 
-    const {img, name, selected, selectedOTTs, setSelectedOTTs} = props
+    const {img, name, selected, selectedOTTs, setSelectedOTTs, selectOnlyOne} = props
 
     const iconClickHandler = () => {
         let arr: string[] = []
-        if (selectedOTTs.includes(name)) {
-            arr = selectedOTTs.filter(selectedOTT => selectedOTT != name)
-            setSelectedOTTs(arr);
+        if (!selectOnlyOne) {
+            if (selectedOTTs.includes(name)) {
+                arr = selectedOTTs.filter(selectedOTT => selectedOTT != name)
+                setSelectedOTTs(arr);
+            } else {
+                setSelectedOTTs([...selectedOTTs, name])
+            }
         } else {
-            setSelectedOTTs([...selectedOTTs, name])
+            setSelectedOTTs([name])
         }
 
     }

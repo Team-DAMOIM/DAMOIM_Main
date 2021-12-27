@@ -55,7 +55,9 @@ export const CommunityRightButtonContainer = styled.div`
 
 export const CommunityRightOnlyButtonContainer = styled.div`
   display: flex;
-
+  a{
+    text-decoration: none;
+  }
   @media screen and (max-width: 480px) {
     flex-direction: column;
     button:first-child {

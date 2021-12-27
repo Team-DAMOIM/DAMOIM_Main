@@ -15,12 +15,12 @@ import welaaaIcon from '../../assets/images/OTTIcons/welaaaIcon.png'
 interface OTTSelectBarProps {
     selectedOTTs: string[];
     setSelectedOTTs: React.Dispatch<SetStateAction<string[]>>;
+    selectOnlyOne: boolean
 }
 
 function OTTSelectBar(props: OTTSelectBarProps) {
 
-    const {selectedOTTs, setSelectedOTTs} = props;
-
+    const {selectedOTTs, setSelectedOTTs, selectOnlyOne} = props;
     const OTTs = [
         {
             img: netflixIcon,
@@ -66,7 +66,8 @@ function OTTSelectBar(props: OTTSelectBarProps) {
             <OTTIconsContainer>
                 {
                     OTTs.map(OTT => (
-                        <OTTIcon img={OTT.img} key={OTT.name} name={OTT.name}  selected={selectedOTTs.includes(OTT.name)} selectedOTTs={selectedOTTs} setSelectedOTTs={setSelectedOTTs}/>
+                        <OTTIcon img={OTT.img} key={OTT.name} name={OTT.name} selected={selectedOTTs.includes(OTT.name)}
+                                 selectedOTTs={selectedOTTs} setSelectedOTTs={setSelectedOTTs} selectOnlyOne={selectOnlyOne}/>
                     ))
                 }
             </OTTIconsContainer>

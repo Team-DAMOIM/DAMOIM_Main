@@ -7,7 +7,7 @@ import {
 import {Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
 import SearchIcon from "@mui/icons-material/Search";
-
+import {Link} from 'react-router-dom'
 
 interface CommunityPageButtonsProps {
     classfication: string;
@@ -22,8 +22,7 @@ interface CommunityPageButtonsProps {
 function CommunityPageButtons(props: CommunityPageButtonsProps) {
 
     const {classfication, setClassfication, sortType, setSortType, searchWord, setSearchWord} = props;
-    const [showSearchBar,setShowSearchBar] = useState<boolean>(false)
-
+    const [showSearchBar, setShowSearchBar] = useState<boolean>(false)
 
 
     const selectChangeHandler = (event: SelectChangeEvent) => {
@@ -78,13 +77,16 @@ function CommunityPageButtons(props: CommunityPageButtonsProps) {
             </CommunityLeftButtonContainer>
             <CommunityRightButtonContainer>
                 <CommunityRightOnlyButtonContainer>
-                    <Button variant="contained" endIcon={<CreateIcon/>}>
-                        글쓰기
-                    </Button>
+
+                    <Link to={"/addCommunityPost"}>
+                        <Button variant="contained" endIcon={<CreateIcon/>}>
+                            글쓰기
+                        </Button>
+                    </Link>
                     <Button variant="contained" endIcon={<SearchIcon/>}
-                        onClick={()=>{
-                            setShowSearchBar(!showSearchBar)
-                        }}
+                            onClick={() => {
+                                setShowSearchBar(!showSearchBar)
+                            }}
                     >
                         검색
                     </Button>
