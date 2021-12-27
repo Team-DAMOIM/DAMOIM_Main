@@ -12,7 +12,7 @@ import PagesURL from './PagesURL';
 function App() {
   return (
     <>
-      <GlobalStyles>
+      <GlobalStyles/>
         <Router>
           {/* <Header/> */}
           <Switch>
@@ -22,7 +22,6 @@ function App() {
             <Redirect from="*" to="/"/>
           </Switch>
         </Router>
-      </GlobalStyles>
     </>
   );
 }

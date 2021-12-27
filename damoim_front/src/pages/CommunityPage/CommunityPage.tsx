@@ -5,7 +5,7 @@ import {CommunityPageContainer} from "./communityPageStyles";
 
 function CommunityPage(props:any) {
     return (
-        <CommunityPageContainer>asdasdas</CommunityPageContainer>
+        <CommunityPageContainer>커뮤니티페이지에요</CommunityPageContainer>
     );
 }
 

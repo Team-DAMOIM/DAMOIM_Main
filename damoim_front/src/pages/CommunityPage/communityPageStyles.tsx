@@ -4,6 +4,6 @@
 import styled from "styled-components";
 
 export const CommunityPageContainer = styled.div`
-  width: 50%;
+  width: 100%;
 ` ;
 
