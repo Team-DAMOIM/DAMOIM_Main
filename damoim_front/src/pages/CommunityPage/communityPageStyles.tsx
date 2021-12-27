@@ -7,3 +7,4 @@ export const CommunityPageContainer = styled.div`
   width: 100%;
 ` ;
 
+
