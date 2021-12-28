@@ -8,6 +8,10 @@ const GlobalStyles = createGlobalStyle`
         padding: 0;
     }
 
+    div {
+      display: block;
+    }
+
     html, body {
         width: 100%;
     }
