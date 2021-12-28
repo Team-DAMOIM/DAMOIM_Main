@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from "@mui/material";
+import {Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Snackbar, TextField} from "@mui/material";
 import HalfTextArea from "../../components/HalfTextArea/HalfTextArea";
 import CreateIcon from "@mui/icons-material/Create";
 import {
@@ -8,13 +8,36 @@ import {
     AddCommunitySelectContainer
 } from "./addCommunityPostPageStyles";
 import {AuthContext} from "../../context/AuthContext";
+import {auth, db} from "../../firebase-config";
+import {
+    collection,
+    addDoc, Timestamp, doc, updateDoc
+} from "firebase/firestore";
+import Alert from '@mui/material/Alert';
+import {LoadingButton} from '@mui/lab';
+import {useHistory} from "react-router-dom";
+import {signOut} from "firebase/auth";
 
-function AddCommunityPostPage(props: any) {
+function AddCommunityPostPage() {
     const user = useContext(AuthContext);
+    const history = useHistory();
     const [title, setTitle] = useState<string>("")
     const [content, setContent] = useState<string>("")
     const [classfication, setClassfication] = useState<string>("잡담")
     const [platform, setPlatform] = useState<string>("------")
+    const [loading, setLoading] = useState<boolean>(false);
+    const [success, setSuccess] = useState<boolean>(false)
+    const [fail, setFail] = useState<boolean>(false)
+
+    const handleSignout = async () => {
+        if(auth && auth.currentUser){
+            await updateDoc(doc(db, "users", auth.currentUser.uid), {
+                isOnline: false,
+            });
+            await signOut(auth);
+        }
+    };
+    const communityCollectionRef = collection(db, "communityPosts");
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const {value, name} = event.target;
@@ -43,8 +66,49 @@ function AddCommunityPostPage(props: any) {
                 break;
         }
     }
+
+    const addPostHandler = async () => {
+        if (user && title.length >= 5 && content.length >= 10) {
+            setLoading(true);
+            await addDoc(communityCollectionRef, {
+                writer: user.uid,
+                title,
+                content,
+                classfication,
+                platform,
+                views: 0,
+                loves: 0,
+                createdAt: Timestamp.fromDate(new Date()),
+            })
+            setLoading(false);
+            setSuccess(true)
+
+            setTimeout(() => {
+                history.push('/community')
+            }, 2000)
+        } else {
+            setFail(true);
+        }
+    }
+
     return (
         <AddCommunityPostPageContainer>
+            <Snackbar open={success} autoHideDuration={2000} anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+                      onClose={() => {
+                          setSuccess(false);
+                      }}>
+                <Alert severity="success" sx={{width: '100%'}}>
+                    게시글 작성 성공했습니다!
+                </Alert>
+            </Snackbar>
+            <Snackbar open={fail} autoHideDuration={2000} anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+                      onClose={() => {
+                          setFail(false);
+                      }}>
+                <Alert severity="error" sx={{width: '100%'}}>
+                    양식에 맞게 글을 작성해주세요
+                </Alert>
+            </Snackbar>
             <HalfTextArea title={"글작성"} content={"OTT에 관해 소통해봐요😎"}/>
             <AddCommunitySelectContainer>
                 <FormControl size={'small'}>
@@ -95,6 +159,7 @@ function AddCommunityPostPage(props: any) {
                     onChange={handleChange}
                     fullWidth
                     name="title"
+                    error={!(title.length === 0) && title.length < 5}
                 />
                 <TextField
                     id="outlined-multiline-static"
@@ -104,14 +169,17 @@ function AddCommunityPostPage(props: any) {
                     rows={15}
                     fullWidth
                     onChange={handleChange}
-
                     value={content}
                     name="content"
+                    error={!(content.length === 0) && content.length < 10}
                 />
-                <Button variant="contained" endIcon={<CreateIcon/>}>
+                <LoadingButton variant="contained" endIcon={<CreateIcon/>} onClick={addPostHandler} loading={loading}>
                     글쓰기
-                </Button>
+                </LoadingButton>
             </AddCommunityPostPageInputContainer>
+            <Button onClick={handleSignout}>
+                로그아웃
+            </Button>
         </AddCommunityPostPageContainer>
     );
 }
