@@ -1,30 +1,32 @@
 import React, { useEffect, useState } from 'react'
 import SingleComment from './SingleComment';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 function ReplyComment(props:any) {
-
+    const {commentLists , postId, parentCommentId , refreshFunction} = props;
     const [ChildCommentNumber, setChildCommentNumber] = useState(0)
     const [OpenReplyComments, setOpenReplyComments] = useState(false)
     useEffect(() => {
 
         let commentNumber = 0;
-        props.commentLists.map((comment:any,index:any) => {
+        commentLists.map((comment:any,index:any) => {
 
-            if (comment.responseTo === props.parentCommentId) {
+            if (comment.responseTo === parentCommentId) {
                 commentNumber++
             }
         })
         setChildCommentNumber(commentNumber)
-    }, [props.commentLists])
+    }, [commentLists])
 
 
     let renderReplyComment = (parentCommentId:any) =>
-        props.commentLists.map((comment:any, index:any) => (
+        commentLists.map((comment:any, index:any) => (
             <React.Fragment>
                 {comment.responseTo === parentCommentId &&
                 <div style={{ width: '80%', marginLeft: '40px' }}>
-                    <SingleComment comment={comment} postId={props.postId} refreshFunction={props.refreshFunction} />
-                    <ReplyComment CommentLists={props.commentLists} parentCommentId={comment._id} postId={props.postId} refreshFunction={props.refreshFunction} />
+                    <SingleComment comment={comment} postId={postId} refreshFunction={refreshFunction} />
+                    <ReplyComment commentLists={commentLists} parentCommentId={comment.id} postId={postId} refreshFunction={refreshFunction} />
                 </div>
                 }
             </React.Fragment>
@@ -39,14 +41,14 @@ function ReplyComment(props:any) {
         <div>
 
             {ChildCommentNumber > 0 &&
-            <p style={{ fontSize: '14px', margin: 0, color: 'gray' }}
+            <p style={{ fontSize: '14px', margin: 0, color: 'gray' , display:'flex' ,cursor:'pointer' }}
                onClick={handleChange} >
-                View {ChildCommentNumber} more comment(s)
+                {OpenReplyComments ? <ArrowRightIcon/> :<ArrowDropDownIcon/>} 답글 {ChildCommentNumber}개 보기
             </p>
             }
 
             {OpenReplyComments &&
-            renderReplyComment(props.parentCommentId)
+            renderReplyComment(parentCommentId)
             }
 
         </div>

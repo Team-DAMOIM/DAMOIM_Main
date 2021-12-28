@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {CommunityDetailPageContainer, UserWithDetailContainer} from "./CommunityDetailPageStyles";
 import userProfile from '../../assets/images/dummy/userprofile.png'
 import UserWithProfile from "../../components/UserWithProfile/UserWithProfile";
@@ -9,39 +9,99 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import GppBadIcon from '@mui/icons-material/GppBad';
 import Comment from "../../components/Comment/Comment";
-function CommunityDetailPage(props: any) {
+import {collection, getDocs, query, Timestamp, where} from "firebase/firestore";
+import {db} from "../../firebase-config";
+import firebase from "firebase/compat";
+import {useParams} from "react-router-dom";
 
-    const [commentLists,setCommentLists] = useState<any>([])
+interface postTypes {
+    id: string;
+    classification: string;
+    content: string;
+    createdAt: Timestamp;
+    loves: number;
+    platform: string;
+    title: string;
+    views: number;
+    writerName: string;
+    writerUID: string
+}
+
+interface commentListTypes {
+    id: string;
+    content: string;
+    createdAt: Timestamp;
+    postId: string;
+    writerName: string;
+    writerUID: string;
+    respondTo: string;
+}
+
+function CommunityDetailPage(props: any) {
+    const {id} = useParams<{ id: string }>()
+
+    const commentsCollectionRef = collection(db, "comments");
+    const [commentLists, setCommentLists] = useState<commentListTypes[] | undefined>()
+    const [post, setPost] = useState<postTypes | undefined>()
+    const communityCollectionRef = collection(db, "communityPosts");
+
+    useEffect(() => {
+        const getCommentList = async () => {
+            const q = await query(commentsCollectionRef, where("postId", "==", id))
+            const data = await getDocs(q);
+            setCommentLists(data.docs.map(doc => ({...doc.data(), id: doc.id})) as commentListTypes[])
+        }
+        getCommentList()
+    }, [])
+
+    useEffect(() => {
+        const getPost = async () => {
+            const q = await query(communityCollectionRef, where(firebase.firestore.FieldPath.documentId(), "==", id))
+            const data = await getDocs(q);
+            setPost(data.docs.map(doc => ({...doc.data(), id: doc.id}))[0] as postTypes)
+        }
+        getPost()
+    }, [])
+
+    const updateComment = (newComment: any) => {
+        console.log("리프레시")
+        if (commentLists) {
+            setCommentLists([...commentLists,newComment])
+        }
+    }
 
     return (
         <CommunityDetailPageContainer>
-            <span>넷플릭스</span> 잡담
-            <h2>넷플릭스 왓챠보다 싸다!!!!!!!!!!!!!!</h2>
-            <UserWithDetailContainer>
-                <UserWithProfile img={userProfile} userName={"신짱구"}/>
-                <CommunityPostDetail views={12321} loves={23} comments={17} date={"2021-12-28 01:40:22"}/>
-            </UserWithDetailContainer>
-            <Card >
-                <CardContent>
-                    <Typography variant="body2" color="text.secondary">
-                        This impressive paella is a perfect party dish and a fun meal to cook
-                        together with your guests. Add 1 cup of frozen peas along with the mussels,
-                        if you like.
-                    </Typography>
-                </CardContent>
-                <CardActions disableSpacing>
-                    <IconButton aria-label="add to favorites">
-                        <FavoriteIcon />
-                    </IconButton>
-                    <IconButton aria-label="share">
-                        <ShareIcon />
-                    </IconButton>
-                    <IconButton aria-label="">
-                        <GppBadIcon />
-                    </IconButton>
-                </CardActions>
-            </Card>
-            <Comment postId={213213} setCommentLists={setCommentLists}/>
+            {post && <><span>{post.platform}</span> {post.classification}
+                <h2>{post.title}</h2>
+                <UserWithDetailContainer>
+                    <UserWithProfile img={userProfile} userName={post.writerName}/>
+                    <CommunityPostDetail views={post.views} loves={post.loves} comments={commentLists ? commentLists.length :0}
+                                         date={post.createdAt.toDate().toString().substring(0, 24)}/>
+                </UserWithDetailContainer>
+                <Card>
+                    <CardContent>
+                        <Typography variant="body1" color="text.secondary">
+                            {
+                                post.content
+                            }
+                        </Typography>
+                    </CardContent>
+                    <CardActions disableSpacing>
+                        <IconButton aria-label="add to favorites">
+                            <FavoriteIcon/>
+                        </IconButton>
+                        <IconButton aria-label="share">
+                            <ShareIcon/>
+                        </IconButton>
+                        <IconButton aria-label="">
+                            <GppBadIcon/>
+                        </IconButton>
+                    </CardActions>
+                </Card>
+                <Comment postId={post.id} commentLists={commentLists} setCommentLists={setCommentLists}
+                         refreshFunction={updateComment}/>
+            </>}
         </CommunityDetailPageContainer>
     );
 }
