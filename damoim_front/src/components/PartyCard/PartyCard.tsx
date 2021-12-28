@@ -1,16 +1,16 @@
 import React from 'react';
-import { ExplainText, HeaderTextArea, IconImg, IncludedOTTs, OTTIcon, OTTIconCover, PartyCardBody, PartyCardContainer, PartyCardHeader, PartyCardInner, PersonIcon, PersonIconArea, TemperatureText } from './partyCardStyles';
+import { BgPerson, ExplainText, HeaderTextArea, IconImg, IncludedOTTs, OTTIcon, OTTIconCover, PartyCardBody, PartyCardContainer, PartyCardHeader, PartyCardInner, PersonIcon, PersonIconArea, TemperatureText } from './partyCardStyles';
 import netflixIcon from '../../assets/images/OTTIcons/netflixIcon.png';
 
 interface PartyCardProps {
   OTTsNameArray: string[];
   headerText: string;
   temperature: number;
+  memberNum: number;
 }
 
-const PartyCard = (props: PartyCardProps) => {
+const PartyCard = ({ OTTsNameArray, headerText, temperature, memberNum }: PartyCardProps) => {
   
-  const { OTTsNameArray, headerText, temperature } = props;
   let textColor = "blue";
 
   if(temperature < 30) {
@@ -19,6 +19,18 @@ const PartyCard = (props: PartyCardProps) => {
     textColor = "orange";
   } else if (50 <= temperature) {
     textColor = "red";
+  }
+
+  let personWidth = ["0", "0", "0", "0"];
+
+  if (memberNum < 2) {  // 멤버수 1명
+    personWidth = ["100", "0", "0", "0"];
+  } else if (memberNum < 3) { // 멤버수 2명
+    personWidth = ["100", "100", "0", "0"];
+  } else if (memberNum < 4) { // 멤버수 3명
+    personWidth = ["100", "100", "100", "0"];
+  } else if (memberNum < 5) { // 멤버수 4명
+    personWidth = ["100", "100", "100", "100"];
   }
 
   return (
@@ -40,9 +52,13 @@ const PartyCard = (props: PartyCardProps) => {
         </PartyCardHeader>
         <PartyCardBody>
           <PersonIconArea>
-            {[0,1,2,3].map(() => {
+            {[0,1,2,3].map(idx => {
               return(
-                <PersonIcon />
+                <PersonIcon>
+                  <BgPerson
+                    style={{width: `${personWidth[idx]}%`}}
+                  />
+                </PersonIcon>
               )
             })}
           </PersonIconArea>

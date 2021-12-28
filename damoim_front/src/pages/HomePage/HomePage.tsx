@@ -16,7 +16,7 @@ const HomePage = () => {
       <PartyCardContainer>
         {[0,1,2,3,4,5,6,7,8,9,10,11].map(() => {
           return(
-            <PartyCard OTTsNameArray={["netflix", "disneyPlus"]} headerText='모집중' temperature={40}></PartyCard>
+            <PartyCard OTTsNameArray={["netflix", "disneyPlus"]} headerText='모집중' temperature={40} memberNum={2}></PartyCard>
           )
         })}
       </PartyCardContainer>

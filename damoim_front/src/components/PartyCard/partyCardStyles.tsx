@@ -95,8 +95,27 @@ export const PersonIcon = styled.span`
   width: 70px;
   height: 70px;
   z-index: 100;
-  background: url(images/personIcon.png) no-repeat;
-  background-size : cover;
+  position: relative;
+  background: white;
+  :after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: url(images/personIcon.png) no-repeat;
+    background-size : cover;
+  }
+`
+
+export const BgPerson = styled.span`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: block;
+  background: #1874D0;
 `
 
 export const ExplainText = styled.div`
