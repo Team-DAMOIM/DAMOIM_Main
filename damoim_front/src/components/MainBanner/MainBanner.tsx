@@ -1,6 +1,5 @@
 import React from 'react';
-import Slider from 'react-slick';
-import { SlideWrapper } from './mainBannerStyles';
+import { SlideWrapper, StyledSlider } from './mainBannerStyles';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -25,9 +24,9 @@ const MainBanner = ({children}: sliderProps) => {
 
   return (
     <SlideWrapper>
-      <Slider{...settings}>
+      <StyledSlider {...settings}>
         {children}
-      </Slider>
+      </StyledSlider>
     </SlideWrapper>
   );
 }

@@ -12,20 +12,21 @@ const SliderItem = styled.div`
   img{
     max-width: 100%;
     height: auto;
+    margin: auto;
   }
 `;
 
 const items:itemsProps[] = [
   {
-    item: 'http://placehold.it/1200x400',
+    item: 'http://placehold.it/1200x440',
     name: '이미지01'
   },
   {
-    item: 'http://placehold.it/1200x400/ff0000',
+    item: 'http://placehold.it/1400x440/ff0000',
     name: '이미지02'
   },
   {
-    item: 'http://placehold.it/1200x400/00ffff',
+    item: 'http://placehold.it/1400x440/00ffff',
     name: '이미지03'
   },    
 ]
