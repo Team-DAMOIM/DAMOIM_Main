@@ -3,7 +3,7 @@ import OTTSelectBar from '../../components/OTTSelectBar/OTTSelectBar';
 import PartyCard from '../../components/PartyCard/PartyCard';
 import {HomePageContainer, MainBanner, PartyCardContainer} from "./homePageStyles";
 
-const initialSelectedOTTs = ["netflix", "watcha", "wavve", "tving", "disney", "laftel", "appleTV", "amazon", "welaaa"]
+const initialSelectedOTTs = ["netflix", "disneyPlus", "watcha", "wavve", "tving", "laftel", "appleTV", "amazon", "welaaa"];
 
 const HomePage = () => {
   const [selectedOTTs, setSelectedOTTs] = useState<string[]>(initialSelectedOTTs);

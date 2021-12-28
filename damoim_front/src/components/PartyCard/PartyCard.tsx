@@ -1,5 +1,6 @@
 import React from 'react';
 import { ExplainText, HeaderTextArea, IconImg, IncludedOTTs, OTTIcon, OTTIconCover, PartyCardBody, PartyCardContainer, PartyCardHeader, PartyCardInner, PersonIcon, PersonIconArea, TemperatureText } from './partyCardStyles';
+import netflixIcon from '../../assets/images/OTTIcons/netflixIcon.png';
 
 interface PartyCardProps {
   OTTArray: string[];
@@ -30,8 +31,7 @@ const PartyCard = (props: PartyCardProps) => {
               return(
                 <OTTIconCover>
                   <OTTIcon>
-                    {/* 이미지 경로 수정필요 */}
-                    <IconImg src={"../../assets/images/OTTIcons/netflixIcon.png"}/>
+                    <IconImg src={'/images/OTTIcons/netflixIcon.png'}/>
                   </OTTIcon>
                 </OTTIconCover>
               )

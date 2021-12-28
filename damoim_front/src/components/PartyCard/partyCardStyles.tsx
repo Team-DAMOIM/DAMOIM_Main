@@ -94,7 +94,9 @@ export const PersonIcon = styled.span`
   display: inline-block;
   width: 70px;
   height: 70px;
-  background: gray;
+  z-index: 100;
+  background: url(images/personIcon.png) no-repeat;
+  background-size : cover;
 `
 
 export const ExplainText = styled.div`

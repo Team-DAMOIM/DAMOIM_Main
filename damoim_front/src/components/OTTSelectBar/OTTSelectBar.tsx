@@ -5,7 +5,7 @@ import netflixIcon from '../../assets/images/OTTIcons/netflixIcon.png'
 import watchaIcon from '../../assets/images/OTTIcons/watchaIcon.png'
 import wavveIcon from '../../assets/images/OTTIcons/wavveIcon.png'
 import tvingIcon from '../../assets/images/OTTIcons/tvingIcon.jpg'
-import disneyIcon from '../../assets/images/OTTIcons/disneyPlusIcon.png'
+import disneyPlusIcon from '../../assets/images/OTTIcons/disneyPlusIcon.png'
 import laftelIcon from '../../assets/images/OTTIcons/laftelIcon.png'
 import appleTVIcon from '../../assets/images/OTTIcons/appleTVIcon.jpg'
 import amazonIcon from '../../assets/images/OTTIcons/amazonIcon.png'
@@ -27,6 +27,10 @@ function OTTSelectBar(props: OTTSelectBarProps) {
             name: "netflix"
         },
         {
+            img: disneyPlusIcon,
+            name: "disneyPlus"
+        },
+        {
             img: watchaIcon,
             name: "watcha"
         },
@@ -37,10 +41,6 @@ function OTTSelectBar(props: OTTSelectBarProps) {
         {
             img: tvingIcon,
             name: "tving"
-        },
-        {
-            img: disneyIcon,
-            name: "disney"
         },
         {
             img: laftelIcon,
