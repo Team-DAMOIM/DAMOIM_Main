@@ -1,17 +1,20 @@
-import React, {useState} from 'react';
-import {
-    AddCommunityPostPageContainer,
-    AddCommunityPostPageInputContainer, AddCommunitySelectContainer
-} from "./AddCommunityPostPageStyles";
+import React, {useContext, useState} from 'react';
 import {Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from "@mui/material";
 import HalfTextArea from "../../components/HalfTextArea/HalfTextArea";
 import CreateIcon from "@mui/icons-material/Create";
+import {
+    AddCommunityPostPageContainer,
+    AddCommunityPostPageInputContainer,
+    AddCommunitySelectContainer
+} from "./addCommunityPostPageStyles";
+import {AuthContext} from "../../context/AuthContext";
 
 function AddCommunityPostPage(props: any) {
+    const user = useContext(AuthContext);
     const [title, setTitle] = useState<string>("")
     const [content, setContent] = useState<string>("")
     const [classfication, setClassfication] = useState<string>("잡담")
-    const [platform, setPlatform] = useState<string>("넷플릭스")
+    const [platform, setPlatform] = useState<string>("------")
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const {value, name} = event.target;
@@ -69,6 +72,7 @@ function AddCommunityPostPage(props: any) {
                         name="platform"
                         onChange={selectChangeHandler}
                     >
+                        <MenuItem value={"------"}>------</MenuItem>
                         <MenuItem value={"넷플릭스"}>넷플릭스</MenuItem>
                         <MenuItem value={"왓챠"}>왓챠</MenuItem>
                         <MenuItem value={"웨이브"}>웨이브</MenuItem>
