@@ -2,6 +2,7 @@ import CommunityPage from "./pages/CommunityPage/CommunityPage";
 import HomePage from "./pages/HomePage/HomePage";
 import RankingPage from "./pages/RankingPage/RankingPage";
 import AddCommunityPostPage from "./pages/AddCommunityPostPage/AddCommunityPostPage";
+import CommunityDetailPage from "./pages/CommunityDetailPage/CommunityDetailPage";
 
 
 export default [
@@ -20,5 +21,9 @@ export default [
     {
         path: "/addCommunityPost",
         component: AddCommunityPostPage,
+    },
+    {
+        path: "/communityDetail",
+        component: CommunityDetailPage,
     },
 ]

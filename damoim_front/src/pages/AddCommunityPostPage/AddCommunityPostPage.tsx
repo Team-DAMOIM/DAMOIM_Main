@@ -56,7 +56,7 @@ function AddCommunityPostPage(props: any) {
                     >
                         <MenuItem value={"질문"}>질문</MenuItem>
                         <MenuItem value={"잡담"}>잡담</MenuItem>
-                        <MenuItem value={"잡담"}>추천</MenuItem>
+                        <MenuItem value={"추천"}>추천</MenuItem>
                     </Select>
                 </FormControl>
                 <FormControl size={'small'}>
