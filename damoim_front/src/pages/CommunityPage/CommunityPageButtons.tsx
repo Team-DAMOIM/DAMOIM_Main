@@ -39,6 +39,10 @@ function CommunityPageButtons(props: CommunityPageButtonsProps) {
         }
     }
 
+    const searchChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchWord(event.target.value)
+    }
+
     return (
         <>
             <CommunityLeftButtonContainer>
@@ -56,6 +60,7 @@ function CommunityPageButtons(props: CommunityPageButtonsProps) {
                         <MenuItem value={"질문"}>질문</MenuItem>
                         <MenuItem value={"잡담"}>잡담</MenuItem>
                         <MenuItem value={"공지"}>공지</MenuItem>
+                        <MenuItem value={"추천"}>추천</MenuItem>
                     </Select>
                 </FormControl>
                 <FormControl size={'small'} fullWidth>
@@ -71,7 +76,6 @@ function CommunityPageButtons(props: CommunityPageButtonsProps) {
                         <MenuItem value={"최신순"}>최신순</MenuItem>
                         <MenuItem value={"조회순"}>조회순</MenuItem>
                         <MenuItem value={"추천순"}>추천순</MenuItem>
-                        <MenuItem value={"댓글순"}>댓글순</MenuItem>
                     </Select>
                 </FormControl>
             </CommunityLeftButtonContainer>
@@ -92,7 +96,7 @@ function CommunityPageButtons(props: CommunityPageButtonsProps) {
                     </Button>
                 </CommunityRightOnlyButtonContainer>
                 {showSearchBar && <CommunitySearchWordContainer>
-                    <TextField id="standard-basic" label="검색어를 입력해주세요" variant="standard"/>
+                    <TextField onChange={searchChangeHandler} id="standard-basic" label="검색기능 준비중입니다" variant="standard"/>
                 </CommunitySearchWordContainer>}
             </CommunityRightButtonContainer>
 

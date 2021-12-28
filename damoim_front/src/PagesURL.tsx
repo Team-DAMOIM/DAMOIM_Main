@@ -25,7 +25,7 @@ export default [
         component: AddCommunityPostPage,
     },
     {
-        path: "/communityDetail",
+        path: "/communityDetail/:id",
         component: CommunityDetailPage,
     },
     {

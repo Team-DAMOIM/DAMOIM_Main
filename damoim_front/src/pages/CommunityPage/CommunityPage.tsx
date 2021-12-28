@@ -32,7 +32,7 @@ function CommunityPage(props: any) {
                 />
             </CommunityButtonContainer>
             <CommunityTableContainer>
-                <CommunityPageTable/>
+                <CommunityPageTable classification={classification} sortType={sortType} searchWord={searchWord}/>
             </CommunityTableContainer>
         </CommunityPageContainer>
     );

@@ -77,5 +77,15 @@ export const CommunitySearchWordContainer = styled.div`
 
 export const CommunityTableContainer = styled.div`
   margin: 4vw;
+  a{
+    text-decoration: none;
+    color: #444;
+    transition: all 0.5s ease-in-out;
+    font-weight: bold;
+
+    &:hover{
+      color: black;
+    }
+  }
 `
 

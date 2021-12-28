@@ -14,9 +14,12 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
-import {collection,getDocs,DocumentData} from "firebase/firestore";
+import {collection, getDocs, DocumentData, query, where, orderBy, Query,startAt,endAt} from "firebase/firestore";
 import {db} from "../../firebase-config";
 import {useEffect, useState} from "react";
+import {Link} from 'react-router-dom'
+
+
 interface TablePaginationActionsProps {
     count: number;
     page: number;
@@ -88,11 +91,10 @@ const StyledTableCell = styled(TableCell)(({theme}) => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: theme.palette.common.black,
         color: theme.palette.common.white,
-        fontWeight:'bold',
+        fontWeight: 'bold',
     },
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14,
-
     },
 }));
 
@@ -106,65 +108,66 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
     },
 }));
 
-function createData(
-    classfication: string,
-    title: string,
-    writer: string,
-    platform: string,
-    love: number,
-    date: string,
-) {
-    return {classfication, title, writer, platform, love, date};
+
+interface CommunityPageTableProps {
+    classification: string;
+    sortType: string;
+    searchWord: string;
 }
 
-const rows = [
-    createData('공지', "넷플릭스요즘에이상합니다", "유인칠", "------", 5, "12.27"),
-    createData('질문', "왓챠님으드자음ㅇㄴ므암ㅇ", "오준호", "왓챠", 1, "12.24"),
-    createData('잡담', "넷플릭스요즘에이상합니다", "유인찔", "넷플릭스", 23, "12.27"),
-    createData('추천', "넷플릭스요즘에이상합니다", "우녕진", "디즈니플러스", 9, "12.27"),
-    createData('공지', "넷플릭스요즘에이상합니다", "우녕진", "------", 5, "12.27"),
-    createData('질문', "왓챠님으드자음ㅇㄴ므암ㅇ", "개복치", "왓챠", 1, "12.24"),
-    createData('잡담', "넷플릭sadad스요즘에이상합니다", "우녕진", "넷플릭스", 23, "12.27"),
-    createData('추천', "넷플릭스요즘에이상합니다", "우녕진", "디즈니플러스", 9, "12.27"),
-    createData('공지', "넷플릭스요즘에이상합니다", "우녕진", "------", 5, "12.27"),
-    createData('질문', "왓챠님으드자음ㅇㄴ므암ㅇ", "개복치", "왓챠", 1, "12.24"),
-    createData('잡담', "넷플릭스요즘에이상합니다", "우녕진", "넷플릭스", 23, "12.27"),
-    createData('추천', "넷플릭스요즘에이상합니다", "우녕진", "디즈니플러스", 9, "12.27"),
-];
-interface communityPostType {
-    writer:string;
-    classification : string;
-    platform : string;
-    views:number;
-    loves:number;
-    createdAt : any;
-    title:string;
-    content:string;
-}
-function CommunityPageTable() {
+function CommunityPageTable(props: CommunityPageTableProps) {
+    const {classification, sortType, searchWord} = props;
+
     const communityCollectionRef = collection(db, "communityPosts");
-    const [communityPosts,setCommunityPosts] = useState<DocumentData[]>([])
+    const [communityPosts, setCommunityPosts] = useState<DocumentData[]>([])
 
+    // useEffect(() => {
+    //     const getCommunityPosts = async () => {
+    //         const communityPostQuery = await query(communityCollectionRef,where('title','array-contains',searchWord))
+    //         const data = await getDocs(communityPostQuery);
+    //         const posts = data.docs.map((doc) => (doc.data()))
+    //         setCommunityPosts(posts)
+    //     }
+    //     getCommunityPosts()
+    // }, [searchWord])
 
-    useEffect(()=>{
+    useEffect(() => {
         const getCommunityPosts = async () => {
-            const data = await getDocs(communityCollectionRef);
-            setCommunityPosts(data.docs.map((doc) => ( doc.data() )));
-            const posts = data.docs.map((doc) => (doc.data() ));
-            console.log(data.docs.map((doc) => (doc.data() )))
-            posts.map(post=>(
-                rows.push(createData(post.classification,post.title.substring(0,40),post.writer,post.platform,post.love,"12.17"))
-            ))
+            let sortTypeEN: string = "createdAt";
+            switch (sortType) {
+                case "최신순":
+                    sortTypeEN = "createdAt"
+                    break;
+                case "조회순":
+                    sortTypeEN = "views"
+                    break;
+                case "추천순":
+                    sortTypeEN = "loves"
+                    break;
+                default :
+                    break;
+            }
+            let communityPostQuery: Query<DocumentData>;
+            if (classification === "전체") {
+                communityPostQuery = await query(communityCollectionRef, orderBy(sortTypeEN, "desc"))
+            } else {
+                communityPostQuery = await query(communityCollectionRef, where("classification", "==", classification), orderBy(sortTypeEN, "desc"))
+            }
+            const data = await getDocs(communityPostQuery);
+            setCommunityPosts(data.docs.map((doc) => ({...doc.data(), id: doc.id})))
         }
         getCommunityPosts()
-    },[])
+    }, [classification, sortType])
+
+
+
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - communityPosts.length) : 0;
 
     const handleChangePage = (
         event: React.MouseEvent<HTMLButtonElement> | null,
@@ -186,7 +189,7 @@ function CommunityPageTable() {
                 <TableHead>
                     <TableRow>
                         <StyledTableCell>분류</StyledTableCell>
-                        <StyledTableCell >제목</StyledTableCell>
+                        <StyledTableCell>제목</StyledTableCell>
                         <StyledTableCell align="right">작성자</StyledTableCell>
                         <StyledTableCell align="right">플랫폼</StyledTableCell>
                         <StyledTableCell align="right">추천수</StyledTableCell>
@@ -195,18 +198,19 @@ function CommunityPageTable() {
                 </TableHead>
                 <TableBody>
                     {(rowsPerPage > 0
-                            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            : rows
+                            ? communityPosts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            : communityPosts
                     ).map((row, index) => (
                         <StyledTableRow key={index}>
                             <StyledTableCell component="th" scope="row">
-                                {row.classfication}
+                                {row.classification}
                             </StyledTableCell>
-                            <StyledTableCell>{row.title}</StyledTableCell>
-                            <StyledTableCell align="right">{row.writer}</StyledTableCell>
+                            <StyledTableCell><Link  to={`/communityDetail/${row.id}`}>{row.title}</Link></StyledTableCell>
+                            <StyledTableCell align="right">{row.writerName}</StyledTableCell>
                             <StyledTableCell align="right">{row.platform}</StyledTableCell>
-                            <StyledTableCell align="right">💜{row.love}</StyledTableCell>
-                            <StyledTableCell align="right">{row.date}</StyledTableCell>
+                            <StyledTableCell align="right">💜{row.loves}</StyledTableCell>
+                            <StyledTableCell
+                                align="right">{row.createdAt.toDate().getMonth() + 1 + "." + row.createdAt.toDate().getDate()}</StyledTableCell>
                         </StyledTableRow>
                     ))}
                     {emptyRows > 0 && (
@@ -220,12 +224,12 @@ function CommunityPageTable() {
                         <TablePagination
                             rowsPerPageOptions={[5, 10, 25, {label: 'All', value: -1}]}
                             colSpan={3}
-                            count={rows.length}
+                            count={communityPosts.length}
                             rowsPerPage={rowsPerPage}
                             page={page}
                             SelectProps={{
                                 inputProps: {
-                                    'aria-label': 'rows per page',
+                                    'aria-label': '페이지별 게시물 개수',
                                 },
                                 native: true,
                             }}

@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Snackbar, TextField} from "@mui/material";
 import HalfTextArea from "../../components/HalfTextArea/HalfTextArea";
 import CreateIcon from "@mui/icons-material/Create";
@@ -11,7 +11,7 @@ import {AuthContext} from "../../context/AuthContext";
 import {auth, db} from "../../firebase-config";
 import {
     collection,
-    addDoc, Timestamp, doc, updateDoc
+    addDoc, Timestamp, doc, updateDoc, query, where, getDocs
 } from "firebase/firestore";
 import Alert from '@mui/material/Alert';
 import {LoadingButton} from '@mui/lab';
@@ -28,9 +28,23 @@ function AddCommunityPostPage() {
     const [loading, setLoading] = useState<boolean>(false);
     const [success, setSuccess] = useState<boolean>(false)
     const [fail, setFail] = useState<boolean>(false)
+    const [userName, setUserName] = useState<string>("");
+
+    const usersCollectionRef = collection(db, "users")
+    useEffect(() => {
+        const getUser = async () => {
+            if (user) {
+                const userQuery = await query(usersCollectionRef, where("uid", "==", user.uid))
+                const data = await getDocs(userQuery);
+                setUserName(data.docs.map(doc => ({...doc.data()}))[0].name);
+            }
+        }
+        getUser();
+    }, [])
+
 
     const handleSignout = async () => {
-        if(auth && auth.currentUser){
+        if (auth && auth.currentUser) {
             await updateDoc(doc(db, "users", auth.currentUser.uid), {
                 isOnline: false,
             });
@@ -71,7 +85,8 @@ function AddCommunityPostPage() {
         if (user && title.length >= 5 && content.length >= 10) {
             setLoading(true);
             await addDoc(communityCollectionRef, {
-                writer: user.uid,
+                writerUID: user.uid,
+                writerName:userName,
                 title,
                 content,
                 classification,
@@ -117,8 +132,8 @@ function AddCommunityPostPage() {
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={classification}
-                        label="classfication"
-                        name="classfication"
+                        label="classification"
+                        name="classification"
                         onChange={selectChangeHandler}
                     >
                         <MenuItem value={"질문"}>질문</MenuItem>
