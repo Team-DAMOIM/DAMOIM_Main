@@ -14,7 +14,9 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
-
+import {collection,getDocs,DocumentData} from "firebase/firestore";
+import {db} from "../../firebase-config";
+import {useEffect, useState} from "react";
 interface TablePaginationActionsProps {
     count: number;
     page: number;
@@ -90,6 +92,7 @@ const StyledTableCell = styled(TableCell)(({theme}) => ({
     },
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14,
+
     },
 }));
 
@@ -128,8 +131,33 @@ const rows = [
     createData('잡담', "넷플릭스요즘에이상합니다", "우녕진", "넷플릭스", 23, "12.27"),
     createData('추천', "넷플릭스요즘에이상합니다", "우녕진", "디즈니플러스", 9, "12.27"),
 ];
-
+interface communityPostType {
+    writer:string;
+    classification : string;
+    platform : string;
+    views:number;
+    loves:number;
+    createdAt : any;
+    title:string;
+    content:string;
+}
 function CommunityPageTable() {
+    const communityCollectionRef = collection(db, "communityPosts");
+    const [communityPosts,setCommunityPosts] = useState<DocumentData[]>([])
+
+
+    useEffect(()=>{
+        const getCommunityPosts = async () => {
+            const data = await getDocs(communityCollectionRef);
+            setCommunityPosts(data.docs.map((doc) => ( doc.data() )));
+            const posts = data.docs.map((doc) => (doc.data() ));
+            console.log(data.docs.map((doc) => (doc.data() )))
+            posts.map(post=>(
+                rows.push(createData(post.classification,post.title.substring(0,40),post.writer,post.platform,post.love,"12.17"))
+            ))
+        }
+        getCommunityPosts()
+    },[])
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -158,7 +186,7 @@ function CommunityPageTable() {
                 <TableHead>
                     <TableRow>
                         <StyledTableCell>분류</StyledTableCell>
-                        <StyledTableCell>제목</StyledTableCell>
+                        <StyledTableCell >제목</StyledTableCell>
                         <StyledTableCell align="right">작성자</StyledTableCell>
                         <StyledTableCell align="right">플랫폼</StyledTableCell>
                         <StyledTableCell align="right">추천수</StyledTableCell>

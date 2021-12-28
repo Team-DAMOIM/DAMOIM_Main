@@ -15,7 +15,7 @@ const initialSelectedOTTs = ["netflix", "watcha", "wavve", "tving", "disney", "l
 function CommunityPage(props: any) {
     // ["netflix","watcha"] <- 넷플릭스와 왓챠가 선택되었다면
     const [selectedOTTs, setSelectedOTTs] = useState<string[]>(initialSelectedOTTs);
-    const [classfication, setClassfication] = useState<string>("전체")
+    const [classification, setClassification] = useState<string>("전체")
     const [sortType, setSortType] = useState<string>("최신순")
     const [searchWord, setSearchWord] = useState<string>("")
 
@@ -26,7 +26,7 @@ function CommunityPage(props: any) {
             <OTTSelectBar selectedOTTs={selectedOTTs} setSelectedOTTs={setSelectedOTTs} selectOnlyOne={false}/>
             <SmallGuide content={"아이콘을 클릭하여 원하는 정보를 확인하세요"}/>
             <CommunityButtonContainer>
-                <CommunityPageButtons classfication={classfication} setClassfication={setClassfication}
+                <CommunityPageButtons classification={classification} setClassification={setClassification}
                                       sortType={sortType} setSortType={setSortType}
                                       searchWord={searchWord} setSearchWord={setSearchWord}
                 />

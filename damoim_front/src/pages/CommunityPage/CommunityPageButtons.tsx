@@ -10,8 +10,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import {Link} from 'react-router-dom'
 
 interface CommunityPageButtonsProps {
-    classfication: string;
-    setClassfication: React.Dispatch<SetStateAction<string>>;
+    classification: string;
+    setClassification: React.Dispatch<SetStateAction<string>>;
     sortType: string;
     setSortType: React.Dispatch<SetStateAction<string>>;
     searchWord: string;
@@ -21,15 +21,15 @@ interface CommunityPageButtonsProps {
 
 function CommunityPageButtons(props: CommunityPageButtonsProps) {
 
-    const {classfication, setClassfication, sortType, setSortType, searchWord, setSearchWord} = props;
+    const {classification, setClassification, sortType, setSortType, searchWord, setSearchWord} = props;
     const [showSearchBar, setShowSearchBar] = useState<boolean>(false)
 
 
     const selectChangeHandler = (event: SelectChangeEvent) => {
         const {value, name} = event.target;
         switch (name) {
-            case "classfication":
-                setClassfication(value as string)
+            case "classification":
+                setClassification(value as string)
                 break;
             case "sortType":
                 setSortType(value as string)
@@ -47,9 +47,9 @@ function CommunityPageButtons(props: CommunityPageButtonsProps) {
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={classfication}
-                        label="classfication"
-                        name="classfication"
+                        value={classification}
+                        label="classification"
+                        name="classification"
                         onChange={selectChangeHandler}
                     >
                         <MenuItem value={"전체"}>전체</MenuItem>

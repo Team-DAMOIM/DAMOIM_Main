@@ -23,7 +23,7 @@ function AddCommunityPostPage() {
     const history = useHistory();
     const [title, setTitle] = useState<string>("")
     const [content, setContent] = useState<string>("")
-    const [classfication, setClassfication] = useState<string>("잡담")
+    const [classification, setClassification] = useState<string>("잡담")
     const [platform, setPlatform] = useState<string>("------")
     const [loading, setLoading] = useState<boolean>(false);
     const [success, setSuccess] = useState<boolean>(false)
@@ -56,8 +56,8 @@ function AddCommunityPostPage() {
     const selectChangeHandler = (event: SelectChangeEvent) => {
         const {value, name} = event.target;
         switch (name) {
-            case "classfication":
-                setClassfication(value as string)
+            case "classification":
+                setClassification(value as string)
                 break;
             case "platform":
                 setPlatform(value as string)
@@ -74,7 +74,7 @@ function AddCommunityPostPage() {
                 writer: user.uid,
                 title,
                 content,
-                classfication,
+                classification,
                 platform,
                 views: 0,
                 loves: 0,
@@ -116,7 +116,7 @@ function AddCommunityPostPage() {
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={classfication}
+                        value={classification}
                         label="classfication"
                         name="classfication"
                         onChange={selectChangeHandler}
