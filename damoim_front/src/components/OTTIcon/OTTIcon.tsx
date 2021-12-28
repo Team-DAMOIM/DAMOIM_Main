@@ -12,19 +12,19 @@ interface OTTIconProps {
 
 function OTTIcon(props: OTTIconProps) {
 
-    const {img, name, selected, selectedOTTs, setSelectedOTTs, selectOnlyOne} = props
+    const {img, name, selected, selectedOTTs, setSelectedOTTs, selectOnlyOne} = props;
 
     const iconClickHandler = () => {
-        let arr: string[] = []
+        let arr: string[] = [];
         if (!selectOnlyOne) {
             if (selectedOTTs.includes(name)) {
-                arr = selectedOTTs.filter(selectedOTT => selectedOTT != name)
+                arr = selectedOTTs.filter(selectedOTT => selectedOTT != name);
                 setSelectedOTTs(arr);
             } else {
-                setSelectedOTTs([...selectedOTTs, name])
+                setSelectedOTTs([...selectedOTTs, name]);
             }
         } else {
-            setSelectedOTTs([name])
+            setSelectedOTTs([name]);
         }
 
     }
