@@ -3,14 +3,14 @@ import { ExplainText, HeaderTextArea, IconImg, IncludedOTTs, OTTIcon, OTTIconCov
 import netflixIcon from '../../assets/images/OTTIcons/netflixIcon.png';
 
 interface PartyCardProps {
-  OTTArray: string[];
+  OTTsNameArray: string[];
   headerText: string;
   temperature: number;
 }
 
 const PartyCard = (props: PartyCardProps) => {
   
-  const { OTTArray, headerText, temperature } = props;
+  const { OTTsNameArray, headerText, temperature } = props;
   let textColor = "blue";
 
   if(temperature < 30) {
@@ -27,11 +27,11 @@ const PartyCard = (props: PartyCardProps) => {
         <PartyCardHeader>
           <HeaderTextArea>{ headerText }</HeaderTextArea>
           <IncludedOTTs>
-            {OTTArray.map(OTT => {
+            {OTTsNameArray.map(OTT => {
               return(
                 <OTTIconCover>
                   <OTTIcon>
-                    <IconImg src={'/images/OTTIcons/netflixIcon.png'}/>
+                    <IconImg src={`/images/OTTIcons/${OTT}Icon.png`}/>
                   </OTTIcon>
                 </OTTIconCover>
               )
