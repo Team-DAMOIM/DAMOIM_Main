@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
-import MainBanner from '../../components/MainBanner/MainBannerItem';
 import OTTSelectBar from '../../components/OTTSelectBar/OTTSelectBar';
 import PartyCard from '../../components/PartyCard/PartyCard';
-import {HomePageContainer, PartyCardContainer} from "./homePageStyles";
+import { JoinPartyPageContainer, PartyCardContainer } from './joinPartyPageStyles';
 
 const initialSelectedOTTs = ["netflix", "disneyPlus", "watcha", "wavve", "tving", "laftel", "appleTV", "amazon", "welaaa"];
 
-const HomePage = () => {
+const JoinPartyPage = () => {
   const [selectedOTTs, setSelectedOTTs] = useState<string[]>(initialSelectedOTTs);
 
   return (
-    <HomePageContainer>
-      <MainBanner />
-      <OTTSelectBar selectedOTTs={selectedOTTs} setSelectedOTTs={setSelectedOTTs} selectOnlyOne={false}/>
-      {/* 이 밑에 하드코딩된거 추후 수정 */}
+    <JoinPartyPageContainer>
+      <OTTSelectBar selectedOTTs={selectedOTTs} setSelectedOTTs={setSelectedOTTs} selectOnlyOne={false} />
       <PartyCardContainer>
+        {/* 이 밑에 하드코딩된거 추후 수정 */}
         {[0,1,2,3,4,5,6,7,8,9,10,11].map(() => {
           return(
             <PartyCard
@@ -26,8 +24,8 @@ const HomePage = () => {
           )
         })}
       </PartyCardContainer>
-    </HomePageContainer>
+    </JoinPartyPageContainer>
   );
 };
 
-export default HomePage;
+export default JoinPartyPage;

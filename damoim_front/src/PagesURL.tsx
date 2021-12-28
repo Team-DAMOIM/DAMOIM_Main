@@ -1,40 +1,54 @@
 import CommunityPage from "./pages/CommunityPage/CommunityPage";
 import HomePage from "./pages/HomePage/HomePage";
 import RankingPage from "./pages/RankingPage/RankingPage";
+import JoinPartyPage from "./pages/JoinPartyPage/JoinPartyPage";
 import AddCommunityPostPage from "./pages/AddCommunityPostPage/AddCommunityPostPage";
 import CommunityDetailPage from "./pages/CommunityDetailPage/CommunityDetailPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import Register from "./pages/RegisterPage/RegisterPage";
+import PartyDetailPage from "./pages/PartyDetailPage/PartyDetailPage";
 
 
 export default [
     {
         path: "/",
-        component: HomePage,
+        component: HomePage
     },
     {
-        path: "/community",
-        component: CommunityPage,
+      path: "/rank",
+      component: RankingPage
     },
     {
-        path: "/rank",
-        component: RankingPage,
+      path: "/create-party",
+      component: HomePage
     },
     {
-        path: "/addCommunityPost",
-        component: AddCommunityPostPage,
+      path: "/join-party",
+      component: JoinPartyPage
     },
     {
-        path: "/communityDetail/:id",
-        component: CommunityDetailPage,
+      path: "/community",
+      component: CommunityPage
     },
     {
-        path: "/login",
-        component: LoginPage,
+      path: "/partyDetail/:id",
+      component: PartyDetailPage
+    },
+    {
+      path: "/addCommunityPost",
+      component: AddCommunityPostPage
+    },
+    {
+      path: "/communityDetail/:id",
+      component: CommunityDetailPage
+    },
+    {
+      path: "/login",
+      component: LoginPage
     },
 
     {
-        path: "/register",
-        component: Register,
+      path: "/register",
+      component: Register
     },
 ]
