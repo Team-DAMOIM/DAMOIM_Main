@@ -12,12 +12,13 @@ import Card from '@mui/material/Card';
 import ShareIcon from '@mui/icons-material/Share';
 import GppBadIcon from '@mui/icons-material/GppBad';
 import Comment from "../../components/Comment/Comment";
-import {getDocs, query, where, documentId} from "firebase/firestore";
+import {getDocs, query, where, documentId, doc, updateDoc} from "firebase/firestore";
 import {useParams} from "react-router-dom";
 import {commentsCollectionRef, communityCollectionRef, likesCollectionRef} from "../../firestoreRef/ref";
 import {postTypes, SingleCommentTypes} from "../../utils/types";
 import {Tag} from "antd";
 import LikeDislikes from "../../components/LikeDislikes/LikeDislikes";
+import {db} from "../../firebase-config";
 
 
 
@@ -40,20 +41,18 @@ function CommunityDetailPage() {
         const getPost = async () => {
             const q = await query(communityCollectionRef, where(documentId(), "==", id))
             const data = await getDocs(q);
-            setPost(data.docs.map(doc => ({...doc.data(), id: doc.id}))[0] as postTypes)
+            const tempPost = data.docs.map(doc => ({...doc.data(), id: doc.id}))[0] as postTypes
+            setPost(tempPost)
+            const communityDoc = doc(db, "communityPosts", tempPost.id);
+            await updateDoc(communityDoc, {
+                views: tempPost.views + 1
+            })
         }
         getPost()
     }, [])
 
-    // useEffect(()=>{
-    //     const getLoves = async () => {
-    //         const q = await query(likesCollectionRef,where("postId","==",id))
-    //         const data = await getDocs(q);
-    //         const loves = data.docs.map(doc => ({...doc.data(), id: doc.id})).length
-    //         // setPost({...post,loves:3} as postTypes)
-    //     }
-    //     getLoves();
-    // },[])
+
+
 
     const updateComment = (newComment: SingleCommentTypes) => {
         if (commentLists) {
