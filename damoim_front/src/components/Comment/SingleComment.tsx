@@ -2,8 +2,7 @@ import 'moment/locale/ko';
 import React, {useContext, useState} from 'react'
 import {Comment, Avatar, Button, Input } from 'antd';
 import Moment from 'react-moment';
-import {addDoc, getDocs, query, Timestamp, where} from "firebase/firestore";
-import firebase from "firebase/compat";
+import {addDoc, documentId, getDocs, query, Timestamp, where} from "firebase/firestore";
 import Alert from "@mui/material/Alert";
 import {Snackbar} from "@mui/material";
 import {AuthContext} from "../../context/AuthContext";
@@ -42,7 +41,7 @@ function SingleComment(props: any) {
                 createdAt: Timestamp.fromDate(new Date()),
             }
             const data = await addDoc(commentsCollectionRef, variables)
-            const q = await query(commentsCollectionRef, where(firebase.firestore.FieldPath.documentId(), "==", data.id))
+            const q = await query(commentsCollectionRef, where(documentId(), "==", data.id))
             const result = await getDocs(q);
             setCommentValue("");
             setSuccess(true)

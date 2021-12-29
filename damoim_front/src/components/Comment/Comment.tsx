@@ -1,10 +1,9 @@
 import React, {useContext, useState} from 'react';
 import SingleComment from "./SingleComment";
-import {addDoc, getDocs, query, Timestamp, where} from "firebase/firestore";
+import {addDoc, documentId, getDocs, query, Timestamp, where} from "firebase/firestore";
 import {AuthContext} from "../../context/AuthContext";
 import {Button, Input} from "antd";
 import ReplyComment from "./ReplyComment";
-import firebase from "firebase/compat";
 import Alert from "@mui/material/Alert";
 import {Snackbar} from "@mui/material";
 import useUserUID from "../../hooks/useUserUID";
@@ -38,7 +37,7 @@ function Comment({commentLists, postId, refreshFunction}: CommentTypes) {
                 createdAt: Timestamp.fromDate(new Date()),
             }
             const data = await addDoc(commentsCollectionRef, variables)
-            const q = await query(commentsCollectionRef, where(firebase.firestore.FieldPath.documentId(), "==", data.id))
+            const q = await query(commentsCollectionRef, where(documentId(), "==", data.id))
             const result = await getDocs(q);
 
             setComment("")

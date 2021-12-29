@@ -9,8 +9,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import GppBadIcon from '@mui/icons-material/GppBad';
 import Comment from "../../components/Comment/Comment";
-import { getDocs, query, Timestamp, where} from "firebase/firestore";
-import firebase from "firebase/compat";
+import { getDocs, query, Timestamp, where,documentId} from "firebase/firestore";
 import {useParams} from "react-router-dom";
 import {commentsCollectionRef, communityCollectionRef} from "../../firestoreRef/ref";
 import {SingleCommentTypes} from "../../utils/types";
@@ -45,7 +44,7 @@ function CommunityDetailPage() {
 
     useEffect(() => {
         const getPost = async () => {
-            const q = await query(communityCollectionRef, where(firebase.firestore.FieldPath.documentId(), "==", id))
+            const q = await query(communityCollectionRef, where(documentId(), "==", id))
             const data = await getDocs(q);
             setPost(data.docs.map(doc => ({...doc.data(), id: doc.id}))[0] as postTypes)
         }
