@@ -12,15 +12,14 @@ import amazonIcon from '../../assets/images/OTTIcons/amazonIcon.png'
 import welaaaIcon from '../../assets/images/OTTIcons/welaaaIcon.png'
 
 
-interface OTTSelectBarProps {
+interface OTTSelectBarTypes {
     selectedOTTs: string[];
     setSelectedOTTs: React.Dispatch<SetStateAction<string[]>>;
     selectOnlyOne: boolean
 }
 
-function OTTSelectBar(props: OTTSelectBarProps) {
+function OTTSelectBar({selectedOTTs, setSelectedOTTs, selectOnlyOne}: OTTSelectBarTypes) {
 
-    const {selectedOTTs, setSelectedOTTs, selectOnlyOne} = props;
     const OTTs = [
         {
             img: netflixIcon,

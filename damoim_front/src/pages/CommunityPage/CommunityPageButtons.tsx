@@ -59,7 +59,7 @@ function CommunityPageButtons(props: CommunityPageButtonsProps) {
                     >
                         {
                             classificationLabels.map((label: string) => (
-                                <MenuItem value={label}>{label}</MenuItem>
+                                <MenuItem value={label} key={label}>{label}</MenuItem>
                             ))
                         }
                     </Select>
@@ -76,7 +76,7 @@ function CommunityPageButtons(props: CommunityPageButtonsProps) {
                     >
                         {
                             sortTypesLabels.map((label: string) => (
-                                <MenuItem value={label}>{label}</MenuItem>
+                                <MenuItem value={label} key={label}>{label}</MenuItem>
                             ))
                         }
                     </Select>

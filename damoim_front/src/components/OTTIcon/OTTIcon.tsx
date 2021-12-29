@@ -1,5 +1,6 @@
-import React, {SetStateAction} from 'react';
+import React, {SetStateAction, useState} from 'react';
 import {OTTIconContainer} from "./OTTIconStyles";
+import {initialSelectedOTTs} from "../../utils/variables";
 
 interface OTTIconProps {
     img: string,
@@ -10,14 +11,14 @@ interface OTTIconProps {
     selectOnlyOne: boolean
 }
 
-function OTTIcon(props: OTTIconProps) {
-
-    const {img, name, selected, selectedOTTs, setSelectedOTTs, selectOnlyOne} = props;
+function OTTIcon({img, name, selected, selectedOTTs, setSelectedOTTs, selectOnlyOne}: OTTIconProps) {
 
     const iconClickHandler = () => {
         let arr: string[] = [];
         if (!selectOnlyOne) {
-            if (selectedOTTs.includes(name)) {
+            if (selectedOTTs.length === initialSelectedOTTs.length) {
+                setSelectedOTTs([name]);
+            } else if (selectedOTTs.includes(name)) {
                 arr = selectedOTTs.filter(selectedOTT => selectedOTT != name);
                 setSelectedOTTs(arr);
             } else {
@@ -26,7 +27,6 @@ function OTTIcon(props: OTTIconProps) {
         } else {
             setSelectedOTTs([name]);
         }
-
     }
     return (
         <OTTIconContainer selected={selected} onClick={iconClickHandler}>

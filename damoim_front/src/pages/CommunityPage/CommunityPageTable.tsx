@@ -6,25 +6,25 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { TableFooter, TablePagination} from "@mui/material";
+import {TableFooter, TablePagination} from "@mui/material";
 import {getDocs, DocumentData, query, where, orderBy, Query} from "firebase/firestore";
-import { useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {Link} from 'react-router-dom'
 import {communityCollectionRef} from "../../firestoreRef/ref";
 import TablePaginationActions from "../../components/TablePaginationActions/TablePaginationActions";
 import {StyledTableCell, StyledTableRow} from "./communityPageStyles";
-import {getSortTypeEN} from "../../utils/functions/indes";
-
-
+import {getSelectedOTTsKR, getSortTypeEN} from "../../utils/functions/indes";
+import {postTypes} from "../../utils/types";
 
 
 interface CommunityPageTableProps {
     classification: string;
     sortType: string;
     searchWord: string;
+    selectedOTTs: string[];
 }
 
-function CommunityPageTable({classification, sortType, searchWord}: CommunityPageTableProps) {
+function CommunityPageTable({classification, sortType, searchWord, selectedOTTs}: CommunityPageTableProps) {
 
     const [communityPosts, setCommunityPosts] = useState<DocumentData[]>([])
     const [page, setPage] = useState<number>(0);
@@ -33,7 +33,9 @@ function CommunityPageTable({classification, sortType, searchWord}: CommunityPag
     useEffect(() => {
         const getCommunityPosts = async () => {
             let sortTypeEN = getSortTypeEN(sortType);
-
+            let selectedOTTsKR: string[] = getSelectedOTTsKR(selectedOTTs);
+            console.log(selectedOTTsKR
+            )
             let communityPostQuery: Query<DocumentData>;
             if (classification === "전체") {
                 communityPostQuery = await query(communityCollectionRef, orderBy(sortTypeEN, "desc"))
@@ -41,13 +43,15 @@ function CommunityPageTable({classification, sortType, searchWord}: CommunityPag
                 communityPostQuery = await query(communityCollectionRef, where("classification", "==", classification), orderBy(sortTypeEN, "desc"))
             }
             const data = await getDocs(communityPostQuery);
-            setCommunityPosts(data.docs.map((doc) => ({...doc.data(), id: doc.id})))
+            setCommunityPosts(data.docs.map((doc) => ({...doc.data(), id: doc.id} as postTypes)).filter((post:postTypes) => {
+                return selectedOTTsKR.includes(post.platform)
+            }))
+
+
         }
         getCommunityPosts()
 
-    }, [classification, sortType])
-
-
+    }, [classification, sortType, selectedOTTs])
 
 
     // Avoid a layout jump when reaching the last page with empty rows.
@@ -91,7 +95,8 @@ function CommunityPageTable({classification, sortType, searchWord}: CommunityPag
                             <StyledTableCell component="th" scope="row">
                                 {row.classification}
                             </StyledTableCell>
-                            <StyledTableCell><Link  to={`/communityDetail/${row.id}`}>{row.title}</Link></StyledTableCell>
+                            <StyledTableCell><Link
+                                to={`/communityDetail/${row.id}`}>{row.title}</Link></StyledTableCell>
                             <StyledTableCell align="right">{row.writerName}</StyledTableCell>
                             <StyledTableCell align="right">{row.platform}</StyledTableCell>
                             <StyledTableCell align="right">💜{row.loves}</StyledTableCell>

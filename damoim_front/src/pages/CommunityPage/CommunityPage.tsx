@@ -33,7 +33,7 @@ function CommunityPage() {
                 />
             </CommunityButtonContainer>
             <CommunityTableContainer>
-                <CommunityPageTable classification={classification} sortType={sortType} searchWord={searchWord}/>
+                <CommunityPageTable classification={classification} sortType={sortType} searchWord={searchWord} selectedOTTs={selectedOTTs}/>
             </CommunityTableContainer>
         </CommunityPageContainer>
     );

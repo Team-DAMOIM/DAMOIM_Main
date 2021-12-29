@@ -9,30 +9,17 @@ import UserWithProfile from "../../components/UserWithProfile/UserWithProfile";
 import CommunityPostDetail from "../../components/CommunityPostDetail/CommunityPostDetail";
 import {CardActions, CardContent, IconButton, Typography} from "@mui/material";
 import Card from '@mui/material/Card';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import GppBadIcon from '@mui/icons-material/GppBad';
 import Comment from "../../components/Comment/Comment";
-import {getDocs, query, Timestamp, where, documentId} from "firebase/firestore";
+import {getDocs, query, where, documentId} from "firebase/firestore";
 import {useParams} from "react-router-dom";
 import {commentsCollectionRef, communityCollectionRef} from "../../firestoreRef/ref";
-import {SingleCommentTypes} from "../../utils/types";
+import {postTypes, SingleCommentTypes} from "../../utils/types";
 import {Tag} from "antd";
 import LikeDislikes from "../../components/LikeDislikes/LikeDislikes";
-import {AuthContext} from "../../context/AuthContext";
 
-interface postTypes {
-    id: string;
-    classification: string;
-    content: string;
-    createdAt: Timestamp;
-    loves: number;
-    platform: string;
-    title: string;
-    views: number;
-    writerName: string;
-    writerUID: string
-}
+
 
 function CommunityDetailPage() {
     const {id} = useParams<{ id: string }>()
