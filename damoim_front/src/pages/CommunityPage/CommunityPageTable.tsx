@@ -46,11 +46,8 @@ function CommunityPageTable({classification, sortType, searchWord, selectedOTTs}
             setCommunityPosts(data.docs.map((doc) => ({...doc.data(), id: doc.id} as postTypes)).filter((post:postTypes) => {
                 return selectedOTTsKR.includes(post.platform)
             }))
-
-
         }
         getCommunityPosts()
-
     }, [classification, sortType, selectedOTTs])
 
 

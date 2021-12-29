@@ -14,7 +14,7 @@ import GppBadIcon from '@mui/icons-material/GppBad';
 import Comment from "../../components/Comment/Comment";
 import {getDocs, query, where, documentId} from "firebase/firestore";
 import {useParams} from "react-router-dom";
-import {commentsCollectionRef, communityCollectionRef} from "../../firestoreRef/ref";
+import {commentsCollectionRef, communityCollectionRef, likesCollectionRef} from "../../firestoreRef/ref";
 import {postTypes, SingleCommentTypes} from "../../utils/types";
 import {Tag} from "antd";
 import LikeDislikes from "../../components/LikeDislikes/LikeDislikes";
@@ -25,6 +25,7 @@ function CommunityDetailPage() {
     const {id} = useParams<{ id: string }>()
     const [commentLists, setCommentLists] = useState<SingleCommentTypes[] | undefined>()
     const [post, setPost] = useState<postTypes | undefined>()
+    const [loves,setLoves] = useState<number>(0)
 
     useEffect(() => {
         const getCommentList = async () => {
@@ -43,6 +44,16 @@ function CommunityDetailPage() {
         }
         getPost()
     }, [])
+
+    // useEffect(()=>{
+    //     const getLoves = async () => {
+    //         const q = await query(likesCollectionRef,where("postId","==",id))
+    //         const data = await getDocs(q);
+    //         const loves = data.docs.map(doc => ({...doc.data(), id: doc.id})).length
+    //         // setPost({...post,loves:3} as postTypes)
+    //     }
+    //     getLoves();
+    // },[])
 
     const updateComment = (newComment: SingleCommentTypes) => {
         if (commentLists) {

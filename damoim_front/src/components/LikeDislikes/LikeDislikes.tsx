@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react'
 import {Tooltip} from 'antd';
 import {DislikeOutlined, LikeOutlined, LikeFilled, DislikeFilled} from "@ant-design/icons";
 import {AuthContext} from "../../context/AuthContext";
-import {addDoc, getDocs, Query, query, where, deleteDoc, doc} from "firebase/firestore";
+import {addDoc, getDocs, Query, query, where, deleteDoc, doc, updateDoc} from "firebase/firestore";
 import {disLikesCollectionRef, likesCollectionRef} from "../../firestoreRef/ref";
 import {db} from "../../firebase-config";
 
@@ -77,17 +77,22 @@ function LikeDislikes({post, postId, commentId}: LikeDislikesTypes) {
             setLikes(likes + 1);
             setLikeAction("liked")
             if (post) {
+                const communityDoc = doc(db, "communityPosts", postId as string);
                 await addDoc(likesCollectionRef, {
                     postId: postId,
                     userUID: user?.uid
                 })
+
+                await updateDoc(communityDoc, {
+                    loves: likes + 1
+                })
+
             } else {
                 await addDoc(likesCollectionRef, {
                     commentId: commentId,
                     userUID: user?.uid
                 })
             }
-
 
 
             if (disLikeAction !== null) {
@@ -111,6 +116,7 @@ function LikeDislikes({post, postId, commentId}: LikeDislikesTypes) {
             setLikes(likes - 1)
             setLikeAction(null)
             let searchQuery: Query;
+            const communityDoc = doc(db, "communityPosts", postId as string);
             if (post) {
                 searchQuery = await query(likesCollectionRef, where("postId", "==", postId), where("userUID", "==", user?.uid));
             } else {
@@ -119,13 +125,18 @@ function LikeDislikes({post, postId, commentId}: LikeDislikesTypes) {
             const data = await getDocs(searchQuery);
             const deleteId = data.docs.map((doc) => ({...doc.data(), id: doc.id}))[0].id
             await deleteDoc(doc(db, "likes", deleteId))
+            if(post){
+                await updateDoc(communityDoc, {
+                    loves: likes - 1
+                })
+
+            }
 
         }
     }
 
 
-
-    const onDisLike  = async () => {
+    const onDisLike = async () => {
         if (disLikeAction === null) {
             setDisLikes(disLikes + 1);
             setDisLikeAction("disLiked")
@@ -140,7 +151,6 @@ function LikeDislikes({post, postId, commentId}: LikeDislikesTypes) {
                     userUID: user?.uid
                 })
             }
-
 
 
             if (likeAction !== null) {
@@ -177,7 +187,6 @@ function LikeDislikes({post, postId, commentId}: LikeDislikesTypes) {
     }
 
 
-
     return (
         <React.Fragment>
             <span key="comment-basic-like">
@@ -194,7 +203,8 @@ function LikeDislikes({post, postId, commentId}: LikeDislikesTypes) {
             <span key="comment-basic-dislike">
                 <Tooltip title="Dislike">
                     {
-                        disLikeAction === "disLiked" ? <DislikeFilled type="dislike" style={{color: 'black'}} onClick={onDisLike}/> :
+                        disLikeAction === "disLiked" ?
+                            <DislikeFilled type="dislike" style={{color: 'black'}} onClick={onDisLike}/> :
                             <DislikeOutlined type="dislike" style={{color: 'black'}} onClick={onDisLike}/>
                     }
 
