@@ -4,7 +4,6 @@ export const HomePageContainer = styled.div`
   max-width: 1400px;
   width: 100%;
   margin: 50px auto 100px;
-  display: block;
 `
 
 // export const MainBanner = styled.div`

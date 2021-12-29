@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 export const PartyCardContainer = styled.div`
@@ -16,6 +17,10 @@ export const PartyCardContainer = styled.div`
   :hover {
     transform: scale(1.03);
   }
+`
+
+export const PartyDetailLink = styled(Link)`
+
 `
 
 export const PartyCardInner = styled.div`
@@ -96,7 +101,6 @@ export const PersonIcon = styled.span`
   height: 70px;
   z-index: 100;
   position: relative;
-  background: white;
   :after {
     content: '';
     position: absolute;
@@ -121,6 +125,7 @@ export const BgPerson = styled.span`
 export const ExplainText = styled.div`
   margin-top: 40px;
   text-align: right;
+  color: black;
   font: 20px "NanumGothic", sans-serif;
 `
 

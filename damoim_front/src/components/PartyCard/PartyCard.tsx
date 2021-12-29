@@ -1,15 +1,16 @@
 import React from 'react';
-import { BgPerson, ExplainText, HeaderTextArea, IconImg, IncludedOTTs, OTTIcon, OTTIconCover, PartyCardBody, PartyCardContainer, PartyCardHeader, PartyCardInner, PersonIcon, PersonIconArea, TemperatureText } from './partyCardStyles';
+import { BgPerson, ExplainText, HeaderTextArea, IconImg, IncludedOTTs, OTTIcon, OTTIconCover, PartyCardBody, PartyCardContainer, PartyCardHeader, PartyCardInner, PartyDetailLink, PersonIcon, PersonIconArea, TemperatureText } from './partyCardStyles';
 import netflixIcon from '../../assets/images/OTTIcons/netflixIcon.png';
 
 interface PartyCardProps {
+  id: string;
   OTTsNameArray: string[];
   headerText: string;
   temperature: number;
   memberNum: number;
 }
 
-const PartyCard = ({ OTTsNameArray, headerText, temperature, memberNum }: PartyCardProps) => {
+const PartyCard = ({ id, OTTsNameArray, headerText, temperature, memberNum }: PartyCardProps) => {
   
   let textColor = "blue";
 
@@ -35,37 +36,39 @@ const PartyCard = ({ OTTsNameArray, headerText, temperature, memberNum }: PartyC
 
   return (
     <PartyCardContainer>
-      <PartyCardInner>
-        <PartyCardHeader>
-          <HeaderTextArea>{ headerText }</HeaderTextArea>
-          <IncludedOTTs>
-            {OTTsNameArray.map(OTT => {
-              return(
-                <OTTIconCover>
-                  <OTTIcon>
-                    <IconImg src={`/images/OTTIcons/${OTT}Icon.png`}/>
-                  </OTTIcon>
-                </OTTIconCover>
-              )
-            })}
-          </IncludedOTTs>
-        </PartyCardHeader>
-        <PartyCardBody>
-          <PersonIconArea>
-            {[0,1,2,3].map(idx => {
-              return(
-                <PersonIcon>
-                  <BgPerson
-                    style={{width: `${personWidth[idx]}%`}}
-                  />
-                </PersonIcon>
-              )
-            })}
-          </PersonIconArea>
-          <ExplainText>평균온도</ExplainText>
-          <TemperatureText style={{color: textColor}}>{temperature}도</TemperatureText>
-        </PartyCardBody>
-      </PartyCardInner>
+      <PartyDetailLink to={`/partyDetail/${id}`}>
+        <PartyCardInner>
+          <PartyCardHeader>
+            <HeaderTextArea>{ headerText }</HeaderTextArea>
+            <IncludedOTTs>
+              {OTTsNameArray.map(OTT => {
+                return(
+                  <OTTIconCover>
+                    <OTTIcon>
+                      <IconImg src={`/images/OTTIcons/${OTT}Icon.png`}/>
+                    </OTTIcon>
+                  </OTTIconCover>
+                )
+              })}
+            </IncludedOTTs>
+          </PartyCardHeader>
+          <PartyCardBody>
+            <PersonIconArea>
+              {[0,1,2,3].map(idx => {
+                return(
+                  <PersonIcon>
+                    <BgPerson
+                      style={{width: `${personWidth[idx]}%`}}
+                    />
+                  </PersonIcon>
+                )
+              })}
+            </PersonIconArea>
+            <ExplainText>평균온도</ExplainText>
+            <TemperatureText style={{color: textColor}}>{temperature}도</TemperatureText>
+          </PartyCardBody>
+        </PartyCardInner>
+      </PartyDetailLink>
     </PartyCardContainer>
   );
 };
