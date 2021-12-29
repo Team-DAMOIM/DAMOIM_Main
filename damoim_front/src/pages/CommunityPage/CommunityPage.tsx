@@ -10,7 +10,7 @@ import SmallGuide from "../../components/SmallGuide/SmallGuide";
 import CommunityPageButtons from "./CommunityPageButtons";
 import CommunityPageTable from "./CommunityPageTable";
 
-const initialSelectedOTTs = ["netflix", "disneyPlus", "watcha", "wavve", "tving", "laftel", "appleTV", "amazon", "welaaa"];
+const initialSelectedOTTs:string[] = ["netflix", "disneyPlus", "watcha", "wavve", "tving", "laftel", "appleTV", "amazon", "welaaa"];
 
 function CommunityPage(props: any) {
     // ["netflix","watcha"] <- 넷플릭스와 왓챠가 선택되었다면

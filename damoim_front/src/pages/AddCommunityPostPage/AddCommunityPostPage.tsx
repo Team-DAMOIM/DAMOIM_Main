@@ -10,13 +10,14 @@ import {
 import {AuthContext} from "../../context/AuthContext";
 import {auth, db} from "../../firebase-config";
 import {
-    collection,
     addDoc, Timestamp, doc, updateDoc, query, where, getDocs
 } from "firebase/firestore";
 import Alert from '@mui/material/Alert';
 import {LoadingButton} from '@mui/lab';
 import {useHistory} from "react-router-dom";
 import {signOut} from "firebase/auth";
+import {communityCollectionRef, usersCollectionRef} from "../../firestoreRef/ref";
+import useUserUID from "../../hooks/useUserUID";
 
 function AddCommunityPostPage() {
     const user = useContext(AuthContext);
@@ -28,19 +29,9 @@ function AddCommunityPostPage() {
     const [loading, setLoading] = useState<boolean>(false);
     const [success, setSuccess] = useState<boolean>(false)
     const [fail, setFail] = useState<boolean>(false)
-    const [userName, setUserName] = useState<string>("");
 
-    const usersCollectionRef = collection(db, "users")
-    useEffect(() => {
-        const getUser = async () => {
-            if (user) {
-                const userQuery = await query(usersCollectionRef, where("uid", "==", user.uid))
-                const data = await getDocs(userQuery);
-                setUserName(data.docs.map(doc => ({...doc.data()}))[0].name);
-            }
-        }
-        getUser();
-    }, [])
+    const userName = useUserUID(user);
+
 
 
     const handleSignout = async () => {
@@ -51,7 +42,6 @@ function AddCommunityPostPage() {
             await signOut(auth);
         }
     };
-    const communityCollectionRef = collection(db, "communityPosts");
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const {value, name} = event.target;

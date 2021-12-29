@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {CommunityDetailPageContainer, UserWithDetailContainer} from "./CommunityDetailPageStyles";
+import {CommunityDetailPageContainer, UserWithDetailContainer} from "./communityDetailPageStyles";
 import userProfile from '../../assets/images/dummy/userprofile.png'
 import UserWithProfile from "../../components/UserWithProfile/UserWithProfile";
 import CommunityPostDetail from "../../components/CommunityPostDetail/CommunityPostDetail";
@@ -64,7 +64,6 @@ function CommunityDetailPage(props: any) {
     }, [])
 
     const updateComment = (newComment: any) => {
-        console.log("리프레시")
         if (commentLists) {
             setCommentLists([...commentLists,newComment])
         }

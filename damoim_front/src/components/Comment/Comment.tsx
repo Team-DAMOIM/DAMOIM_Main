@@ -1,36 +1,26 @@
 import React, {useContext, useEffect, useState} from 'react';
 import SingleComment from "./SingleComment";
-import {addDoc, collection, getDocs, query, Timestamp, where} from "firebase/firestore";
-import {db} from "../../firebase-config";
+import {addDoc, getDocs, query, Timestamp, where} from "firebase/firestore";
 import {AuthContext} from "../../context/AuthContext";
 import {Button, Input} from "antd";
 import ReplyComment from "./ReplyComment";
 import firebase from "firebase/compat";
 import Alert from "@mui/material/Alert";
 import {Snackbar} from "@mui/material";
+import useUserUID from "../../hooks/useUserUID";
+import {commentsCollectionRef} from "../../firestoreRef/ref";
 
 const {TextArea} = Input;
 
 function Comment(props: any) {
     const user = useContext(AuthContext);
-    const {commentLists, setCommentLists, postId, refreshFunction} = props
+    const {commentLists , postId, refreshFunction} = props
     const [Comment, setComment] = useState<string>("")
-    const [userName, setUserName] = useState<string>("");
     const [success, setSuccess] = useState<boolean>(false)
 
-    const usersCollectionRef = collection(db, "users")
-    const commentsCollectionRef = collection(db, "comments");
 
-    useEffect(() => {
-        const getUser = async () => {
-            if (user) {
-                const userQuery = await query(usersCollectionRef, where("uid", "==", user.uid))
-                const data = await getDocs(userQuery);
-                setUserName(data.docs.map(doc => ({...doc.data()}))[0].name);
-            }
-        }
-        getUser();
-    }, [])
+    const userName = useUserUID(user);
+
     const onSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         if (user) {
@@ -55,6 +45,7 @@ function Comment(props: any) {
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         setComment(event.currentTarget.value)
     }
+
     return (
         <div>
             <Snackbar open={success} autoHideDuration={2000} anchorOrigin={{vertical: 'top', horizontal: 'center'}}

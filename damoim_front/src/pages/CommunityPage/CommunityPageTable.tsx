@@ -14,10 +14,10 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
-import {collection, getDocs, DocumentData, query, where, orderBy, Query,startAt,endAt} from "firebase/firestore";
-import {db} from "../../firebase-config";
+import {getDocs, DocumentData, query, where, orderBy, Query} from "firebase/firestore";
 import {useEffect, useState} from "react";
 import {Link} from 'react-router-dom'
+import {communityCollectionRef} from "../../firestoreRef/ref";
 
 
 interface TablePaginationActionsProps {
@@ -118,18 +118,8 @@ interface CommunityPageTableProps {
 function CommunityPageTable(props: CommunityPageTableProps) {
     const {classification, sortType, searchWord} = props;
 
-    const communityCollectionRef = collection(db, "communityPosts");
     const [communityPosts, setCommunityPosts] = useState<DocumentData[]>([])
 
-    // useEffect(() => {
-    //     const getCommunityPosts = async () => {
-    //         const communityPostQuery = await query(communityCollectionRef,where('title','array-contains',searchWord))
-    //         const data = await getDocs(communityPostQuery);
-    //         const posts = data.docs.map((doc) => (doc.data()))
-    //         setCommunityPosts(posts)
-    //     }
-    //     getCommunityPosts()
-    // }, [searchWord])
 
     useEffect(() => {
         const getCommunityPosts = async () => {
@@ -158,8 +148,6 @@ function CommunityPageTable(props: CommunityPageTableProps) {
         }
         getCommunityPosts()
     }, [classification, sortType])
-
-
 
 
     const [page, setPage] = React.useState(0);

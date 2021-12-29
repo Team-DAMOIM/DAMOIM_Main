@@ -1,5 +1,5 @@
 import React from 'react';
-import {UserWithProfileContainer} from "./UserWithProfileStyles";
+import {UserWithProfileContainer} from "./userWithProfileStyles";
 
 interface UserWithProfileProps {
     img: string,

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {RankingPageContainer} from "./RankingPageStyles";
+import {RankingPageContainer} from "./rankingPageStyles";
 import OTTSelectBar from "../../components/OTTSelectBar/OTTSelectBar";
 import SmallGuide from "../../components/SmallGuide/SmallGuide";
 const initialSelectedOTTs = ["netflix"]

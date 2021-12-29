@@ -1,14 +1,14 @@
 import React from 'react';
-import {HalfTextAreaContainer, HalfTextAreaContentContainer} from "./HalfTextAreaStyles";
+import {HalfTextAreaContainer, HalfTextAreaContentContainer} from "./halfTextAreaStyles";
 
 
 interface HalfTextAreaProps {
-    title:string;
+    title: string;
     content: string;
 }
 
 function HalfTextArea(props: HalfTextAreaProps) {
-    const {title,content} = props;
+    const {title, content} = props;
 
     return (
         <HalfTextAreaContainer>
