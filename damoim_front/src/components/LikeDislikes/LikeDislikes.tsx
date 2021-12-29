@@ -157,6 +157,7 @@ function LikeDislikes({post, postId, commentId}: LikeDislikesTypes) {
                 setLikes(likes - 1)
                 setLikeAction(null)
                 let searchQuery: Query;
+                const communityDoc = doc(db, "communityPosts", postId as string);
                 if (post) {
                     searchQuery = await query(likesCollectionRef, where("postId", "==", postId), where("userUID", "==", user?.uid));
                 } else {
@@ -166,6 +167,12 @@ function LikeDislikes({post, postId, commentId}: LikeDislikesTypes) {
                 const data = await getDocs(searchQuery);
                 const deleteId = data.docs.map((doc) => ({...doc.data(), id: doc.id}))[0].id
                 await deleteDoc(doc(db, "likes", deleteId))
+                if(post){
+                    await updateDoc(communityDoc, {
+                        loves: likes - 1
+                    })
+
+                }
 
             }
 
