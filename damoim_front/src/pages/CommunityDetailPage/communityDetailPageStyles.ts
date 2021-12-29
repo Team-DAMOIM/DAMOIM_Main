@@ -15,6 +15,11 @@ export const CommunityDetailPageContainer = styled.div`
   h2{
     margin-top: 1vh;
   }
+  
+  .MuiCardActions-spacing{
+    justify-content: flex-end;
+  }
+  
 `
 
 export const UserWithDetailContainer = styled.div`
@@ -22,4 +27,8 @@ export const UserWithDetailContainer = styled.div`
 
   display: flex;
   justify-content: end;
+`
+
+export const CommunityDetailPageIconContainer = styled.div`
+  margin-left: 20px;
 `

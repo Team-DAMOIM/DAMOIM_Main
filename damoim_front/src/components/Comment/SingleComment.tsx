@@ -11,6 +11,7 @@ import {commentsCollectionRef} from "../../firestoreRef/ref";
 import {SingleCommentTypes} from "../../utils/types";
 import CommentAreaWithButton from "./CommentAreaWithButton";
 import {AntdCommentContainer} from "./commentStyles";
+import LikeDislikes from "../LikeDislikes/LikeDislikes";
 
 interface SingleCommentComponentTypes {
     comment: SingleCommentTypes;
@@ -56,6 +57,7 @@ function SingleComment({comment, postId, refreshFunction}: SingleCommentComponen
     }
 
     const actions = [
+        <LikeDislikes comment commentId={comment.id}/>,
         <span onClick={openReply} key="comment-basic-reply-to">답글</span>
     ]
 

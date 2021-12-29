@@ -1,5 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import {CommunityDetailPageContainer, UserWithDetailContainer} from "./communityDetailPageStyles";
+import React, {useContext, useEffect, useState} from 'react';
+import {
+    CommunityDetailPageContainer,
+    CommunityDetailPageIconContainer,
+    UserWithDetailContainer
+} from "./communityDetailPageStyles";
 import userProfile from '../../assets/images/dummy/userprofile.png'
 import UserWithProfile from "../../components/UserWithProfile/UserWithProfile";
 import CommunityPostDetail from "../../components/CommunityPostDetail/CommunityPostDetail";
@@ -9,11 +13,13 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import GppBadIcon from '@mui/icons-material/GppBad';
 import Comment from "../../components/Comment/Comment";
-import { getDocs, query, Timestamp, where,documentId} from "firebase/firestore";
+import {getDocs, query, Timestamp, where, documentId} from "firebase/firestore";
 import {useParams} from "react-router-dom";
 import {commentsCollectionRef, communityCollectionRef} from "../../firestoreRef/ref";
 import {SingleCommentTypes} from "../../utils/types";
 import {Tag} from "antd";
+import LikeDislikes from "../../components/LikeDislikes/LikeDislikes";
+import {AuthContext} from "../../context/AuthContext";
 
 interface postTypes {
     id: string;
@@ -30,7 +36,6 @@ interface postTypes {
 
 function CommunityDetailPage() {
     const {id} = useParams<{ id: string }>()
-
     const [commentLists, setCommentLists] = useState<SingleCommentTypes[] | undefined>()
     const [post, setPost] = useState<postTypes | undefined>()
 
@@ -54,17 +59,18 @@ function CommunityDetailPage() {
 
     const updateComment = (newComment: SingleCommentTypes) => {
         if (commentLists) {
-            setCommentLists([...commentLists,newComment])
+            setCommentLists([...commentLists, newComment])
         }
     }
 
     return (
         <CommunityDetailPageContainer>
-            {post &&  <> <Tag color="geekblue">{post.platform}</Tag> <Tag color="blue">{post.classification}</Tag>
-                <h2>{post.title }</h2>
+            {post && <> <Tag color="geekblue">{post.platform}</Tag> <Tag color="blue">{post.classification}</Tag>
+                <h2>{post.title}</h2>
                 <UserWithDetailContainer>
                     <UserWithProfile img={userProfile} userName={post.writerName}/>
-                    <CommunityPostDetail views={post.views} loves={post.loves} comments={commentLists ? commentLists.length :0}
+                    <CommunityPostDetail views={post.views} loves={post.loves}
+                                         comments={commentLists ? commentLists.length : 0}
                                          date={post.createdAt.toDate().toString().substring(0, 24)}/>
                 </UserWithDetailContainer>
                 <Card>
@@ -75,16 +81,16 @@ function CommunityDetailPage() {
                             }
                         </Typography>
                     </CardContent>
-                    <CardActions disableSpacing>
-                        <IconButton aria-label="add to favorites">
-                            <FavoriteIcon/>
-                        </IconButton>
-                        <IconButton aria-label="share">
-                            <ShareIcon/>
-                        </IconButton>
-                        <IconButton aria-label="">
-                            <GppBadIcon/>
-                        </IconButton>
+                    <CardActions>
+                        <LikeDislikes post postId={post.id}/>
+                        <CommunityDetailPageIconContainer>
+                            <IconButton aria-label="share">
+                                <ShareIcon/>
+                            </IconButton>
+                            <IconButton aria-label="">
+                                <GppBadIcon/>
+                            </IconButton>
+                        </CommunityDetailPageIconContainer>
                     </CardActions>
                 </Card>
                 <Comment postId={post.id} commentLists={commentLists}
