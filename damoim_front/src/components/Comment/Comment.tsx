@@ -68,7 +68,7 @@ function Comment({commentLists, postId, refreshFunction}: CommentTypes) {
             <hr/>
             <br/>
 
-            {commentLists && commentLists.map((comment: any, index: number) => (
+            {commentLists?.map((comment: any, index: number) => (
                 (!comment.responseTo &&
                     <React.Fragment key={index}>
                         <SingleComment comment={comment} postId={postId} refreshFunction={refreshFunction}/>
