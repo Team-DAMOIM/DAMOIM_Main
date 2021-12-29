@@ -2,15 +2,14 @@ import React, {useContext, useState} from 'react';
 import SingleComment from "./SingleComment";
 import {addDoc, documentId, getDocs, query, Timestamp, where} from "firebase/firestore";
 import {AuthContext} from "../../context/AuthContext";
-import {Button, Input} from "antd";
 import ReplyComment from "./ReplyComment";
 import Alert from "@mui/material/Alert";
 import {Snackbar} from "@mui/material";
 import useUserUID from "../../hooks/useUserUID";
 import {commentsCollectionRef} from "../../firestoreRef/ref";
 import {SingleCommentTypes} from "../../utils/types";
+import CommentAreaWithButton from "./CommentAreaWithButton";
 
-const {TextArea} = Input;
 
 interface CommentTypes {
     commentLists: SingleCommentTypes[] | undefined;
@@ -28,10 +27,9 @@ function Comment({commentLists, postId, refreshFunction}: CommentTypes) {
 
     const onSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        if (user) {
             const variables = {
                 content: Comment,
-                writerUID: user.uid,
+                writerUID: user?.uid,
                 writerName: userName,
                 postId: postId,
                 createdAt: Timestamp.fromDate(new Date()),
@@ -43,7 +41,6 @@ function Comment({commentLists, postId, refreshFunction}: CommentTypes) {
             setComment("")
             setSuccess(true)
             refreshFunction(result.docs.map(doc => ({...doc.data(), id: doc.id}))[0] as SingleCommentTypes)
-        }
     }
 
 
@@ -67,30 +64,21 @@ function Comment({commentLists, postId, refreshFunction}: CommentTypes) {
             <hr/>
             <br/>
 
-            {commentLists?.map((comment: any, index: number) => (
+            {commentLists?.map((comment: SingleCommentTypes) => (
                 (!comment.responseTo &&
-                    <React.Fragment key={index}>
+                    <React.Fragment key={comment.id}>
                         <SingleComment comment={comment} postId={postId} refreshFunction={refreshFunction}/>
                         <ReplyComment commentLists={commentLists} postId={postId} parentCommentId={comment.id}
                                       refreshFunction={refreshFunction}/>
-
                     </React.Fragment>
                 )
             ))}
 
-
-            <form style={{display: 'flex'}} onSubmit={onSubmit}>
-                <TextArea
-                    style={{width: '100%', borderRadius: '5px'}}
-                    onChange={handleChange}
-                    value={Comment}
-                    placeholder="댓글을 작성해주세요"
-                />
-                <br/>
-                <Button style={{width: '20%', height: '52px'}} onClick={onSubmit}>Submit</Button>
-            </form>
-
-        </div>);
+            <CommentAreaWithButton onSubmit={onSubmit} handleChange={handleChange}
+                                   commentValue={Comment}
+            />
+        </div>)
+        ;
 }
 
 export default Comment;

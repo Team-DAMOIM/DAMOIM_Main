@@ -13,6 +13,7 @@ import { getDocs, query, Timestamp, where,documentId} from "firebase/firestore";
 import {useParams} from "react-router-dom";
 import {commentsCollectionRef, communityCollectionRef} from "../../firestoreRef/ref";
 import {SingleCommentTypes} from "../../utils/types";
+import {Tag} from "antd";
 
 interface postTypes {
     id: string;
@@ -59,7 +60,7 @@ function CommunityDetailPage() {
 
     return (
         <CommunityDetailPageContainer>
-            {post &&  <><span>{post.platform}</span> {post.classification}
+            {post &&  <> <Tag color="geekblue">{post.platform}</Tag> <Tag color="blue">{post.classification}</Tag>
                 <h2>{post.title }</h2>
                 <UserWithDetailContainer>
                     <UserWithProfile img={userProfile} userName={post.writerName}/>

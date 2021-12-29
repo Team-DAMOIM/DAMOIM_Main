@@ -2,16 +2,24 @@ import React, { useEffect, useState } from 'react'
 import SingleComment from './SingleComment';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import {SingleCommentTypes} from "../../utils/types";
+import {ReplyCommentContainer, ReplyGuideContainer} from "./commentStyles";
 
-function ReplyComment(props:any) {
-    const {commentLists , postId, parentCommentId , refreshFunction} = props;
-    const [ChildCommentNumber, setChildCommentNumber] = useState(0)
-    const [OpenReplyComments, setOpenReplyComments] = useState(false)
+
+interface ReplyCommentTypes {
+    commentLists : SingleCommentTypes[];
+    postId:string;
+    parentCommentId:string;
+    refreshFunction:(newComment: SingleCommentTypes) => void;
+}
+
+function ReplyComment({commentLists , postId, parentCommentId , refreshFunction}:ReplyCommentTypes) {
+    const [ChildCommentNumber, setChildCommentNumber] = useState<number>(0)
+    const [OpenReplyComments, setOpenReplyComments] = useState<boolean>(false)
     useEffect(() => {
 
         let commentNumber = 0;
-        commentLists.map((comment:any,index:any) => {
-
+        commentLists.map((comment:SingleCommentTypes) => {
             if (comment.responseTo === parentCommentId) {
                 commentNumber++
             }
@@ -20,14 +28,14 @@ function ReplyComment(props:any) {
     }, [commentLists])
 
 
-    let renderReplyComment = (parentCommentId:any) =>
-        commentLists.map((comment:any, index:any) => (
-            <React.Fragment>
+    let renderReplyComment = (parentCommentId:string) =>
+        commentLists.map((comment:SingleCommentTypes) => (
+            <React.Fragment key={comment.id}>
                 {comment.responseTo === parentCommentId &&
-                <div style={{ width: '80%', marginLeft: '40px' }}>
+                <ReplyCommentContainer>
                     <SingleComment comment={comment} postId={postId} refreshFunction={refreshFunction} />
                     <ReplyComment commentLists={commentLists} parentCommentId={comment.id} postId={postId} refreshFunction={refreshFunction} />
-                </div>
+                </ReplyCommentContainer>
                 }
             </React.Fragment>
         ))
@@ -41,14 +49,18 @@ function ReplyComment(props:any) {
         <div>
 
             {ChildCommentNumber > 0 &&
-            <p style={{ fontSize: '14px', margin: 0, color: 'gray' , display:'flex' ,cursor:'pointer' }}
+            <ReplyGuideContainer
                onClick={handleChange} >
-                {OpenReplyComments ? <ArrowRightIcon/> :<ArrowDropDownIcon/>} 답글 {ChildCommentNumber}개 보기
-            </p>
+                {
+                    OpenReplyComments ?
+                    <> <ArrowRightIcon/> 답글 {ChildCommentNumber}개 숨기기 </> :
+                    <><ArrowDropDownIcon/> 답글 {ChildCommentNumber}개 보기</>
+                }
+            </ReplyGuideContainer>
             }
-
-            {OpenReplyComments &&
-            renderReplyComment(parentCommentId)
+            {
+                OpenReplyComments &&
+                renderReplyComment(parentCommentId)
             }
 
         </div>

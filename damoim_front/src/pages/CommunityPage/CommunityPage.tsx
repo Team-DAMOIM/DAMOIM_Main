@@ -9,15 +9,16 @@ import HalfTextArea from "../../components/HalfTextArea/HalfTextArea";
 import SmallGuide from "../../components/SmallGuide/SmallGuide";
 import CommunityPageButtons from "./CommunityPageButtons";
 import CommunityPageTable from "./CommunityPageTable";
+import {initialSelectedOTTs} from "../../utils/variables";
 
-const initialSelectedOTTs:string[] = ["netflix", "disneyPlus", "watcha", "wavve", "tving", "laftel", "appleTV", "amazon", "welaaa"];
 
-function CommunityPage(props: any) {
+function CommunityPage() {
     // ["netflix","watcha"] <- 넷플릭스와 왓챠가 선택되었다면
     const [selectedOTTs, setSelectedOTTs] = useState<string[]>(initialSelectedOTTs);
     const [classification, setClassification] = useState<string>("전체")
     const [sortType, setSortType] = useState<string>("최신순")
     const [searchWord, setSearchWord] = useState<string>("")
+
 
 
     return (

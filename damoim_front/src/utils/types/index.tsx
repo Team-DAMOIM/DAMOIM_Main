@@ -7,5 +7,5 @@ export interface SingleCommentTypes {
     postId: string;
     writerName: string;
     writerUID: string;
-    respondTo: string;
+    responseTo: string;
 }

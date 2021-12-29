@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { TableFooter, TablePagination} from "@mui/material";
 import {getDocs, DocumentData, query, where, orderBy, Query} from "firebase/firestore";
-import {useEffect, useState} from "react";
+import {SetStateAction, useEffect, useState} from "react";
 import {Link} from 'react-router-dom'
 import {communityCollectionRef} from "../../firestoreRef/ref";
 import TablePaginationActions from "../../components/TablePaginationActions/TablePaginationActions";
@@ -44,6 +44,7 @@ function CommunityPageTable({classification, sortType, searchWord}: CommunityPag
             setCommunityPosts(data.docs.map((doc) => ({...doc.data(), id: doc.id})))
         }
         getCommunityPosts()
+
     }, [classification, sortType])
 
 
@@ -66,6 +67,7 @@ function CommunityPageTable({classification, sortType, searchWord}: CommunityPag
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
+
 
     return (
         <TableContainer component={Paper}>

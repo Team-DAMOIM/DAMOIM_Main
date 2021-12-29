@@ -1,17 +1,24 @@
-import 'moment/locale/ko';
-import React, {useContext, useState} from 'react'
-import {Comment, Avatar, Button, Input } from 'antd';
+import React, {ChangeEvent, FormEvent, useContext, useState} from 'react'
+import {Comment, Avatar} from 'antd';
 import Moment from 'react-moment';
+import 'moment/locale/ko';
 import {addDoc, documentId, getDocs, query, Timestamp, where} from "firebase/firestore";
 import Alert from "@mui/material/Alert";
 import {Snackbar} from "@mui/material";
 import {AuthContext} from "../../context/AuthContext";
 import useUserUID from "../../hooks/useUserUID";
 import {commentsCollectionRef} from "../../firestoreRef/ref";
+import {SingleCommentTypes} from "../../utils/types";
+import CommentAreaWithButton from "./CommentAreaWithButton";
+import {AntdCommentContainer} from "./commentStyles";
 
+interface SingleCommentComponentTypes {
+    comment: SingleCommentTypes;
+    postId: string;
+    refreshFunction: (newComment: SingleCommentTypes) => void;
+}
 
-const {TextArea} = Input;
-function SingleComment(props: any) {
+function SingleComment({comment, postId, refreshFunction}: SingleCommentComponentTypes) {
     const user = useContext(AuthContext);
 
     const [commentValue, setCommentValue] = useState<string>("")
@@ -21,7 +28,7 @@ function SingleComment(props: any) {
 
     const userName = useUserUID(user)
 
-    const handleChange = (e: any) => {
+    const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
         setCommentValue(e.currentTarget.value)
     }
 
@@ -29,25 +36,23 @@ function SingleComment(props: any) {
         setOpenReply(!OpenReply)
     }
 
-    const onSubmit = async (event: React.FormEvent) => {
+    const onSubmit = async (event: FormEvent) => {
         event.preventDefault();
-        if (user) {
-            const variables = {
-                postId: props.postId,
-                responseTo: props.comment.id,
-                writerUID: user.uid,
-                writerName: userName,
-                content: commentValue,
-                createdAt: Timestamp.fromDate(new Date()),
-            }
-            const data = await addDoc(commentsCollectionRef, variables)
-            const q = await query(commentsCollectionRef, where(documentId(), "==", data.id))
-            const result = await getDocs(q);
-            setCommentValue("");
-            setSuccess(true)
-            setOpenReply(!OpenReply);
-            props.refreshFunction(result.docs.map(doc => ({...doc.data(), id: doc.id}))[0])
+        const variables = {
+            postId: postId,
+            responseTo: comment.id,
+            writerUID: user?.uid,
+            writerName: userName,
+            content: commentValue,
+            createdAt: Timestamp.fromDate(new Date()),
         }
+        const data = await addDoc(commentsCollectionRef, variables)
+        const q = await query(commentsCollectionRef, where(documentId(), "==", data.id))
+        const result = await getDocs(q);
+        setCommentValue("");
+        setSuccess(true)
+        setOpenReply(!OpenReply);
+        refreshFunction(result.docs.map(doc => ({...doc.data(), id: doc.id}))[0] as SingleCommentTypes)
     }
 
     const actions = [
@@ -65,35 +70,30 @@ function SingleComment(props: any) {
                     댓글 작성 성공했습니다!
                 </Alert>
             </Snackbar>
-            <Comment
-                actions={actions}
-                author={props.comment.writerName}
-                avatar={
-                    <Avatar
-                        src="https://joeschmoe.io/api/v1/random"
-                        alt="image"
-                    />
-                }
-                content={
-                    <p>
-                        {props.comment.content}
-                    </p>
-                }
-                datetime={
-                    <span> <Moment fromNow>{props.comment.createdAt.toDate()}</Moment></span>
-                }
-            />
-            {OpenReply &&
-            <form style={{display: 'flex'}} onSubmit={onSubmit}>
-                <TextArea
-                    style={{width: '100%', borderRadius: '5px'}}
-                    onChange={handleChange}
-                    value={commentValue}
-                    placeholder="댓글을 작성해주세요"
+            <AntdCommentContainer>
+                <Comment
+                    actions={actions}
+                    author={<a>{comment.writerName}</a>}
+                    avatar={
+                        <Avatar
+                            src="https://joeschmoe.io/api/v1/random"
+                            alt="image"
+                        />
+                    }
+                    content={
+                        <p>
+                            {comment.content}
+                        </p>
+                    }
+                    datetime={
+                        <span> <Moment fromNow>{comment.createdAt.toDate()}</Moment></span>
+                    }
                 />
-                <br/>
-                <Button style={{width: '20%', height: '52px'}} onClick={onSubmit}>Submit</Button>
-            </form>
+            </AntdCommentContainer>
+            {OpenReply &&
+            <CommentAreaWithButton onSubmit={onSubmit} handleChange={handleChange}
+                                   commentValue={commentValue}
+            />
             }
 
         </div>
