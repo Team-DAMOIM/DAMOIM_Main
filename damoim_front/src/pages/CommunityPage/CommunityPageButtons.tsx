@@ -8,6 +8,8 @@ import {Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Te
 import CreateIcon from "@mui/icons-material/Create";
 import SearchIcon from "@mui/icons-material/Search";
 import {Link} from 'react-router-dom'
+import {classificationLabels, sortTypesLabels} from "../../utils/variables";
+
 
 interface CommunityPageButtonsProps {
     classification: string;
@@ -21,9 +23,8 @@ interface CommunityPageButtonsProps {
 
 function CommunityPageButtons(props: CommunityPageButtonsProps) {
 
-    const {classification, setClassification, sortType, setSortType, searchWord, setSearchWord} = props;
+    const {classification, setClassification, sortType, setSortType, setSearchWord} = props;
     const [showSearchBar, setShowSearchBar] = useState<boolean>(false)
-
 
     const selectChangeHandler = (event: SelectChangeEvent) => {
         const {value, name} = event.target;
@@ -56,11 +57,11 @@ function CommunityPageButtons(props: CommunityPageButtonsProps) {
                         name="classification"
                         onChange={selectChangeHandler}
                     >
-                        <MenuItem value={"전체"}>전체</MenuItem>
-                        <MenuItem value={"질문"}>질문</MenuItem>
-                        <MenuItem value={"잡담"}>잡담</MenuItem>
-                        <MenuItem value={"공지"}>공지</MenuItem>
-                        <MenuItem value={"추천"}>추천</MenuItem>
+                        {
+                            classificationLabels.map((label: string) => (
+                                <MenuItem value={label}>{label}</MenuItem>
+                            ))
+                        }
                     </Select>
                 </FormControl>
                 <FormControl size={'small'} fullWidth>
@@ -73,9 +74,11 @@ function CommunityPageButtons(props: CommunityPageButtonsProps) {
                         name="sortType"
                         onChange={selectChangeHandler}
                     >
-                        <MenuItem value={"최신순"}>최신순</MenuItem>
-                        <MenuItem value={"조회순"}>조회순</MenuItem>
-                        <MenuItem value={"추천순"}>추천순</MenuItem>
+                        {
+                            sortTypesLabels.map((label: string) => (
+                                <MenuItem value={label}>{label}</MenuItem>
+                            ))
+                        }
                     </Select>
                 </FormControl>
             </CommunityLeftButtonContainer>
@@ -96,7 +99,8 @@ function CommunityPageButtons(props: CommunityPageButtonsProps) {
                     </Button>
                 </CommunityRightOnlyButtonContainer>
                 {showSearchBar && <CommunitySearchWordContainer>
-                    <TextField onChange={searchChangeHandler} id="standard-basic" label="검색기능 준비중입니다" variant="standard"/>
+                    <TextField onChange={searchChangeHandler} id="standard-basic" label="검색기능 준비중입니다"
+                               variant="standard"/>
                 </CommunitySearchWordContainer>}
             </CommunityRightButtonContainer>
 

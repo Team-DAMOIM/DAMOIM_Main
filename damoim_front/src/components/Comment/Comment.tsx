@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useState} from 'react';
 import SingleComment from "./SingleComment";
 import {addDoc, getDocs, query, Timestamp, where} from "firebase/firestore";
 import {AuthContext} from "../../context/AuthContext";
@@ -9,12 +9,18 @@ import Alert from "@mui/material/Alert";
 import {Snackbar} from "@mui/material";
 import useUserUID from "../../hooks/useUserUID";
 import {commentsCollectionRef} from "../../firestoreRef/ref";
+import {SingleCommentTypes} from "../../utils/types";
 
 const {TextArea} = Input;
 
-function Comment(props: any) {
+interface CommentTypes {
+    commentLists: SingleCommentTypes[] | undefined;
+    postId: string;
+    refreshFunction : (newComment: SingleCommentTypes) => void;
+}
+
+function Comment({commentLists, postId, refreshFunction}: CommentTypes) {
     const user = useContext(AuthContext);
-    const {commentLists , postId, refreshFunction} = props
     const [Comment, setComment] = useState<string>("")
     const [success, setSuccess] = useState<boolean>(false)
 
@@ -37,7 +43,7 @@ function Comment(props: any) {
 
             setComment("")
             setSuccess(true)
-            refreshFunction(result.docs.map(doc => ({...doc.data(), id: doc.id}))[0])
+            refreshFunction(result.docs.map(doc => ({...doc.data(), id: doc.id}))[0] as SingleCommentTypes)
         }
     }
 
@@ -57,7 +63,7 @@ function Comment(props: any) {
                 </Alert>
             </Snackbar>
             <br/>
-            <p> 댓글 {commentLists.length}개</p>
+            <p> 댓글 {commentLists?.length}개</p>
             <br/>
             <hr/>
             <br/>

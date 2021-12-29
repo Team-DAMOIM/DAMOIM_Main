@@ -9,10 +9,11 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import GppBadIcon from '@mui/icons-material/GppBad';
 import Comment from "../../components/Comment/Comment";
-import {collection, getDocs, query, Timestamp, where} from "firebase/firestore";
-import {db} from "../../firebase-config";
+import { getDocs, query, Timestamp, where} from "firebase/firestore";
 import firebase from "firebase/compat";
 import {useParams} from "react-router-dom";
+import {commentsCollectionRef, communityCollectionRef} from "../../firestoreRef/ref";
+import {SingleCommentTypes} from "../../utils/types";
 
 interface postTypes {
     id: string;
@@ -27,29 +28,17 @@ interface postTypes {
     writerUID: string
 }
 
-interface commentListTypes {
-    id: string;
-    content: string;
-    createdAt: Timestamp;
-    postId: string;
-    writerName: string;
-    writerUID: string;
-    respondTo: string;
-}
-
-function CommunityDetailPage(props: any) {
+function CommunityDetailPage() {
     const {id} = useParams<{ id: string }>()
 
-    const commentsCollectionRef = collection(db, "comments");
-    const [commentLists, setCommentLists] = useState<commentListTypes[] | undefined>()
+    const [commentLists, setCommentLists] = useState<SingleCommentTypes[] | undefined>()
     const [post, setPost] = useState<postTypes | undefined>()
-    const communityCollectionRef = collection(db, "communityPosts");
 
     useEffect(() => {
         const getCommentList = async () => {
             const q = await query(commentsCollectionRef, where("postId", "==", id))
             const data = await getDocs(q);
-            setCommentLists(data.docs.map(doc => ({...doc.data(), id: doc.id})) as commentListTypes[])
+            setCommentLists(data.docs.map(doc => ({...doc.data(), id: doc.id})) as SingleCommentTypes[])
         }
         getCommentList()
     }, [])
@@ -63,7 +52,7 @@ function CommunityDetailPage(props: any) {
         getPost()
     }, [])
 
-    const updateComment = (newComment: any) => {
+    const updateComment = (newComment: SingleCommentTypes) => {
         if (commentLists) {
             setCommentLists([...commentLists,newComment])
         }
@@ -71,8 +60,8 @@ function CommunityDetailPage(props: any) {
 
     return (
         <CommunityDetailPageContainer>
-            {post && <><span>{post.platform}</span> {post.classification}
-                <h2>{post.title}</h2>
+            {post &&  <><span>{post.platform}</span> {post.classification}
+                <h2>{post.title }</h2>
                 <UserWithDetailContainer>
                     <UserWithProfile img={userProfile} userName={post.writerName}/>
                     <CommunityPostDetail views={post.views} loves={post.loves} comments={commentLists ? commentLists.length :0}
@@ -98,7 +87,7 @@ function CommunityDetailPage(props: any) {
                         </IconButton>
                     </CardActions>
                 </Card>
-                <Comment postId={post.id} commentLists={commentLists} setCommentLists={setCommentLists}
+                <Comment postId={post.id} commentLists={commentLists}
                          refreshFunction={updateComment}/>
             </>}
         </CommunityDetailPageContainer>

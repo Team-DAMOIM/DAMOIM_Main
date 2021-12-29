@@ -1,18 +1,17 @@
-import React, {useContext, useEffect, useState} from 'react'
-import {Comment, Avatar, Button, Input, Tooltip} from 'antd';
-
-const {TextArea} = Input;
-import Moment from 'react-moment';
 import 'moment/locale/ko';
-import {AuthContext} from "../../context/AuthContext";
+import React, {useContext, useState} from 'react'
+import {Comment, Avatar, Button, Input } from 'antd';
+import Moment from 'react-moment';
 import {addDoc, getDocs, query, Timestamp, where} from "firebase/firestore";
 import firebase from "firebase/compat";
 import Alert from "@mui/material/Alert";
 import {Snackbar} from "@mui/material";
+import {AuthContext} from "../../context/AuthContext";
 import useUserUID from "../../hooks/useUserUID";
 import {commentsCollectionRef} from "../../firestoreRef/ref";
 
 
+const {TextArea} = Input;
 function SingleComment(props: any) {
     const user = useContext(AuthContext);
 

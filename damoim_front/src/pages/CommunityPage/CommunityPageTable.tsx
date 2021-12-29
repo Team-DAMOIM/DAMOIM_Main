@@ -1,112 +1,21 @@
 import * as React from 'react';
-import {styled} from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell, {tableCellClasses} from '@mui/material/TableCell';
+import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import {useTheme} from '@mui/material/styles';
-import {Box, TableFooter, TablePagination} from "@mui/material";
-import IconButton from '@mui/material/IconButton';
-import FirstPageIcon from '@mui/icons-material/FirstPage';
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import LastPageIcon from '@mui/icons-material/LastPage';
+import { TableFooter, TablePagination} from "@mui/material";
 import {getDocs, DocumentData, query, where, orderBy, Query} from "firebase/firestore";
 import {useEffect, useState} from "react";
 import {Link} from 'react-router-dom'
 import {communityCollectionRef} from "../../firestoreRef/ref";
+import TablePaginationActions from "../../components/TablePaginationActions/TablePaginationActions";
+import {StyledTableCell, StyledTableRow} from "./communityPageStyles";
+import {getSortTypeEN} from "../../utils/functions/indes";
 
 
-interface TablePaginationActionsProps {
-    count: number;
-    page: number;
-    rowsPerPage: number;
-    onPageChange: (
-        event: React.MouseEvent<HTMLButtonElement>,
-        newPage: number,
-    ) => void;
-}
-
-function TablePaginationActions(props: TablePaginationActionsProps) {
-    const theme = useTheme();
-    const {count, page, rowsPerPage, onPageChange} = props;
-
-    const handleFirstPageButtonClick = (
-        event: React.MouseEvent<HTMLButtonElement>,
-    ) => {
-        onPageChange(event, 0);
-    };
-
-    const handleBackButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        onPageChange(event, page - 1);
-    };
-
-    const handleNextButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        onPageChange(event, page + 1);
-    };
-
-    const handleLastPageButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-    };
-
-    return (
-        <Box sx={{flexShrink: 0, ml: 2.5}}>
-            <IconButton
-                onClick={handleFirstPageButtonClick}
-                disabled={page === 0}
-                aria-label="first page"
-            >
-                {theme.direction === 'rtl' ? <LastPageIcon/> : <FirstPageIcon/>}
-            </IconButton>
-            <IconButton
-                onClick={handleBackButtonClick}
-                disabled={page === 0}
-                aria-label="previous page"
-            >
-                {theme.direction === 'rtl' ? <KeyboardArrowRight/> : <KeyboardArrowLeft/>}
-            </IconButton>
-            <IconButton
-                onClick={handleNextButtonClick}
-                disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-                aria-label="next page"
-            >
-                {theme.direction === 'rtl' ? <KeyboardArrowLeft/> : <KeyboardArrowRight/>}
-            </IconButton>
-            <IconButton
-                onClick={handleLastPageButtonClick}
-                disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-                aria-label="last page"
-            >
-                {theme.direction === 'rtl' ? <FirstPageIcon/> : <LastPageIcon/>}
-            </IconButton>
-        </Box>
-    );
-}
-
-
-const StyledTableCell = styled(TableCell)(({theme}) => ({
-    [`&.${tableCellClasses.head}`]: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-        fontWeight: 'bold',
-    },
-    [`&.${tableCellClasses.body}`]: {
-        fontSize: 14,
-    },
-}));
-
-const StyledTableRow = styled(TableRow)(({theme}) => ({
-    '&:nth-of-type(odd)': {
-        backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-        border: 0,
-    },
-}));
 
 
 interface CommunityPageTableProps {
@@ -115,28 +24,16 @@ interface CommunityPageTableProps {
     searchWord: string;
 }
 
-function CommunityPageTable(props: CommunityPageTableProps) {
-    const {classification, sortType, searchWord} = props;
+function CommunityPageTable({classification, sortType, searchWord}: CommunityPageTableProps) {
 
     const [communityPosts, setCommunityPosts] = useState<DocumentData[]>([])
-
+    const [page, setPage] = useState<number>(0);
+    const [rowsPerPage, setRowsPerPage] = useState<number>(10);
 
     useEffect(() => {
         const getCommunityPosts = async () => {
-            let sortTypeEN: string = "createdAt";
-            switch (sortType) {
-                case "최신순":
-                    sortTypeEN = "createdAt"
-                    break;
-                case "조회순":
-                    sortTypeEN = "views"
-                    break;
-                case "추천순":
-                    sortTypeEN = "loves"
-                    break;
-                default :
-                    break;
-            }
+            let sortTypeEN = getSortTypeEN(sortType);
+
             let communityPostQuery: Query<DocumentData>;
             if (classification === "전체") {
                 communityPostQuery = await query(communityCollectionRef, orderBy(sortTypeEN, "desc"))
@@ -150,8 +47,7 @@ function CommunityPageTable(props: CommunityPageTableProps) {
     }, [classification, sortType])
 
 
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
@@ -217,13 +113,14 @@ function CommunityPageTable(props: CommunityPageTableProps) {
                             page={page}
                             SelectProps={{
                                 inputProps: {
-                                    'aria-label': '페이지별 게시물 개수',
+                                    'aria-label': 'rows per page',
                                 },
                                 native: true,
                             }}
                             onPageChange={handleChangePage}
                             onRowsPerPageChange={handleChangeRowsPerPage}
                             ActionsComponent={TablePaginationActions}
+                            labelRowsPerPage={"페이지별 게시물 개수"}
                         />
                     </TableRow>
                 </TableFooter>
