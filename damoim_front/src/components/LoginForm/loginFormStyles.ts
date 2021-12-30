@@ -13,9 +13,7 @@ export const DialogContentContainer = styled.div`
   @media screen and (max-width: 768px) {
     flex-direction: column;
   }
-  
 `
-
 
 export const LoginImageContainer = styled.div`
   width: 100%;
