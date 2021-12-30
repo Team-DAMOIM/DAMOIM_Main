@@ -20,6 +20,7 @@ import {Tag} from "antd";
 import LikeDislikes from "../../components/LikeDislikes/LikeDislikes";
 import {db} from "../../firebase-config";
 import {useScript} from "../../hooks/useScript";
+import ReportForm from "../../components/ReportForm/ReportForm";
 
 
 declare global {
@@ -31,7 +32,8 @@ function CommunityDetailPage() {
     const {id} = useParams<{ id: string }>()
     const [commentLists, setCommentLists] = useState<SingleCommentTypes[] | undefined>()
     const [post, setPost] = useState<postTypes | undefined>()
-    const [loves,setLoves] = useState<number>(0)
+    const [reportOpen,setReportOpen] = useState<boolean>(false);
+
 
     useEffect(() => {
         const getCommentList = async () => {
@@ -65,7 +67,6 @@ function CommunityDetailPage() {
     }
 
     const status = useScript("https://developers.kakao.com/sdk/js/kakao.js");
-    console.log(status)
     // kakao sdk 초기화하기
     // status가 변경될 때마다 실행되며, status가 ready일 때 초기화를 시도합니다.
     useEffect(() => {
@@ -83,6 +84,13 @@ function CommunityDetailPage() {
             requestUrl: "http://localhost:3000/communityDetail/p0oZJZwRDBwYQLuZ2Rbc",
         });
     };
+
+
+
+
+
+
+
     return (
         <CommunityDetailPageContainer>
             {post && <> <Tag color="geekblue">{post.platform}</Tag> <Tag color="blue">{post.classification}</Tag>
@@ -107,7 +115,7 @@ function CommunityDetailPage() {
                             <IconButton aria-label="share" onClick={handleKakaoButton}>
                                 <ShareIcon />
                             </IconButton>
-                            <IconButton aria-label="">
+                            <IconButton aria-label="" onClick={()=>{setReportOpen(true)}}>
                                 <GppBadIcon/>
                             </IconButton>
                         </CommunityDetailPageIconContainer>
@@ -115,6 +123,9 @@ function CommunityDetailPage() {
                 </Card>
                 <Comment postId={post.id} commentLists={commentLists}
                          refreshFunction={updateComment}/>
+
+                <ReportForm reportOpen={reportOpen} setReportOpen={setReportOpen} postId={id} />
+
             </>}
         </CommunityDetailPageContainer>
     );
