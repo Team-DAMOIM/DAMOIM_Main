@@ -7,7 +7,7 @@ import {
 } from "../LoginForm/loginFormStyles";
 import EmailIcon from '@mui/icons-material/Email';
 import {getAuth,sendPasswordResetEmail} from "firebase/auth";
-import TopCenterSnackBar from "../TopCenterSnackBar";
+import TopCenterSnackBar from "../TopCenterSnackBar/TopCenterSnackBar";
 
 interface ResetPasswordFormTypes {
     setCurrentForm: Dispatch<SetStateAction<string>>;

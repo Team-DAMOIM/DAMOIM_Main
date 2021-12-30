@@ -12,7 +12,7 @@ import {addDoc} from "firebase/firestore";
 import {communityReportCollectionRef} from "../../firestoreRef/ref";
 import Alert from "@mui/material/Alert";
 import {Snackbar} from "@mui/material";
-import TopCenterSnackBar from "../TopCenterSnackBar";
+import TopCenterSnackBar from "../TopCenterSnackBar/TopCenterSnackBar";
 
 interface ReportFormTypes {
     reportOpen: boolean;

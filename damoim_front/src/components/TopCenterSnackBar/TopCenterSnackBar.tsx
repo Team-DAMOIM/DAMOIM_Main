@@ -8,7 +8,6 @@ interface TopCenterSnackBarTypes {
     setValue: Dispatch<SetStateAction<boolean>>;
     severity : AlertColor ;
     content : string;
-
 }
 
 function TopCenterSnackBar({value,setValue,severity,content}:TopCenterSnackBarTypes) {

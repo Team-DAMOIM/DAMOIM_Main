@@ -13,7 +13,7 @@ import * as yup from 'yup';
 import {createUserWithEmailAndPassword} from "firebase/auth";
 import {auth, db} from "../../firebase-config";
 import {doc, setDoc, Timestamp} from "firebase/firestore";
-import TopCenterSnackBar from "../TopCenterSnackBar";
+import TopCenterSnackBar from "../TopCenterSnackBar/TopCenterSnackBar";
 
 interface RegisterFormTypes {
     setCurrentForm: Dispatch<SetStateAction<string>>;

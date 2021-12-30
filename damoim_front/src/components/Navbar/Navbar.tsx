@@ -7,7 +7,7 @@ import {auth, db} from "../../firebase-config";
 import {doc, updateDoc} from "firebase/firestore";
 import {signOut} from "firebase/auth";
 import UserActionModal from "../UserActionModal/UserActionModal";
-import TopCenterSnackBar from "../TopCenterSnackBar";
+import TopCenterSnackBar from "../TopCenterSnackBar/TopCenterSnackBar";
 
 const Navbar = () => {
     const user = useContext(AuthContext);

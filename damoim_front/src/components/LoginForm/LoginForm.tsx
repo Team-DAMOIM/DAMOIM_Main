@@ -13,7 +13,7 @@ import {signInWithEmailAndPassword} from "firebase/auth";
 import {auth, db} from "../../firebase-config";
 import {doc, updateDoc} from "firebase/firestore";
 import Alert from "@mui/material/Alert";
-import TopCenterSnackBar from "../TopCenterSnackBar";
+import TopCenterSnackBar from "../TopCenterSnackBar/TopCenterSnackBar";
 
 
 interface LoginFormTypes {

@@ -7,7 +7,7 @@ import useUserUID from "../../hooks/useUserUID";
 import {commentsCollectionRef} from "../../firestoreRef/ref";
 import {SingleCommentTypes} from "../../utils/types";
 import CommentAreaWithButton from "./CommentAreaWithButton";
-import TopCenterSnackBar from "../TopCenterSnackBar";
+import TopCenterSnackBar from "../TopCenterSnackBar/TopCenterSnackBar";
 
 
 interface CommentTypes {

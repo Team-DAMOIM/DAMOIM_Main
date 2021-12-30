@@ -12,7 +12,7 @@ import {SingleCommentTypes} from "../../utils/types";
 import CommentAreaWithButton from "./CommentAreaWithButton";
 import {AntdCommentContainer} from "./commentStyles";
 import LikeDislikes from "../LikeDislikes/LikeDislikes";
-import TopCenterSnackBar from "../TopCenterSnackBar";
+import TopCenterSnackBar from "../TopCenterSnackBar/TopCenterSnackBar";
 
 interface SingleCommentComponentTypes {
     comment: SingleCommentTypes;

@@ -4,16 +4,16 @@ import {Dialog} from "@mui/material";
 
 export const LoginFormContainer = styled.div`
   width: 100%;
-
-  .MuiDialogContent-root {
-    padding: 0 !important;
-  }
 `
 
 export const DialogContentContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+  }
+  
 `
 
 
