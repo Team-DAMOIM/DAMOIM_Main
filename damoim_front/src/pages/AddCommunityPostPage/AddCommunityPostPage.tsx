@@ -34,14 +34,7 @@ function AddCommunityPostPage() {
 
 
 
-    const handleSignout = async () => {
-        if (auth && auth.currentUser) {
-            await updateDoc(doc(db, "users", auth.currentUser.uid), {
-                isOnline: false,
-            });
-            await signOut(auth);
-        }
-    };
+
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const {value, name} = event.target;
@@ -182,9 +175,7 @@ function AddCommunityPostPage() {
                     글쓰기
                 </LoadingButton>
             </AddCommunityPostPageInputContainer>
-            <Button onClick={handleSignout}>
-                로그아웃
-            </Button>
+
         </AddCommunityPostPageContainer>
     );
 }
