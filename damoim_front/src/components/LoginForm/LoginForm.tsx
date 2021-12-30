@@ -1,29 +1,24 @@
 import React, {ChangeEvent, Dispatch, SetStateAction, useState} from 'react';
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
 import TextField from "@mui/material/TextField";
-import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import {
-    DialogContentContainer,
-    LoginImageContainer, LoginRightContentContainer,
+    LoginRightContentContainer,
     LoginTextFieldContainer,
     LoginTitleContainer, RegisterGuideContainer, SocialLoginContainer, SocialLoginIconContainer
 } from "./loginFormStyles";
-import {FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput} from "@mui/material";
+import {FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, Snackbar} from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import LoginIcon from '@mui/icons-material/Login';
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import {signInWithEmailAndPassword} from "firebase/auth";
 import {auth, db} from "../../firebase-config";
 import {doc, updateDoc} from "firebase/firestore";
+import Alert from "@mui/material/Alert";
 
 
 interface LoginFormTypes {
-    loginOpen : boolean;
-    setLoginOpen:Dispatch<SetStateAction<boolean>>;
-    setRegisterOpen: Dispatch<SetStateAction<boolean>>;
+    setCurrentForm: Dispatch<SetStateAction<string>>;
     setLoginSuccess : Dispatch<SetStateAction<boolean>>;
+    handleClose : () => void;
 }
 
 interface State {
@@ -35,8 +30,8 @@ interface State {
 
 }
 
-function LoginForm({loginOpen, setLoginOpen,setRegisterOpen,setLoginSuccess}: LoginFormTypes) {
-
+function LoginForm({setCurrentForm,handleClose,setLoginSuccess}: LoginFormTypes) {
+    const [userNotFound,setUserNotFound] = useState<boolean>(false)
     const [values, setValues] = useState<State>({
         email: '',
         password: '',
@@ -45,9 +40,7 @@ function LoginForm({loginOpen, setLoginOpen,setRegisterOpen,setLoginSuccess}: Lo
         loading: false,
 
     });
-    const handleClose = () => {
-        setLoginOpen(false);
-    };
+
 
     const handleChange =
         (prop: keyof State) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -77,28 +70,18 @@ function LoginForm({loginOpen, setLoginOpen,setRegisterOpen,setLoginSuccess}: Lo
             await updateDoc(doc(db, "users", result.user.uid), {
                 isOnline: true,
             });
-            // setValues({
-            //     email: "",
-            //     password: "",
-            //     error: "",
-            //     loading: false,
-            //     showPassword:false
-            // });
+
             handleClose();
             setLoginSuccess(true);
         } catch (err: any) {
             setValues({...values, error: err.message, loading: false});
+            setUserNotFound(true)
+
         }
     };
 
     return (
-        <>
-            <Dialog open={loginOpen} onClose={handleClose} fullWidth maxWidth={"md"}>
-                <DialogContent>
-                    <DialogContentContainer>
-                        <LoginImageContainer>
-                            <img src="https://joeschmoe.io/api/v1/random" alt={"adad"}/>
-                        </LoginImageContainer>
+
                         <LoginRightContentContainer>
                             <LoginTitleContainer>
                                 <h2>DAMOIM 로그인</h2>
@@ -138,8 +121,9 @@ function LoginForm({loginOpen, setLoginOpen,setRegisterOpen,setLoginSuccess}: Lo
                                         label="Password"
                                     />
                                 </FormControl>
-                                <div className={"forget-password"}>비밀번호를 잊으셨나요?</div>
-                                {values.error ? <p className="error">{values.error}</p> : null}
+                                <div onClick={()=>{
+                                    setCurrentForm("resetPassword")
+                                }} className={"forget-password"}>비밀번호를 잊으셨나요?</div>
 
                                 <Button onClick={onSubmitLogin} fullWidth variant="outlined" startIcon={<LoginIcon/>}>
                                     {values.loading ? "로그인 중입니다" : "로그인"}
@@ -157,20 +141,21 @@ function LoginForm({loginOpen, setLoginOpen,setRegisterOpen,setLoginSuccess}: Lo
                             </SocialLoginContainer>
                             <RegisterGuideContainer>
                                 <span>계정이 없으신가요?..</span> <span style={{color: '#1976d2', cursor:'pointer'}} onClick={() => {
-                                handleClose();
-                                setRegisterOpen(true)
+                                setCurrentForm("register")
                             }}>회원가입하기</span>
                             </RegisterGuideContainer>
+                            {
+                                <Snackbar open={userNotFound} autoHideDuration={2000}
+                                          anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+                                          onClose={() => {
+                                              setUserNotFound(false);
+                                          }}>
+                                    <Alert severity="error" sx={{width: '100%'}}>
+                                        존재하는 회원을 찾을 수 없습니다. 확인 후 다시 입력해주세요.
+                                    </Alert>
+                                </Snackbar>
+                            }
                         </LoginRightContentContainer>
-                    </DialogContentContainer>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose}><CancelOutlinedIcon color={"action"}/></Button>
-                </DialogActions>
-
-            </Dialog>
-
-        </>
     );
 }
 

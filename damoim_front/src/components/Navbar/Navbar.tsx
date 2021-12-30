@@ -1,20 +1,19 @@
 import React, {useContext, useState} from 'react';
 import {Nav, NavLink, Bars, NavMenu, NavBtn, NavBtnLink, Logo} from './navbarStyles';
 import {AuthContext} from "../../context/AuthContext";
-import LoginForm from "../LoginForm/LoginForm";
-import RegisterForm from "../RegisterForm/RegisterForm";
 import Alert from "@mui/material/Alert";
 import {Snackbar} from "@mui/material";
 import {auth, db} from "../../firebase-config";
 import {doc, updateDoc} from "firebase/firestore";
 import {signOut} from "firebase/auth";
+import UserActionModal from "../UserActionModal/UserActionModal";
 
 const Navbar = () => {
     const user = useContext(AuthContext);
-    const [loginOpen, setLoginOpen] = useState<boolean>(false);
-    const [registerOpen, setRegisterOpen] = useState<boolean>(false);
+    const [userActionModalOpen, setUserActionModalOpen] = useState<boolean>(false)
     const [loginSuccess, setLoginSuccess] = useState<boolean>(false);
     const [registerSuccess, setRegisterSuccess] = useState<boolean>(false)
+    const [resetPasswordSuccess, setResetPasswordSuccess] = useState<boolean>(false)
     const handleSignout = async () => {
         if (auth && auth.currentUser) {
             await updateDoc(doc(db, "users", auth.currentUser.uid), {
@@ -53,26 +52,26 @@ const Navbar = () => {
                             <NavBtn>
                                 <NavBtnLink to="/myPage">마이페이지</NavBtnLink>
                             </NavBtn>
-                            <NavBtn onClick={handleSignout} >
-                                로그아웃
+                            <NavBtn onClick={handleSignout}>
+                                <NavBtnLink to="/">로그아웃</NavBtnLink>
                             </NavBtn>
                         </>
                         :
                         <NavBtn onClick={() => {
-                            setLoginOpen(true)
+                            setUserActionModalOpen(true)
                         }}>
                             <NavBtnLink to="/">로그인</NavBtnLink>
                         </NavBtn>
                 }
             </Nav>
+
             {
-                loginOpen &&
-                <LoginForm setLoginSuccess={setLoginSuccess} loginOpen={loginOpen} setLoginOpen={setLoginOpen}
-                           setRegisterOpen={setRegisterOpen}/>
-            }
-            {
-                registerOpen && <RegisterForm setRegisterSuccess={setRegisterSuccess} setLoginOpen={setLoginOpen}
-                                              registerOpen={registerOpen} setRegisterOpen={setRegisterOpen}/>
+                userActionModalOpen && <UserActionModal
+                    setLoginSuccess={setLoginSuccess}
+                    setRegisterSuccess={setRegisterSuccess}
+                    setResetPasswordSuccess={setResetPasswordSuccess}
+                    userActionModalOpen={userActionModalOpen}
+                    setUserActionModalOpen={setUserActionModalOpen}/>
             }
             {
                 <Snackbar open={registerSuccess} autoHideDuration={2000}
@@ -93,6 +92,17 @@ const Navbar = () => {
                           }}>
                     <Alert severity="success" sx={{width: '100%'}}>
                         로그인 성공 !
+                    </Alert>
+                </Snackbar>
+            }
+            {
+                <Snackbar open={resetPasswordSuccess} autoHideDuration={2000}
+                          anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+                          onClose={() => {
+                              setResetPasswordSuccess(false);
+                          }}>
+                    <Alert severity="success" sx={{width: '100%'}}>
+                        이메일로 임시비밀번호를 보냈습니다. 확인후 로그인 해주세요.
                     </Alert>
                 </Snackbar>
             }
