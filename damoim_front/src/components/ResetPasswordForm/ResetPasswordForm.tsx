@@ -7,8 +7,7 @@ import {
 } from "../LoginForm/loginFormStyles";
 import EmailIcon from '@mui/icons-material/Email';
 import {getAuth,sendPasswordResetEmail} from "firebase/auth";
-import {Snackbar} from "@mui/material";
-import Alert from "@mui/material/Alert";
+import TopCenterSnackBar from "../TopCenterSnackBar";
 
 interface ResetPasswordFormTypes {
     setCurrentForm: Dispatch<SetStateAction<string>>;
@@ -17,7 +16,7 @@ interface ResetPasswordFormTypes {
 }
 
 
-function ResetPasswordForm({setCurrentForm, handleClose, setResetPasswordSuccess}: ResetPasswordFormTypes) {
+function ResetPasswordForm({setCurrentForm,  setResetPasswordSuccess}: ResetPasswordFormTypes) {
 
     const [email, setEmail] = useState<string>('')
     const [userNotFound,setUserNotFound] = useState<boolean>(false)
@@ -37,6 +36,7 @@ function ResetPasswordForm({setCurrentForm, handleClose, setResetPasswordSuccess
                 setCurrentForm("login")
             })
             .catch((error) => {
+                alert(error)
                 setUserNotFound(true)
             });
     };
@@ -70,18 +70,7 @@ function ResetPasswordForm({setCurrentForm, handleClose, setResetPasswordSuccess
                 setCurrentForm("login")
             }}>로그인하기</span>
             </RegisterGuideContainer>
-
-            {
-                <Snackbar open={userNotFound} autoHideDuration={2000}
-                          anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-                          onClose={() => {
-                              setUserNotFound(false);
-                          }}>
-                    <Alert severity="error" sx={{width: '100%'}}>
-                        존재하는 회원을 찾을 수 없습니다. 확인 후 다시 입력해주세요.
-                    </Alert>
-                </Snackbar>
-            }
+            <TopCenterSnackBar value={userNotFound} setValue={setUserNotFound} severity={"error"} content={"존재하는 회원을 찾을 수 없습니다. 확인 후 다시 입력해주세요."}/>
         </LoginRightContentContainer>
     );
 }

@@ -7,6 +7,7 @@ import {auth, db} from "../../firebase-config";
 import {doc, updateDoc} from "firebase/firestore";
 import {signOut} from "firebase/auth";
 import UserActionModal from "../UserActionModal/UserActionModal";
+import TopCenterSnackBar from "../TopCenterSnackBar";
 
 const Navbar = () => {
     const user = useContext(AuthContext);
@@ -73,39 +74,12 @@ const Navbar = () => {
                     userActionModalOpen={userActionModalOpen}
                     setUserActionModalOpen={setUserActionModalOpen}/>
             }
-            {
-                <Snackbar open={registerSuccess} autoHideDuration={2000}
-                          anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-                          onClose={() => {
-                              setRegisterSuccess(false);
-                          }}>
-                    <Alert severity="success" sx={{width: '100%'}}>
-                        회원가입 및 로그인 성공 !
-                    </Alert>
-                </Snackbar>
-            }
-            {
-                <Snackbar open={loginSuccess} autoHideDuration={2000}
-                          anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-                          onClose={() => {
-                              setLoginSuccess(false);
-                          }}>
-                    <Alert severity="success" sx={{width: '100%'}}>
-                        로그인 성공 !
-                    </Alert>
-                </Snackbar>
-            }
-            {
-                <Snackbar open={resetPasswordSuccess} autoHideDuration={2000}
-                          anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-                          onClose={() => {
-                              setResetPasswordSuccess(false);
-                          }}>
-                    <Alert severity="success" sx={{width: '100%'}}>
-                        이메일로 임시비밀번호를 보냈습니다. 확인후 로그인 해주세요.
-                    </Alert>
-                </Snackbar>
-            }
+            <TopCenterSnackBar value={registerSuccess} setValue={setRegisterSuccess} severity={"success"}
+                               content={"회원가입 및 로그인 성공 ! "}/>
+            <TopCenterSnackBar value={loginSuccess} setValue={setLoginSuccess} severity={"success"}
+                               content={"로그인 성공 !"}/>
+            <TopCenterSnackBar value={resetPasswordSuccess} setValue={setResetPasswordSuccess} severity={"success"}
+                               content={"이메일로 임시비밀번호를 보냈습니다. 확인후 로그인 해주세요."}/>
         </>
     );
 };

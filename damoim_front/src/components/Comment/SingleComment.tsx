@@ -12,6 +12,7 @@ import {SingleCommentTypes} from "../../utils/types";
 import CommentAreaWithButton from "./CommentAreaWithButton";
 import {AntdCommentContainer} from "./commentStyles";
 import LikeDislikes from "../LikeDislikes/LikeDislikes";
+import TopCenterSnackBar from "../TopCenterSnackBar";
 
 interface SingleCommentComponentTypes {
     comment: SingleCommentTypes;
@@ -64,14 +65,9 @@ function SingleComment({comment, postId, refreshFunction}: SingleCommentComponen
 
     return (
         <div>
-            <Snackbar open={success} autoHideDuration={2000} anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-                      onClose={() => {
-                          setSuccess(false);
-                      }}>
-                <Alert severity="success" sx={{width: '100%'}}>
-                    댓글 작성 성공했습니다!
-                </Alert>
-            </Snackbar>
+
+            <TopCenterSnackBar value={success} setValue={setSuccess} severity={"success"} content={"댓글 작성 성공했습니다 !"}/>
+
             <AntdCommentContainer>
                 <Comment
                     actions={actions}

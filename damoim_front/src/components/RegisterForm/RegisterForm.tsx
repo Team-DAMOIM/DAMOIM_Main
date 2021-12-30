@@ -13,8 +13,7 @@ import * as yup from 'yup';
 import {createUserWithEmailAndPassword} from "firebase/auth";
 import {auth, db} from "../../firebase-config";
 import {doc, setDoc, Timestamp} from "firebase/firestore";
-import {Snackbar} from "@mui/material";
-import Alert from "@mui/material/Alert";
+import TopCenterSnackBar from "../TopCenterSnackBar";
 
 interface RegisterFormTypes {
     setCurrentForm: Dispatch<SetStateAction<string>>;
@@ -173,18 +172,7 @@ function RegisterForm({setCurrentForm, setRegisterSuccess, handleClose}: Registe
                                                     }}>로그인하기</span>
                 </RegisterGuideContainer>
             </LoginRightContentContainer>
-
-            {
-                <Snackbar open={existEmail} autoHideDuration={2000}
-                          anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-                          onClose={() => {
-                              setExistEmail(false);
-                          }}>
-                    <Alert severity="error" sx={{width: '100%'}}>
-                        존재하는 이메일입니다. 다른이메일을 사용해주세요.
-                    </Alert>
-                </Snackbar>
-            }
+            <TopCenterSnackBar value={existEmail} setValue={setExistEmail} severity={"error"} content={"존재하는 이메일입니다. 다른 이메일을 사용해주세요"}/>
 
         </>
     );

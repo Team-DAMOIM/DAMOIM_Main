@@ -12,6 +12,7 @@ import {addDoc} from "firebase/firestore";
 import {communityReportCollectionRef} from "../../firestoreRef/ref";
 import Alert from "@mui/material/Alert";
 import {Snackbar} from "@mui/material";
+import TopCenterSnackBar from "../TopCenterSnackBar";
 
 interface ReportFormTypes {
     reportOpen: boolean;
@@ -53,14 +54,7 @@ export default function ReportForm({reportOpen, setReportOpen, postId}: ReportFo
 
     return (
         <div>
-            <Snackbar open={success} autoHideDuration={2000} anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-                      onClose={() => {
-                          setSuccess(false);
-                      }}>
-                <Alert severity="success" sx={{width: '100%'}}>
-                    신고가 접수되었습니다.
-                </Alert>
-            </Snackbar>
+            <TopCenterSnackBar value={success} setValue={setSuccess} severity={"success"} content={"신고가 접수되었습니다 확인 후 조치하겠습니다"}/>
             <Dialog open={reportOpen} onClose={handleClose}>
                 <DialogTitle>게시글 신고</DialogTitle>
                 <DialogContent>

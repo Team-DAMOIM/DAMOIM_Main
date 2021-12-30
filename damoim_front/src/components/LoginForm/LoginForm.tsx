@@ -13,6 +13,7 @@ import {signInWithEmailAndPassword} from "firebase/auth";
 import {auth, db} from "../../firebase-config";
 import {doc, updateDoc} from "firebase/firestore";
 import Alert from "@mui/material/Alert";
+import TopCenterSnackBar from "../TopCenterSnackBar";
 
 
 interface LoginFormTypes {
@@ -144,17 +145,7 @@ function LoginForm({setCurrentForm,handleClose,setLoginSuccess}: LoginFormTypes)
                                 setCurrentForm("register")
                             }}>회원가입하기</span>
                             </RegisterGuideContainer>
-                            {
-                                <Snackbar open={userNotFound} autoHideDuration={2000}
-                                          anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-                                          onClose={() => {
-                                              setUserNotFound(false);
-                                          }}>
-                                    <Alert severity="error" sx={{width: '100%'}}>
-                                        존재하는 회원을 찾을 수 없습니다. 확인 후 다시 입력해주세요.
-                                    </Alert>
-                                </Snackbar>
-                            }
+                            <TopCenterSnackBar value={userNotFound} setValue={setUserNotFound} severity={"error"} content={"존재하는 회원을 찾을 수 없습니다. 확인 후 다시 입력해주세요."}/>
                         </LoginRightContentContainer>
     );
 }
