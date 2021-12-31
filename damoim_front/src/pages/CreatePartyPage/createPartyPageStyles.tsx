@@ -56,3 +56,8 @@ export const CreatePartyBtn = styled.div`
     transform: scale(1.03);
   }
 `
+export const LoadingArea = styled.div`
+  margin: 400px auto 300px;
+  width: 100%;
+  text-align: center;
+`;
