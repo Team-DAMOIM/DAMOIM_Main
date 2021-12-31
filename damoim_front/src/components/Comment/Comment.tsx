@@ -3,12 +3,11 @@ import SingleComment from "./SingleComment";
 import {addDoc, documentId, getDocs, query, Timestamp, where} from "firebase/firestore";
 import {AuthContext} from "../../context/AuthContext";
 import ReplyComment from "./ReplyComment";
-import Alert from "@mui/material/Alert";
-import {Snackbar} from "@mui/material";
 import useUserUID from "../../hooks/useUserUID";
 import {commentsCollectionRef} from "../../firestoreRef/ref";
 import {SingleCommentTypes} from "../../utils/types";
 import CommentAreaWithButton from "./CommentAreaWithButton";
+import TopCenterSnackBar from "../TopCenterSnackBar/TopCenterSnackBar";
 
 
 interface CommentTypes {
@@ -50,14 +49,7 @@ function Comment({commentLists, postId, refreshFunction}: CommentTypes) {
 
     return (
         <div>
-            <Snackbar open={success} autoHideDuration={2000} anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-                      onClose={() => {
-                          setSuccess(false);
-                      }}>
-                <Alert severity="success" sx={{width: '100%'}}>
-                    댓글 작성 성공했습니다!
-                </Alert>
-            </Snackbar>
+            <TopCenterSnackBar value={success} setValue={setSuccess} severity={"success"} content={"댓글 작성 성공했습니다 !"}/>
             <br/>
             <p> 댓글 {commentLists?.length}개</p>
             <br/>
