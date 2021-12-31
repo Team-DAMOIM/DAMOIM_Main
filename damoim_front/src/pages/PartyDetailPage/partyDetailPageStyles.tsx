@@ -4,7 +4,7 @@ import styled from "styled-components";
 export const PartyDetailPageContainer = styled.div`
   max-width: 1400px;
   width: 100%;
-  margin: 50px auto 100px;
+  margin: 50px auto 3vh;
   padding-bottom: 50px;
 `;
 
@@ -98,7 +98,8 @@ export const MemberTalkBox = styled.div`
 
 export const MemberTalkArea = styled.div`
   width: 100%;
-  border: solid 1px gray;
   padding: 20px 10px;
   margin-top: 10px;
+  border-radius: 20px;
+  box-shadow: rgb(221 221 221) 0px 0px 10px;
 `

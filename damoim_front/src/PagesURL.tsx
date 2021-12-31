@@ -7,6 +7,7 @@ import CommunityDetailPage from "./pages/CommunityDetailPage/CommunityDetailPage
 import LoginPage from "./pages/LoginPage/LoginPage";
 import Register from "./pages/RegisterPage/RegisterPage";
 import PartyDetailPage from "./pages/PartyDetailPage/PartyDetailPage";
+import CreatePartyPage from "./pages/CreatePartyPage/CreatePartyPage";
 
 
 export default [
@@ -20,7 +21,7 @@ export default [
     },
     {
       path: "/create-party",
-      component: HomePage
+      component: CreatePartyPage
     },
     {
       path: "/join-party",

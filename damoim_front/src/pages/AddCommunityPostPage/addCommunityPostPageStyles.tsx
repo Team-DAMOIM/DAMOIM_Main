@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const AddCommunityPostPageContainer = styled.div`
+  max-width: 1400px;
   width: 100%;
   margin-bottom: 3vh;
 `
