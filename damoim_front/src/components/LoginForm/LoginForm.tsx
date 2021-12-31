@@ -6,13 +6,12 @@ import {
     LoginTextFieldContainer,
     LoginTitleContainer, RegisterGuideContainer, SocialLoginContainer, SocialLoginIconContainer
 } from "./loginFormStyles";
-import {FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, Snackbar} from "@mui/material";
+import {FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput } from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import LoginIcon from '@mui/icons-material/Login';
 import {signInWithEmailAndPassword} from "firebase/auth";
 import {auth, db} from "../../firebase-config";
 import {doc, updateDoc} from "firebase/firestore";
-import Alert from "@mui/material/Alert";
 import TopCenterSnackBar from "../TopCenterSnackBar/TopCenterSnackBar";
 
 
@@ -81,6 +80,8 @@ function LoginForm({setCurrentForm,handleClose,setLoginSuccess}: LoginFormTypes)
         }
     };
 
+
+
     return (
 
                         <LoginRightContentContainer>
@@ -137,7 +138,7 @@ function LoginForm({setCurrentForm,handleClose,setLoginSuccess}: LoginFormTypes)
                                     <img src={'/images/socialLoginIcon/naver.png'} alt={"naver"}/>
                                     <img src={'/images/socialLoginIcon/kakaotalk.png'} alt={"kakaotalk"}/>
                                     <img src={'/images/socialLoginIcon/facebook.png'} alt={"facebook"}/>
-                                    <img src={'/images/socialLoginIcon/google.png'} alt={"google"}/>
+                                    <img src={'/images/socialLoginIcon/google.png'} alt={"google"} />
                                 </SocialLoginIconContainer>
                             </SocialLoginContainer>
                             <RegisterGuideContainer>

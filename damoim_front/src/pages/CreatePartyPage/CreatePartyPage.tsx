@@ -33,9 +33,8 @@ const CreatePartyPage = () => {
   }
 
   return (
-    user ? (
 
-    
+
       <CreatePartyPageContainer>
         {/* 알림창 부분 */}
         <Snackbar open={success} autoHideDuration={2000} anchorOrigin={{vertical: 'top', horizontal: 'center'}}
@@ -158,7 +157,7 @@ const CreatePartyPage = () => {
             <CreatePartyBtn>파티 만들기</CreatePartyBtn>
         </InfoInputBox>
       </CreatePartyPageContainer>
-    ) : <Alert severity="error" sx={{width: '100%'}}>로그인 먼저 해주세요!</Alert>
+
   );
 };
 

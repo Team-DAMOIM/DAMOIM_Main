@@ -1,4 +1,4 @@
-import React, {SetStateAction, useState} from 'react';
+import React, {SetStateAction, useContext, useState} from 'react';
 import {
     CommunityLeftButtonContainer,
     CommunityRightButtonContainer, CommunityRightOnlyButtonContainer,
@@ -9,6 +9,7 @@ import CreateIcon from "@mui/icons-material/Create";
 import SearchIcon from "@mui/icons-material/Search";
 import {Link} from 'react-router-dom'
 import {classificationLabels, sortTypesLabels} from "../../utils/variables";
+import {AuthContext} from "../../context/AuthContext";
 
 
 interface CommunityPageButtonsProps {
@@ -22,6 +23,8 @@ interface CommunityPageButtonsProps {
 
 
 function CommunityPageButtons(props: CommunityPageButtonsProps) {
+
+    const user = useContext(AuthContext);
 
     const {classification, setClassification, sortType, setSortType, setSearchWord} = props;
     const [showSearchBar, setShowSearchBar] = useState<boolean>(false)
