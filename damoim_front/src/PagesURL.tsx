@@ -16,40 +16,44 @@ export default [
         component: HomePage
     },
     {
-      path: "/rank",
-      component: RankingPage
+        path: "/rank",
+        component: RankingPage
     },
     {
-      path: "/create-party",
-      component: CreatePartyPage
+        path: "/create-party",
+        component: CreatePartyPage,
+        private: true
     },
     {
-      path: "/join-party",
-      component: JoinPartyPage
+        path: "/join-party",
+        component: JoinPartyPage
     },
     {
-      path: "/community",
-      component: CommunityPage
+        path: "/community",
+        component: CommunityPage
     },
     {
-      path: "/partyDetail/:id",
-      component: PartyDetailPage
+        path: "/partyDetail/:id",
+        component: PartyDetailPage
     },
     {
-      path: "/addCommunityPost",
-      component: AddCommunityPostPage
+        path: "/addCommunityPost",
+        component: AddCommunityPostPage,
+        private: true
+
+
     },
     {
-      path: "/communityDetail/:id",
-      component: CommunityDetailPage
+        path: "/communityDetail/:id",
+        component: CommunityDetailPage
     },
     {
-      path: "/login",
-      component: LoginPage
+        path: "/login",
+        component: LoginPage
     },
 
     {
-      path: "/register",
-      component: Register
+        path: "/register",
+        component: Register
     },
 ]
