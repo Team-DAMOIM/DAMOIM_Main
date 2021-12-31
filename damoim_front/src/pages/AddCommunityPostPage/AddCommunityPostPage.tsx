@@ -90,6 +90,7 @@ function AddCommunityPostPage() {
     }
 
     return (
+      user ? (
         <AddCommunityPostPageContainer>
             <Snackbar open={success} autoHideDuration={2000} anchorOrigin={{vertical: 'top', horizontal: 'center'}}
                       onClose={() => {
@@ -177,6 +178,7 @@ function AddCommunityPostPage() {
             </AddCommunityPostPageInputContainer>
 
         </AddCommunityPostPageContainer>
+      ) : <Alert severity="error" sx={{width: '100%'}}>로그인 먼저 해주세요!</Alert>
     );
 }
 
