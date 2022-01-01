@@ -12,10 +12,8 @@ const initialSelectedOTTs = ["netflix", "disneyPlus", "watcha", "wavve", "tving"
 
 const HomePage: React.FC<Props> = (props) => {
 
-
-    const [userNotFound, setUserNotFound] = useState<boolean>(props.location.state !== null)
-
-
+    console.log(props.location.state)
+    const [userNotFound, setUserNotFound] = useState<boolean>(props.location.state !== undefined)
     const [selectedOTTs, setSelectedOTTs] = useState<string[]>(initialSelectedOTTs);
 
     return (
