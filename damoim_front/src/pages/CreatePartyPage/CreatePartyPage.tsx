@@ -1,40 +1,65 @@
-import { Snackbar, Typography } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
+import { useHistory } from "react-router-dom";
 import OTTSelectBar from '../../components/OTTSelectBar/OTTSelectBar';
 import CustomTransferList from '../../components/CustomTransferList/CustomTransferList';
+import { CircularProgress, Snackbar, Typography } from '@mui/material';
 import { AuthContext } from '../../context/AuthContext';
-import { ColFlexInfoCont, CreatePartyBtn, CreatePartyPageContainer, CustomHalfTextArea, InfoInputBox, RawFlexInfoCont } from './createPartyPageStyles';
+import { ColFlexInfoCont, CreatePartyBtn, CreatePartyPageContainer, CustomHalfTextArea, InfoInputBox, LoadingArea, RawFlexInfoCont } from './createPartyPageStyles';
 
 import { TextField, Alert } from '@mui/material';
 import { LocalizationProvider, StaticDatePicker } from '@mui/lab'
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-
-const initialSelectedOTTs = ["netflix", "disneyPlus", "watcha", "wavve", "tving", "laftel", "appleTV", "amazon", "welaaa"];
+import { addDoc, Timestamp } from 'firebase/firestore';
+import { partysCollectionRef } from '../../firestoreRef/ref';
 
 const CreatePartyPage = () => {
   const user = useContext(AuthContext);
-  const [selectedOTTs, setSelectedOTTs] = useState<string[]>(initialSelectedOTTs);
+  const history = useHistory();
+  const [selectedOTTs, setSelectedOTTs] = useState<string[]>([]);
+  const [memberUIDs, setMemberUIDs] = useState<string[]>(["M7HnYj6qsbUxT38e7G9IBaDFB9g2", "OffdydZ5O3S3o3OX8U5ip9KI1up2", "ST5N27xZSse3lgegCy3t0CqJrTy1"]);
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [wishPeriod, setWishPeriod] = useState<number>(1);
   const [openChatLink, setOpenChatLink] = useState<string>("https://open.kakao.com/");
   const [memberTalk, setMemberTalk] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false)
   const [fail, setFail] = useState<boolean>(false)
 
-  useEffect(() => {
-    console.log(wishPeriod);
-    console.log(openChatLink);
-  }, [wishPeriod, openChatLink]);
+  // useEffect(() => {
+  //   console.log(wishPeriod);
+  //   console.log(openChatLink);
+  // }, [wishPeriod, openChatLink]);
 
   const createPartyHandler = async () => {
-    if (user) {
+    if (!selectedOTTs.length) {
+      alert('구독할 OTT를 적어도 하나 이상 선택해주세요')
+    } else if (openChatLink?.slice(0, 23) !== "https://open.kakao.com/" || openChatLink.length < 25) {
+      alert('오픈채팅 URL을 양식에 맞게 정확히 입력해주세요')
+    } else {
+      setLoading(true);
+      if (startDate && user) {
+        memberUIDs.push(user.uid);
+        await addDoc(partysCollectionRef, {
+          selectedOTTs: selectedOTTs,
+          memberUIDs: memberUIDs,
+          startDate: Timestamp.fromDate(startDate),
+          wishPeriod: wishPeriod,
+          openChatLink: openChatLink
+        })
+        setLoading(false);
+        setSuccess(true);
 
+        setTimeout(() => {
+          history.push('/join-party')
+        }, 1500)
+      } else {
+        alert('날짜 오류')
+      }
     }
   }
 
   return (
-
-
+    // user ? (
       <CreatePartyPageContainer>
         {/* 알림창 부분 */}
         <Snackbar open={success} autoHideDuration={2000} anchorOrigin={{vertical: 'top', horizontal: 'center'}}
@@ -52,7 +77,7 @@ const CreatePartyPage = () => {
           }}
         >
           <Alert severity="error" sx={{width: '100%'}}>
-              양식에 맞게 글을 작성해주세요
+              필수 기입 항목들을 양식에 맞게 작성해주세요.
           </Alert>
         </Snackbar>
           
@@ -71,7 +96,7 @@ const CreatePartyPage = () => {
             <Typography fontSize={40} align='left'>초기 파티원 선택</Typography>
             <Typography variant='body1' align='left'>(친구추가가 된 유저만 초기 파티원로 추가할 수 있습니다. 초기 파티원이 없다면 넘어가도 됩니다 😉)</Typography>
             <br/>
-            <CustomTransferList/>
+            <CustomTransferList value={memberUIDs} setValue={setMemberUIDs}/>
           </ColFlexInfoCont>
           
           <RawFlexInfoCont>
@@ -154,9 +179,14 @@ const CreatePartyPage = () => {
             </ColFlexInfoCont>
 
             {/* 파티 만들기 버튼 */}
-            <CreatePartyBtn>파티 만들기</CreatePartyBtn>
+            <CreatePartyBtn onClick={createPartyHandler}>파티 만들기</CreatePartyBtn>
         </InfoInputBox>
       </CreatePartyPageContainer>
+    // ) : loading ? (
+    //   <LoadingArea>
+    //     <CircularProgress />
+    //   </LoadingArea>
+    // ) : <Alert severity="error" sx={{width: '100%'}}>로그인 먼저 해주세요!</Alert>
 
   );
 };
