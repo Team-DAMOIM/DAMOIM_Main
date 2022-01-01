@@ -17,7 +17,7 @@ const Navbar = () => {
     const [loginSuccess, setLoginSuccess] = useState<boolean>(false);
     const [registerSuccess, setRegisterSuccess] = useState<boolean>(false)
     const [resetPasswordSuccess, setResetPasswordSuccess] = useState<boolean>(false)
-
+    const [logOutSuccess,setLogOutSuccess] = useState<boolean>(false);
     const [click, setClick] = useState(false);
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
@@ -27,6 +27,7 @@ const Navbar = () => {
                 isOnline: false,
             });
             await signOut(auth);
+            setLogOutSuccess(true);
         }
     };
     return (
@@ -81,7 +82,7 @@ const Navbar = () => {
                         {
                             user ? <>
                                     <Button variant="outlined" className="sign-up">
-                                        <Link to={"myPage"}>
+                                        <Link to={`/userPage/${auth.currentUser?.uid}`}>
                                             마이페이지
                                         </Link>
                                     </Button>
@@ -120,6 +121,8 @@ const Navbar = () => {
                                content={"회원가입 및 로그인 성공 ! "}/>
             <TopCenterSnackBar value={loginSuccess} setValue={setLoginSuccess} severity={"success"}
                                content={"로그인 성공 !"}/>
+            <TopCenterSnackBar value={logOutSuccess} setValue={setLogOutSuccess} severity={"success"}
+                               content={"로그아웃 성공 !"}/>
             <TopCenterSnackBar value={resetPasswordSuccess} setValue={setResetPasswordSuccess} severity={"success"}
                                content={"이메일로 임시비밀번호를 보냈습니다. 확인후 로그인 해주세요."}/>
         </>

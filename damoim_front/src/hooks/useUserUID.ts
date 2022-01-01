@@ -1,24 +1,35 @@
 import {useEffect, useState} from "react";
-import {getDocs, query, where} from "firebase/firestore";
+import {getDocs, query, Timestamp, where} from "firebase/firestore";
 import {usersCollectionRef} from "../firestoreRef/ref";
 import {User} from "@firebase/auth-types";
 
 
-// user 정보를 받아서 user 의 이름을 반환해줍니다, 나중에는 유저의 프로필사진도 반환해줘야할수도있어요
+// user 정보를 받아서 에 대한 모든 정보를 반환해줍니다
 
+
+interface userInfoTypes {
+    uid : string;
+    name:string;
+    nickName:string;
+    isOnline:false;
+    email:string;
+    createdAt: Timestamp;
+    avatar:string;
+    avatarPath:string;
+}
 
 const useUserUID = (user:User | null) => {
-    const [userName, setUserName] = useState<string>("");
+    const [userInfo, setUserInfo] = useState<userInfoTypes>();
     useEffect(() => {
         const getUser = async () => {
             if (user) {
                 const userQuery = await query(usersCollectionRef, where("uid", "==", user.uid))
                 const data = await getDocs(userQuery);
-                setUserName(data.docs.map(doc => ({...doc.data()}))[0].name);
+                setUserInfo(data.docs.map(doc => ({...doc.data()}))[0] as userInfoTypes);
             }
         }
         getUser();
     }, [])
-    return userName
+    return userInfo
 }
 export default useUserUID

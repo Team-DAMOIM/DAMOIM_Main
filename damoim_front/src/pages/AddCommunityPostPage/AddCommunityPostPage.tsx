@@ -28,8 +28,7 @@ function AddCommunityPostPage() {
     const [success, setSuccess] = useState<boolean>(false)
     const [fail, setFail] = useState<boolean>(false)
 
-    const userName = useUserUID(user);
-
+    const userInfo = useUserUID(user);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const {value, name} = event.target;
@@ -67,7 +66,7 @@ function AddCommunityPostPage() {
             setLoading(true);
             await addDoc(communityCollectionRef, {
                 writerUID: user?.uid,
-                writerName: userName,
+                writerName: userInfo?.name,
                 title,
                 content,
                 classification,

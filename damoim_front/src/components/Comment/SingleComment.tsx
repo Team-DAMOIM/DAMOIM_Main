@@ -3,8 +3,6 @@ import {Comment, Avatar} from 'antd';
 import Moment from 'react-moment';
 import 'moment/locale/ko';
 import {addDoc, documentId, getDocs, query, Timestamp, where} from "firebase/firestore";
-import Alert from "@mui/material/Alert";
-import {Snackbar} from "@mui/material";
 import {AuthContext} from "../../context/AuthContext";
 import useUserUID from "../../hooks/useUserUID";
 import {commentsCollectionRef} from "../../firestoreRef/ref";
@@ -28,7 +26,7 @@ function SingleComment({comment, postId, refreshFunction}: SingleCommentComponen
     const [success, setSuccess] = useState<boolean>(false)
 
 
-    const userName = useUserUID(user)
+    const userInfo = useUserUID(user)
 
     const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
         setCommentValue(e.currentTarget.value)
@@ -44,7 +42,7 @@ function SingleComment({comment, postId, refreshFunction}: SingleCommentComponen
             postId: postId,
             responseTo: comment.id,
             writerUID: user?.uid,
-            writerName: userName,
+            writerName: userInfo?.name,
             content: commentValue,
             createdAt: Timestamp.fromDate(new Date()),
         }

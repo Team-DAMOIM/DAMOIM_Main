@@ -22,14 +22,14 @@ function Comment({commentLists, postId, refreshFunction}: CommentTypes) {
     const [success, setSuccess] = useState<boolean>(false)
 
 
-    const userName = useUserUID(user);
+    const userInfo = useUserUID(user);
 
     const onSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
             const variables = {
                 content: Comment,
                 writerUID: user?.uid,
-                writerName: userName,
+                writerName: userInfo?.name,
                 postId: postId,
                 createdAt: Timestamp.fromDate(new Date()),
             }
