@@ -1,20 +1,26 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import MainBanner from '../../components/MainBanner/MainBannerItem';
 import OTTSelectBar from '../../components/OTTSelectBar/OTTSelectBar';
 import PartyCard from '../../components/PartyCard/PartyCard';
 import {HomePageContainer, PartyCardContainer} from "./homePageStyles";
 import {RouteComponentProps} from "react-router-dom";
 import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
+import {initialSelectedOTTs} from "../../utils/variables";
 
 
 type Props = RouteComponentProps;
-const initialSelectedOTTs = ["netflix", "disneyPlus", "watcha", "wavve", "tving", "laftel", "appleTV", "amazon", "welaaa"];
 
 const HomePage: React.FC<Props> = (props) => {
 
-    console.log(props.location.state)
-    const [userNotFound, setUserNotFound] = useState<boolean>(props.location.state !== undefined)
+    const [userNotFound, setUserNotFound] = useState<boolean>(false)
     const [selectedOTTs, setSelectedOTTs] = useState<string[]>(initialSelectedOTTs);
+
+    useEffect(()=>{
+        if(props.location.state){
+            setUserNotFound(true);
+        }
+        return () => setUserNotFound(false)
+    },[])
 
     return (
         <HomePageContainer>
