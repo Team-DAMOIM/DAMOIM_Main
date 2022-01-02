@@ -17,7 +17,7 @@ const Navbar = () => {
     const [loginSuccess, setLoginSuccess] = useState<boolean>(false);
     const [registerSuccess, setRegisterSuccess] = useState<boolean>(false)
     const [resetPasswordSuccess, setResetPasswordSuccess] = useState<boolean>(false)
-    const [logOutSuccess,setLogOutSuccess] = useState<boolean>(false);
+    const [logOutSuccess, setLogOutSuccess] = useState<boolean>(false);
     const [click, setClick] = useState(false);
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
@@ -52,15 +52,15 @@ const Navbar = () => {
                         <li className="option" onClick={closeMobileMenu}>
                             <Link to="/rank">순위</Link>
                         </li>
-                        <li className="option mobile-option" onClick={closeMobileMenu} >
+                        <li className="option mobile-option" onClick={closeMobileMenu}>
                             {
                                 user ? <>
 
-                                        <Button variant="outlined" className="sign-up">
-                                            <Link to={"/userPage/${auth.currentUser?.uid}"}>
+                                        <Link to={"/userPage/${auth.currentUser?.uid}"}>
+                                            <Button variant="outlined" className="sign-up">
                                                 마이페이지
-                                            </Link>
-                                        </Button>
+                                            </Button>
+                                        </Link>
                                         <Button onClick={handleSignout} variant="outlined"
                                                 className="sign-up logout-button">
                                             로그아웃
@@ -81,11 +81,11 @@ const Navbar = () => {
                     <li>
                         {
                             user ? <>
-                                    <Button variant="outlined" className="sign-up">
-                                        <Link to={`/userPage/${auth.currentUser?.uid}`}>
+                                    <Link to={`/userPage/${auth.currentUser?.uid}`}>
+                                        <Button variant="outlined" className="sign-up">
                                             마이페이지
-                                        </Link>
-                                    </Button>
+                                        </Button>
+                                    </Link>
                                     <Button onClick={handleSignout} variant="outlined" className="sign-up logout-button">
                                         로그아웃
                                     </Button>
