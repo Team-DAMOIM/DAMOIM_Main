@@ -143,9 +143,9 @@ export const Nav = styled.nav`
     .sign-up {
       border-radius: 3px;
       padding: 20px 0px;
-      width: 80%;
+      width: 90vw;
       align-self: center;
-      border-radius: 3px;
+      border-radius: 35px;
     }
 
     .signin-up {

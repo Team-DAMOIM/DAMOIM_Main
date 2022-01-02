@@ -24,7 +24,6 @@ interface CommunityPageButtonsProps {
 
 function CommunityPageButtons(props: CommunityPageButtonsProps) {
 
-    const user = useContext(AuthContext);
 
     const {classification, setClassification, sortType, setSortType, setSearchWord} = props;
     const [showSearchBar, setShowSearchBar] = useState<boolean>(false)

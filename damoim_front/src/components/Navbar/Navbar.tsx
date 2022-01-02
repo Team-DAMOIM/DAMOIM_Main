@@ -56,8 +56,8 @@ const Navbar = () => {
                             {
                                 user ? <>
 
-                                        <Link to={"/userPage/${auth.currentUser?.uid}"}>
-                                            <Button variant="outlined" className="sign-up">
+                                        <Link to={`/userPage/${auth.currentUser?.uid}`} className="sign-up">
+                                            <Button variant="outlined" className="sign-up logout-button">
                                                 마이페이지
                                             </Button>
                                         </Link>

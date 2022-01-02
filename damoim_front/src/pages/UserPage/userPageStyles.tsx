@@ -12,6 +12,9 @@ export const UserPageInfoBox = styled.div`
   border-radius: 20px;
   box-shadow: rgb(0 0 0 / 12%) 0px 3px 6px, rgb(0 0 0 / 24%) 0px 2px 5px;
   padding: 30px 50px 100px;
+  @media screen and (max-width: 768px) {
+    padding: 1vh;
+  }
 `
 export const UserPageContainer = styled.div`
 
@@ -35,7 +38,12 @@ export const UserMainCardSection = styled.div`
   padding: 1vw;
   border-radius: 5px;
   box-shadow: rgb(0 0 0 / 12%) 0px 3px 6px, rgb(0 0 0 / 24%) 0px 2px 5px;
-
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    button{
+      margin-top: 2vh;
+    }
+  }
 `
 
 export const UserImageWithInfo = styled.div`

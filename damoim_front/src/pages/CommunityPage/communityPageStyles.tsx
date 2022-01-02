@@ -55,15 +55,19 @@ export const CommunityRightButtonContainer = styled.div`
 
 export const CommunityRightOnlyButtonContainer = styled.div`
   display: flex;
-  a{
+
+  a {
     text-decoration: none;
   }
+
   @media screen and (max-width: 480px) {
     flex-direction: column;
     button:first-child {
+      margin: 0;
       margin-bottom: 25px;
     }
-    button{
+
+    button {
       font-size: 1.10rem;
     }
   }
@@ -77,14 +81,36 @@ export const CommunitySearchWordContainer = styled.div`
 
 export const CommunityTableContainer = styled.div`
   margin: 4vw;
-  a{
+
+  a {
     text-decoration: none;
     color: #444;
     transition: all 0.5s ease-in-out;
     font-weight: bold;
 
-    &:hover{
+    &:hover {
       color: black;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .mobile-hide {
+      display: none;
+    }
+    .MuiTablePagination-selectLabel{
+      display: none;
+    }
+    
+    .MuiTableCell-root.MuiTableCell-head{
+      padding: 5px;
+      text-align: center;
+    }
+    .MuiTableCell-root.MuiTableCell-body > a {
+      width: 40vw;
+      display: inline-block; 
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 `

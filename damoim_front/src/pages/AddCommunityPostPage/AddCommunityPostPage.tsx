@@ -15,6 +15,7 @@ import Alert from '@mui/material/Alert';
 import {LoadingButton} from '@mui/lab';
 import {useHistory} from "react-router-dom";
 import {communityCollectionRef} from "../../firestoreRef/ref";
+import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
 
 function AddCommunityPostPage() {
     const history = useHistory();
@@ -86,22 +87,9 @@ function AddCommunityPostPage() {
     return (
         <>
             <AddCommunityPostPageContainer>
-                <Snackbar open={success} autoHideDuration={2000} anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-                          onClose={() => {
-                              setSuccess(false);
-                          }}>
-                    <Alert severity="success" sx={{width: '100%'}}>
-                        게시글 작성 성공했습니다!
-                    </Alert>
-                </Snackbar>
-                <Snackbar open={fail} autoHideDuration={2000} anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-                          onClose={() => {
-                              setFail(false);
-                          }}>
-                    <Alert severity="error" sx={{width: '100%'}}>
-                        양식에 맞게 글을 작성해주세요
-                    </Alert>
-                </Snackbar>
+
+                <TopCenterSnackBar value={success} setValue={setSuccess} severity={"success"} content={"게시글 작성 성공했습니다 !"}/>
+                <TopCenterSnackBar value={fail} setValue={setFail} severity={"error"} content={"양식에 맞게 글을 작성해주세요 !"}/>
                 <HalfTextArea title={"글작성"} content={"OTT에 관해 소통해봐요😎"}/>
                 <AddCommunitySelectContainer>
                     <FormControl size={'small'}>

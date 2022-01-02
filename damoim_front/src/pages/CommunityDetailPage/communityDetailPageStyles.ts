@@ -2,14 +2,14 @@ import styled from "styled-components";
 
 export const CommunityDetailPageContainer = styled.div`
   margin: 4vw;
-  padding: 1vw;
+  padding: 4vw;
   box-shadow: rgb(210 210 210) 20px 20px 20px 20px;
   border-radius: 20px;
   height: 100%;  
   min-height: 90vh;
-  
-  span{
-    color: var(--color-2);
+
+  @media screen and (max-width: 480px) {
+    padding: 2vw;
   }
   
   h2{
@@ -27,6 +27,9 @@ export const UserWithDetailContainer = styled.div`
 
   display: flex;
   justify-content: end;
+  @media screen and (max-width: 480px) {
+    flex-direction: column;
+  }
 `
 
 export const CommunityDetailPageIconContainer = styled.div`

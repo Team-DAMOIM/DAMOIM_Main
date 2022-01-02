@@ -26,7 +26,8 @@ import {useScript} from "../../hooks/useScript";
 import ReportForm from "../../components/ReportForm/ReportForm";
 import {AuthContext} from "../../context/AuthContext";
 import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
-
+import moment from "moment";
+import 'moment/locale/ko';
 
 declare global {
     interface Window {
@@ -127,9 +128,9 @@ function CommunityDetailPage() {
                     <UserWithProfile img={writerInfo?.avatar || "/images/personIcon.png"} userName={writerInfo?.nickName as string || writerInfo?.name as string}/>
                     <CommunityPostDetail views={post.views} loves={post.loves}
                                          comments={commentLists ? commentLists.length : 0}
-                                         date={post.createdAt.toDate().toString().substring(0, 24)}/>
+                                         date={moment(post.createdAt.toDate()).format('YYYY년 MM월 DD일 HH시 MM분')}/>
                 </UserWithDetailContainer>
-                <Card>
+                <Card raised={true}>
                     <CardContent>
                         <Typography variant="body1" color="text.secondary">
                             {
