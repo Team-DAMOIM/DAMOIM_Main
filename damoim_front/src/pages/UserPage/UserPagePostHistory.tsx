@@ -22,7 +22,6 @@ function UserPagePostHistory() {
         const getPosts = async () => {
             const q = await query(communityCollectionRef, where("writerUID", "==", user?.uid))
             const result = await getDocs(q);
-            console.log(result.docs.map(doc => (doc.data())))
             setPosts(result.docs.map(doc => ({...doc.data(), id: doc.id})) as postTypes[])
         }
         getPosts()
@@ -34,7 +33,7 @@ function UserPagePostHistory() {
             <TableContainer component={Paper}>
                 <Table sx={{minWidth: 650}} aria-label="simple table">
                     <TableHead>
-                        <TableRow>
+                        <TableRow sx={{'th': {fontWeight: 'bold'}}}>
                             <TableCell>제목</TableCell>
                             <TableCell align="left">날짜&nbsp;</TableCell>
                             <TableCell align="right">조회 수&nbsp;</TableCell>

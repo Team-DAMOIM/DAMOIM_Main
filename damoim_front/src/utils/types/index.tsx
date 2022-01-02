@@ -22,3 +22,14 @@ export interface postTypes {
     writerName: string;
     writerUID: string
 }
+
+export interface userInfoTypes {
+    uid : string;
+    name:string;
+    nickName:string;
+    isOnline:false;
+    email:string;
+    createdAt: Timestamp;
+    avatar:string;
+    avatarPath:string;
+}

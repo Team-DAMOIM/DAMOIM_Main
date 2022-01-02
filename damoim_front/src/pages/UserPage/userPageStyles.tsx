@@ -41,8 +41,11 @@ export const UserMainCardSection = styled.div`
 export const UserImageWithInfo = styled.div`
   display: flex;
   img{
-    width:50px;
-    height: 50px;
+    width:60px;
+    height: 60px;
+    border-radius: 50%;
+    box-shadow: rgb(0 0 0 / 12%) 0px 3px 6px, rgb(0 0 0 / 24%) 0px 2px 5px;
+
     margin: auto;
   }
 `
@@ -76,3 +79,4 @@ export const UserPagePostHistoryContainer = styled.div`
   border-radius: 5px;
   box-shadow: rgb(0 0 0 / 12%) 0px 3px 6px, rgb(0 0 0 / 24%) 0px 2px 5px;
 `
+

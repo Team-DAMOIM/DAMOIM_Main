@@ -67,6 +67,7 @@ function AddCommunityPostPage() {
             await addDoc(communityCollectionRef, {
                 writerUID: user?.uid,
                 writerName: userInfo?.name,
+                writerNickName : userInfo?.nickName,
                 title,
                 content,
                 classification,
