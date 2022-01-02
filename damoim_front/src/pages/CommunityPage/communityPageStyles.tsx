@@ -5,6 +5,8 @@ import TableRow from "@mui/material/TableRow";
 
 export const CommunityPageContainer = styled.div`
   width: 100%;
+
+  
 `;
 
 export const CommunityButtonContainer = styled.div`
