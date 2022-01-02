@@ -11,11 +11,11 @@ import {AuthContext} from "../../context/AuthContext";
 import {
     addDoc, Timestamp
 } from "firebase/firestore";
-import Alert from '@mui/material/Alert';
 import {LoadingButton} from '@mui/lab';
 import {useHistory} from "react-router-dom";
 import {communityCollectionRef} from "../../firestoreRef/ref";
 import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
+import useUserUID from "../../hooks/useUserUID";
 
 function AddCommunityPostPage() {
     const history = useHistory();
@@ -27,7 +27,7 @@ function AddCommunityPostPage() {
     const [loading, setLoading] = useState<boolean>(false);
     const [success, setSuccess] = useState<boolean>(false)
     const [fail, setFail] = useState<boolean>(false)
-
+    const userInfo = useUserUID(user);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const {value, name} = event.target;
@@ -60,12 +60,14 @@ function AddCommunityPostPage() {
     const addPostHandler = async () => {
 
 
-
+        console.log(userInfo)
         if (title.length >= 5 && content.length >= 10) {
             setLoading(true);
             await addDoc(communityCollectionRef, {
                 writerUID: user?.uid,
                 title,
+                writerNickName:userInfo?.nickName,
+                writerName:userInfo?.name,
                 content,
                 classification,
                 platform,
