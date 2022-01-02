@@ -19,7 +19,6 @@ export interface postTypes {
     platform: string;
     title: string;
     views: number;
-    writerName: string;
     writerUID: string
 }
 
@@ -32,4 +31,8 @@ export interface userInfoTypes {
     createdAt: Timestamp;
     avatar:string;
     avatarPath:string;
+}
+
+export interface SingleCommentTypesWithUser extends SingleCommentTypes,userInfoTypes{
+
 }

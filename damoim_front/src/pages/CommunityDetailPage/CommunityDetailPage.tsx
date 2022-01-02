@@ -11,15 +11,14 @@ import Card from '@mui/material/Card';
 import ShareIcon from '@mui/icons-material/Share';
 import GppBadIcon from '@mui/icons-material/GppBad';
 import Comment from "../../components/Comment/Comment";
-import {getDocs, query, where, documentId, doc, updateDoc} from "firebase/firestore";
+import {getDocs, query, where, documentId, doc, updateDoc, orderBy} from "firebase/firestore";
 import {useParams} from "react-router-dom";
 import {
     commentsCollectionRef,
-    communityCollectionRef,
-    likesCollectionRef,
+    communityCollectionRef, disLikesCollectionRef, likesCollectionRef,
     usersCollectionRef
 } from "../../firestoreRef/ref";
-import {postTypes, SingleCommentTypes, userInfoTypes} from "../../utils/types";
+import {postTypes, SingleCommentTypes, SingleCommentTypesWithUser, userInfoTypes} from "../../utils/types";
 import {Tag} from "antd";
 import LikeDislikes from "../../components/LikeDislikes/LikeDislikes";
 import {db} from "../../firebase-config";
@@ -32,9 +31,11 @@ declare global {
         Kakao: any;
     }
 }
+
+
 function CommunityDetailPage() {
     const {id} = useParams<{ id: string }>()
-    const [commentLists, setCommentLists] = useState<SingleCommentTypes[] | undefined>()
+    const [commentLists, setCommentLists] = useState<SingleCommentTypesWithUser[] | undefined>()
     const [post, setPost] = useState<postTypes | undefined>()
     const [reportOpen,setReportOpen] = useState<boolean>(false);
     const [writerInfo,setWriterInfo] = useState<userInfoTypes>();
@@ -42,9 +43,22 @@ function CommunityDetailPage() {
 
     useEffect(() => {
         const getCommentList = async () => {
-            const q = await query(commentsCollectionRef, where("postId", "==", id))
+            const q = await query(commentsCollectionRef, where("postId", "==", id),orderBy("createdAt",'desc'))
             const data = await getDocs(q);
-            setCommentLists(data.docs.map(doc => ({...doc.data(), id: doc.id})) as SingleCommentTypes[])
+
+            const tempComments = data.docs.map(doc => ({...doc.data(), id: doc.id})) as SingleCommentTypesWithUser[]
+            let tempCommentsWithUser:SingleCommentTypesWithUser[] = []
+            tempComments.map(async (comment) => {
+                const getUserQuery = await query(usersCollectionRef,where(documentId(),"==",comment.writerUID))
+                const user = await getDocs(getUserQuery);
+                const userInformation = user.docs.map(doc => (doc.data()))[0] as userInfoTypes
+                tempCommentsWithUser.push({
+                    ...comment, nickName:userInformation.nickName,avatar:userInformation.avatar,name:userInformation.name
+                })
+                if(tempComments.length === tempCommentsWithUser.length){
+                    setCommentLists(tempCommentsWithUser)
+                }
+            })
         }
         getCommentList()
     }, [])
@@ -71,7 +85,7 @@ function CommunityDetailPage() {
 
 
 
-    const updateComment = (newComment: SingleCommentTypes) => {
+    const updateComment = (newComment: SingleCommentTypesWithUser) => {
         if (commentLists) {
             setCommentLists([...commentLists, newComment])
         }
@@ -107,7 +121,7 @@ function CommunityDetailPage() {
             {post && <> <Tag color="geekblue">{post.platform}</Tag> <Tag color="blue">{post.classification}</Tag>
                 <h2>{post.title}</h2>
                 <UserWithDetailContainer>
-                    <UserWithProfile img={writerInfo?.avatar || "/images/personIcon.png"} userName={post.writerName}/>
+                    <UserWithProfile img={writerInfo?.avatar || "/images/personIcon.png"} userName={writerInfo?.nickName as string || writerInfo?.name as string}/>
                     <CommunityPostDetail views={post.views} loves={post.loves}
                                          comments={commentLists ? commentLists.length : 0}
                                          date={post.createdAt.toDate().toString().substring(0, 24)}/>

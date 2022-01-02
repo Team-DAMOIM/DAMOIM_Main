@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react'
 import SingleComment from './SingleComment';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import {SingleCommentTypes} from "../../utils/types";
+import {SingleCommentTypes, SingleCommentTypesWithUser} from "../../utils/types";
 import {ReplyCommentContainer, ReplyGuideContainer} from "./commentStyles";
 
 
 interface ReplyCommentTypes {
-    commentLists : SingleCommentTypes[];
+    commentLists : SingleCommentTypesWithUser[];
     postId:string;
     parentCommentId:string;
-    refreshFunction:(newComment: SingleCommentTypes) => void;
+    refreshFunction:(newComment: SingleCommentTypesWithUser) => void;
 }
 
 function ReplyComment({commentLists , postId, parentCommentId , refreshFunction}:ReplyCommentTypes) {
@@ -29,7 +29,7 @@ function ReplyComment({commentLists , postId, parentCommentId , refreshFunction}
 
 
     let renderReplyComment = (parentCommentId:string) =>
-        commentLists.map((comment:SingleCommentTypes) => (
+        commentLists.map((comment:SingleCommentTypesWithUser) => (
             <React.Fragment key={comment.id}>
                 {comment.responseTo === parentCommentId &&
                 <ReplyCommentContainer>
