@@ -6,8 +6,7 @@ interface UserWithProfileProps {
     userName: string
 }
 
-function UserWithProfile(props: UserWithProfileProps) {
-    const {img , userName} = props;
+function UserWithProfile({img , userName}: UserWithProfileProps) {
     return (
         <UserWithProfileContainer>
             <img src={img} alt={img}/>

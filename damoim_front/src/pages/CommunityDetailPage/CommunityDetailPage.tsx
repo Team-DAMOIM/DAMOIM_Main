@@ -1,10 +1,9 @@
-import React, { useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
     CommunityDetailPageContainer,
     CommunityDetailPageIconContainer,
     UserWithDetailContainer
 } from "./communityDetailPageStyles";
-import userProfile from '../../assets/images/dummy/userprofile.png'
 import UserWithProfile from "../../components/UserWithProfile/UserWithProfile";
 import CommunityPostDetail from "../../components/CommunityPostDetail/CommunityPostDetail";
 import {CardActions, CardContent, IconButton, Typography} from "@mui/material";
@@ -14,8 +13,13 @@ import GppBadIcon from '@mui/icons-material/GppBad';
 import Comment from "../../components/Comment/Comment";
 import {getDocs, query, where, documentId, doc, updateDoc} from "firebase/firestore";
 import {useParams} from "react-router-dom";
-import {commentsCollectionRef, communityCollectionRef, likesCollectionRef} from "../../firestoreRef/ref";
-import {postTypes, SingleCommentTypes} from "../../utils/types";
+import {
+    commentsCollectionRef,
+    communityCollectionRef,
+    likesCollectionRef,
+    usersCollectionRef
+} from "../../firestoreRef/ref";
+import {postTypes, SingleCommentTypes, userInfoTypes} from "../../utils/types";
 import {Tag} from "antd";
 import LikeDislikes from "../../components/LikeDislikes/LikeDislikes";
 import {db} from "../../firebase-config";
@@ -33,6 +37,7 @@ function CommunityDetailPage() {
     const [commentLists, setCommentLists] = useState<SingleCommentTypes[] | undefined>()
     const [post, setPost] = useState<postTypes | undefined>()
     const [reportOpen,setReportOpen] = useState<boolean>(false);
+    const [writerInfo,setWriterInfo] = useState<userInfoTypes>();
 
 
     useEffect(() => {
@@ -54,9 +59,15 @@ function CommunityDetailPage() {
             await updateDoc(communityDoc, {
                 views: tempPost.views + 1
             })
+
+            const userQuery = await query(usersCollectionRef, where("uid", "==", tempPost.writerUID))
+            const userData = await getDocs(userQuery);
+            setWriterInfo(userData.docs.map(doc => ({...doc.data()}))[0] as userInfoTypes);
         }
         getPost()
     }, [])
+
+
 
 
 
@@ -96,7 +107,7 @@ function CommunityDetailPage() {
             {post && <> <Tag color="geekblue">{post.platform}</Tag> <Tag color="blue">{post.classification}</Tag>
                 <h2>{post.title}</h2>
                 <UserWithDetailContainer>
-                    <UserWithProfile img={userProfile} userName={post.writerName}/>
+                    <UserWithProfile img={writerInfo?.avatar || "/images/personIcon.png"} userName={post.writerName}/>
                     <CommunityPostDetail views={post.views} loves={post.loves}
                                          comments={commentLists ? commentLists.length : 0}
                                          date={post.createdAt.toDate().toString().substring(0, 24)}/>
