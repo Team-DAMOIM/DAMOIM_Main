@@ -5,6 +5,7 @@ import {AuthContext} from "../../context/AuthContext";
 import {addDoc, getDocs, Query, query, where, deleteDoc, doc, updateDoc} from "firebase/firestore";
 import {disLikesCollectionRef, likesCollectionRef} from "../../firestoreRef/ref";
 import {db} from "../../firebase-config";
+import TopCenterSnackBar from "../TopCenterSnackBar/TopCenterSnackBar";
 
 interface LikeDislikesTypes {
     post?: boolean;
@@ -22,12 +23,11 @@ interface likeDislikesCollectionTypes {
 
 function LikeDislikes({post, postId, commentId}: LikeDislikesTypes) {
     const user = useContext(AuthContext);
-
     const [likes, setLikes] = useState(0)
     const [disLikes, setDisLikes] = useState(0)
     const [likeAction, setLikeAction] = useState<string | null>(null)
     const [disLikeAction, setDisLikeAction] = useState<string | null>(null)
-
+    const [userNotFound , setUserNotFound] = useState<boolean>(false)
 
     // 기존의 좋아요와 싫어요 개수를 가져오는 useEffect 입니다.
 
@@ -73,6 +73,10 @@ function LikeDislikes({post, postId, commentId}: LikeDislikesTypes) {
 
     // 이미 좋아요를 누르지 않았단 사실은 확실하다 , 싫어요는 눌렀는지 모르지만 dislikes collection 에서 찾아서 지워버리자 postId 와 userUID 가 같이 겹치는게 있다면
     const onLike = async () => {
+        if(!user) {
+            setUserNotFound(true);
+            return;
+        }
         if (likeAction === null) {
             setLikes(likes + 1);
             setLikeAction("liked")
@@ -136,6 +140,10 @@ function LikeDislikes({post, postId, commentId}: LikeDislikesTypes) {
 
 
     const onDisLike = async () => {
+        if(!user) {
+            setUserNotFound(true);
+            return;
+        }
         if (disLikeAction === null) {
             setDisLikes(disLikes + 1);
             setDisLikeAction("disLiked")
@@ -193,9 +201,8 @@ function LikeDislikes({post, postId, commentId}: LikeDislikesTypes) {
 
 
     return (
-        <React.Fragment>
+        <>
             <span key="comment-basic-like">
-
                 <Tooltip title="Like">
                     {
                         likeAction === "liked" ?
@@ -215,8 +222,9 @@ function LikeDislikes({post, postId, commentId}: LikeDislikesTypes) {
 
                 </Tooltip>
                 <span style={{paddingLeft: '8px', cursor: 'auto', color: 'black'}}>{disLikes}</span>
+            <TopCenterSnackBar value={userNotFound} setValue={setUserNotFound} severity={"error"} content={"로그인 후 다시 이용해주세요 !"}/>
             </span>
-        </React.Fragment>
+        </>
     )
 }
 

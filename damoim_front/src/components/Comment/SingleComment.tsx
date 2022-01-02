@@ -6,7 +6,7 @@ import {addDoc, documentId, getDocs, query, Timestamp, where} from "firebase/fir
 import {AuthContext} from "../../context/AuthContext";
 import useUserUID from "../../hooks/useUserUID";
 import {commentsCollectionRef, usersCollectionRef} from "../../firestoreRef/ref";
-import {SingleCommentTypes, SingleCommentTypesWithUser, userInfoTypes} from "../../utils/types";
+import { SingleCommentTypesWithUser, userInfoTypes} from "../../utils/types";
 import CommentAreaWithButton from "./CommentAreaWithButton";
 import {AntdCommentContainer} from "./commentStyles";
 import LikeDislikes from "../LikeDislikes/LikeDislikes";
@@ -24,6 +24,7 @@ function SingleComment({comment, postId, refreshFunction}: SingleCommentComponen
     const [commentValue, setCommentValue] = useState<string>("")
     const [OpenReply, setOpenReply] = useState<boolean>(false)
     const [success, setSuccess] = useState<boolean>(false)
+    const [userNotFound,setUserNotFound] = useState<boolean>(false)
 
 
     const userInfo = useUserUID(user)
@@ -38,6 +39,10 @@ function SingleComment({comment, postId, refreshFunction}: SingleCommentComponen
 
     const onSubmit = async (event: FormEvent) => {
         event.preventDefault();
+        if(!user){
+            setUserNotFound(true);
+            return
+        }
         const variables = {
             postId: postId,
             responseTo: comment.id,
@@ -94,7 +99,9 @@ function SingleComment({comment, postId, refreshFunction}: SingleCommentComponen
             <CommentAreaWithButton onSubmit={onSubmit} handleChange={handleChange}
                                    commentValue={commentValue}
             />
+
             }
+            <TopCenterSnackBar value={userNotFound} setValue={setUserNotFound} severity={"error"} content={"로그인 후 다시 이용해주세요 !"}/>
 
         </div>
     )

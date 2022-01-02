@@ -18,6 +18,7 @@ interface CommentTypes {
 
 function Comment({commentLists, postId, refreshFunction}: CommentTypes) {
     const user = useContext(AuthContext);
+    const [userNotFound,setUserNotFound] = useState<boolean>(false)
     const [Comment, setComment] = useState<string>("")
     const [success, setSuccess] = useState<boolean>(false)
 
@@ -25,6 +26,10 @@ function Comment({commentLists, postId, refreshFunction}: CommentTypes) {
     const userInfo = useUserUID(user);
 
     const onSubmit = async (event: React.FormEvent) => {
+        if(!user){
+            setUserNotFound(true);
+            return;
+        }
         event.preventDefault();
         const variables = {
             content: Comment,
@@ -72,6 +77,8 @@ function Comment({commentLists, postId, refreshFunction}: CommentTypes) {
             <CommentAreaWithButton onSubmit={onSubmit} handleChange={handleChange}
                                    commentValue={Comment}
             />
+            <TopCenterSnackBar value={userNotFound} setValue={setUserNotFound} severity={"error"} content={"로그인 후 다시 이용해주세요 !"}/>
+
         </div>)
         ;
 }

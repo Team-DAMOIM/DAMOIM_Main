@@ -15,15 +15,17 @@ import {getDocs, query, where, documentId, doc, updateDoc, orderBy} from "fireba
 import {useParams} from "react-router-dom";
 import {
     commentsCollectionRef,
-    communityCollectionRef, disLikesCollectionRef, likesCollectionRef,
+    communityCollectionRef,
     usersCollectionRef
 } from "../../firestoreRef/ref";
-import {postTypes, SingleCommentTypes, SingleCommentTypesWithUser, userInfoTypes} from "../../utils/types";
+import {postTypes, SingleCommentTypesWithUser, userInfoTypes} from "../../utils/types";
 import {Tag} from "antd";
 import LikeDislikes from "../../components/LikeDislikes/LikeDislikes";
 import {db} from "../../firebase-config";
 import {useScript} from "../../hooks/useScript";
 import ReportForm from "../../components/ReportForm/ReportForm";
+import {AuthContext} from "../../context/AuthContext";
+import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
 
 
 declare global {
@@ -39,7 +41,8 @@ function CommunityDetailPage() {
     const [post, setPost] = useState<postTypes | undefined>()
     const [reportOpen,setReportOpen] = useState<boolean>(false);
     const [writerInfo,setWriterInfo] = useState<userInfoTypes>();
-
+    const user = useContext(AuthContext);
+    const [userNotFound,setUserNotFound] = useState<boolean>(false)
 
     useEffect(() => {
         const getCommentList = async () => {
@@ -140,7 +143,13 @@ function CommunityDetailPage() {
                             <IconButton aria-label="share" onClick={handleKakaoButton}>
                                 <ShareIcon />
                             </IconButton>
-                            <IconButton aria-label="" onClick={()=>{setReportOpen(true)}}>
+                            <IconButton aria-label="" onClick={()=>{
+                                if(!user){
+                                    setUserNotFound(true);
+                                    return;
+                                }
+                                setReportOpen(true)
+                            }}>
                                 <GppBadIcon/>
                             </IconButton>
                         </CommunityDetailPageIconContainer>
@@ -150,6 +159,7 @@ function CommunityDetailPage() {
                          refreshFunction={updateComment}/>
 
                 <ReportForm reportOpen={reportOpen} setReportOpen={setReportOpen} postId={id} />
+                <TopCenterSnackBar value={userNotFound} setValue={setUserNotFound} severity={"error"} content={"로그인 후 다시 이용해주세요 !"}/>
 
             </>}
         </CommunityDetailPageContainer>
