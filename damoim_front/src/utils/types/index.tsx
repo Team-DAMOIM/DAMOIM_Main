@@ -36,3 +36,13 @@ export interface userInfoTypes {
 export interface SingleCommentTypesWithUser extends SingleCommentTypes,userInfoTypes{
 
 }
+
+export interface partyTypes {
+  id: string;
+  memberUIDs: string[];
+  openChatLink: string;
+  selectedOTTs: string[];
+  startDate: Timestamp;
+  wishPeriod: number;
+  createdAt: Timestamp;
+}

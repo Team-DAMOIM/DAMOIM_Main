@@ -9,8 +9,9 @@ import { ColFlexInfoCont, CreatePartyBtn, CreatePartyPageContainer, CustomHalfTe
 import { TextField, Alert } from '@mui/material';
 import { LocalizationProvider, StaticDatePicker } from '@mui/lab'
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { addDoc, Timestamp } from 'firebase/firestore';
-import { partysCollectionRef } from '../../firestoreRef/ref';
+import { addDoc, doc, DocumentData, getDoc, Query, query, Timestamp, where } from 'firebase/firestore';
+import { partysCollectionRef, usersCollectionRef } from '../../firestoreRef/ref';
+import { db } from '../../firebase-config';
 
 const CreatePartyPage = () => {
   const user = useContext(AuthContext);
@@ -21,6 +22,7 @@ const CreatePartyPage = () => {
   const [wishPeriod, setWishPeriod] = useState<number>(1);
   const [openChatLink, setOpenChatLink] = useState<string>("https://open.kakao.com/");
   const [memberTalk, setMemberTalk] = useState<string>("");
+  const [avgTemperature, setAvgTemperature] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false)
   const [fail, setFail] = useState<boolean>(false)
@@ -30,6 +32,17 @@ const CreatePartyPage = () => {
   //   console.log(openChatLink);
   // }, [wishPeriod, openChatLink]);
 
+  const getTemperature = async (uid: string) => {
+    const docRef = doc(db, "users", uid);
+    const docSnap = await getDoc(docRef);
+    
+    if (docSnap.exists()) {
+      return docSnap.data().temperature
+    } else {
+      alert('사용자 정보 없음!');
+    }
+  }
+
   const createPartyHandler = async () => {
     if (!selectedOTTs.length) {
       alert('구독할 OTT를 적어도 하나 이상 선택해주세요')
@@ -38,13 +51,18 @@ const CreatePartyPage = () => {
     } else {
       setLoading(true);
       if (startDate && user) {
-        memberUIDs.push(user.uid);
+        memberUIDs.splice(0, 0, user.uid);
+        
         await addDoc(partysCollectionRef, {
           selectedOTTs: selectedOTTs,
           memberUIDs: memberUIDs,
           startDate: Timestamp.fromDate(startDate),
           wishPeriod: wishPeriod,
-          openChatLink: openChatLink
+          openChatLink: openChatLink,
+          memberTalk: memberTalk,
+          hostUID: user.uid,
+          avgTemperature: avgTemperature,
+          createdAt: Timestamp.fromDate(new Date())
         })
         setLoading(false);
         setSuccess(true);
