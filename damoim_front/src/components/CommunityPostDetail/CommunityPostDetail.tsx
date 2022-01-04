@@ -14,7 +14,7 @@ function CommunityPostDetail({views, loves, comments, date}: CommunityPostDetail
             <span>조회 수 </span>{views} |
             <span>추천 수 </span>{loves} |
             <span>댓글  </span>{comments} |
-            <span>  {date} </span>
+            <span className={"post-created-date"}>  {date} </span>
 
         </CommunityPostDetailContainer>
     );

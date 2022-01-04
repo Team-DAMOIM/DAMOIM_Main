@@ -18,15 +18,15 @@ const SliderItem = styled.div`
 
 const items:itemsProps[] = [
   {
-    item: 'http://placehold.it/1200x440',
+    item: '/images/mainBanner/mainBanner1.png',
     name: '이미지01'
   },
   {
-    item: 'http://placehold.it/1400x440/ff0000',
+    item: '/images/mainBanner/mainBanner2.png',
     name: '이미지02'
   },
   {
-    item: 'http://placehold.it/1400x440/00ffff',
+    item: '/images/mainBanner/mainBanner3.png',
     name: '이미지03'
   },    
 ]

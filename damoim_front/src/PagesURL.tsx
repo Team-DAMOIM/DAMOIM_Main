@@ -8,6 +8,7 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 import Register from "./pages/RegisterPage/RegisterPage";
 import PartyDetailPage from "./pages/PartyDetailPage/PartyDetailPage";
 import CreatePartyPage from "./pages/CreatePartyPage/CreatePartyPage";
+import UserPage from "./pages/UserPage/UserPage";
 
 
 export default [
@@ -40,8 +41,6 @@ export default [
         path: "/addCommunityPost",
         component: AddCommunityPostPage,
         private: true
-
-
     },
     {
         path: "/communityDetail/:id",
@@ -56,4 +55,10 @@ export default [
         path: "/register",
         component: Register
     },
+    {
+        path: "/userPage/:id",
+        component: UserPage,
+        private: true
+    },
+
 ]

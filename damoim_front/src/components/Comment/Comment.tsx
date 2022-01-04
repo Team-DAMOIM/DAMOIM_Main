@@ -4,42 +4,50 @@ import {addDoc, documentId, getDocs, query, Timestamp, where} from "firebase/fir
 import {AuthContext} from "../../context/AuthContext";
 import ReplyComment from "./ReplyComment";
 import useUserUID from "../../hooks/useUserUID";
-import {commentsCollectionRef} from "../../firestoreRef/ref";
-import {SingleCommentTypes} from "../../utils/types";
+import {commentsCollectionRef, usersCollectionRef} from "../../firestoreRef/ref";
+import {SingleCommentTypes, SingleCommentTypesWithUser, userInfoTypes} from "../../utils/types";
 import CommentAreaWithButton from "./CommentAreaWithButton";
 import TopCenterSnackBar from "../TopCenterSnackBar/TopCenterSnackBar";
 
 
 interface CommentTypes {
-    commentLists: SingleCommentTypes[] | undefined;
+    commentLists: SingleCommentTypesWithUser[] | undefined;
     postId: string;
-    refreshFunction : (newComment: SingleCommentTypes) => void;
+    refreshFunction: (newComment: SingleCommentTypesWithUser) => void;
 }
 
 function Comment({commentLists, postId, refreshFunction}: CommentTypes) {
     const user = useContext(AuthContext);
+    const [userNotFound,setUserNotFound] = useState<boolean>(false)
     const [Comment, setComment] = useState<string>("")
     const [success, setSuccess] = useState<boolean>(false)
 
 
-    const userName = useUserUID(user);
+    const userInfo = useUserUID(user);
 
     const onSubmit = async (event: React.FormEvent) => {
+        if(!user){
+            setUserNotFound(true);
+            return;
+        }
         event.preventDefault();
-            const variables = {
-                content: Comment,
-                writerUID: user?.uid,
-                writerName: userName,
-                postId: postId,
-                createdAt: Timestamp.fromDate(new Date()),
-            }
-            const data = await addDoc(commentsCollectionRef, variables)
-            const q = await query(commentsCollectionRef, where(documentId(), "==", data.id))
-            const result = await getDocs(q);
-
-            setComment("")
-            setSuccess(true)
-            refreshFunction(result.docs.map(doc => ({...doc.data(), id: doc.id}))[0] as SingleCommentTypes)
+        const variables = {
+            content: Comment,
+            writerUID: user?.uid,
+            writerName: userInfo?.name,
+            postId: postId,
+            createdAt: Timestamp.fromDate(new Date()),
+        }
+        const data = await addDoc(commentsCollectionRef, variables)
+        const q = await query(commentsCollectionRef, where(documentId(), "==", data.id))
+        const result = await getDocs(q);
+        const tempResult = result.docs.map(doc => ({...doc.data(), id: doc.id}))[0] as SingleCommentTypesWithUser;
+        const getUserQuery = await query(usersCollectionRef,where(documentId(),"==",tempResult.writerUID));
+        const userResult = await getDocs(getUserQuery);
+        const userInformation = userResult.docs.map(doc => (doc.data()))[0] as userInfoTypes
+        refreshFunction({...tempResult,nickName:userInformation.nickName,avatar:userInformation.avatar,name:userInformation.name})
+        setComment("")
+        setSuccess(true)
     }
 
 
@@ -56,7 +64,7 @@ function Comment({commentLists, postId, refreshFunction}: CommentTypes) {
             <hr/>
             <br/>
 
-            {commentLists?.map((comment: SingleCommentTypes) => (
+            {commentLists?.map((comment: SingleCommentTypesWithUser) => (
                 (!comment.responseTo &&
                     <React.Fragment key={comment.id}>
                         <SingleComment comment={comment} postId={postId} refreshFunction={refreshFunction}/>
@@ -69,6 +77,8 @@ function Comment({commentLists, postId, refreshFunction}: CommentTypes) {
             <CommentAreaWithButton onSubmit={onSubmit} handleChange={handleChange}
                                    commentValue={Comment}
             />
+            <TopCenterSnackBar value={userNotFound} setValue={setUserNotFound} severity={"error"} content={"로그인 후 다시 이용해주세요 !"}/>
+
         </div>)
         ;
 }

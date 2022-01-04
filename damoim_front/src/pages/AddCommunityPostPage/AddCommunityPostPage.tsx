@@ -11,10 +11,10 @@ import {AuthContext} from "../../context/AuthContext";
 import {
     addDoc, Timestamp
 } from "firebase/firestore";
-import Alert from '@mui/material/Alert';
 import {LoadingButton} from '@mui/lab';
 import {useHistory} from "react-router-dom";
 import {communityCollectionRef} from "../../firestoreRef/ref";
+import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
 import useUserUID from "../../hooks/useUserUID";
 
 function AddCommunityPostPage() {
@@ -27,9 +27,7 @@ function AddCommunityPostPage() {
     const [loading, setLoading] = useState<boolean>(false);
     const [success, setSuccess] = useState<boolean>(false)
     const [fail, setFail] = useState<boolean>(false)
-
-    const userName = useUserUID(user);
-
+    const userInfo = useUserUID(user);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const {value, name} = event.target;
@@ -62,13 +60,14 @@ function AddCommunityPostPage() {
     const addPostHandler = async () => {
 
 
-
+        console.log(userInfo)
         if (title.length >= 5 && content.length >= 10) {
             setLoading(true);
             await addDoc(communityCollectionRef, {
                 writerUID: user?.uid,
-                writerName: userName,
                 title,
+                writerNickName:userInfo?.nickName,
+                writerName:userInfo?.name,
                 content,
                 classification,
                 platform,
@@ -90,22 +89,9 @@ function AddCommunityPostPage() {
     return (
         <>
             <AddCommunityPostPageContainer>
-                <Snackbar open={success} autoHideDuration={2000} anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-                          onClose={() => {
-                              setSuccess(false);
-                          }}>
-                    <Alert severity="success" sx={{width: '100%'}}>
-                        게시글 작성 성공했습니다!
-                    </Alert>
-                </Snackbar>
-                <Snackbar open={fail} autoHideDuration={2000} anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-                          onClose={() => {
-                              setFail(false);
-                          }}>
-                    <Alert severity="error" sx={{width: '100%'}}>
-                        양식에 맞게 글을 작성해주세요
-                    </Alert>
-                </Snackbar>
+
+                <TopCenterSnackBar value={success} setValue={setSuccess} severity={"success"} content={"게시글 작성 성공했습니다 !"}/>
+                <TopCenterSnackBar value={fail} setValue={setFail} severity={"error"} content={"양식에 맞게 글을 작성해주세요 !"}/>
                 <HalfTextArea title={"글작성"} content={"OTT에 관해 소통해봐요😎"}/>
                 <AddCommunitySelectContainer>
                     <FormControl size={'small'}>

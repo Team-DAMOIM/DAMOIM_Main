@@ -3,21 +3,19 @@ import {Comment, Avatar} from 'antd';
 import Moment from 'react-moment';
 import 'moment/locale/ko';
 import {addDoc, documentId, getDocs, query, Timestamp, where} from "firebase/firestore";
-import Alert from "@mui/material/Alert";
-import {Snackbar} from "@mui/material";
 import {AuthContext} from "../../context/AuthContext";
 import useUserUID from "../../hooks/useUserUID";
-import {commentsCollectionRef} from "../../firestoreRef/ref";
-import {SingleCommentTypes} from "../../utils/types";
+import {commentsCollectionRef, usersCollectionRef} from "../../firestoreRef/ref";
+import { SingleCommentTypesWithUser, userInfoTypes} from "../../utils/types";
 import CommentAreaWithButton from "./CommentAreaWithButton";
 import {AntdCommentContainer} from "./commentStyles";
 import LikeDislikes from "../LikeDislikes/LikeDislikes";
 import TopCenterSnackBar from "../TopCenterSnackBar/TopCenterSnackBar";
 
 interface SingleCommentComponentTypes {
-    comment: SingleCommentTypes;
+    comment: SingleCommentTypesWithUser;
     postId: string;
-    refreshFunction: (newComment: SingleCommentTypes) => void;
+    refreshFunction: (newComment: SingleCommentTypesWithUser) => void;
 }
 
 function SingleComment({comment, postId, refreshFunction}: SingleCommentComponentTypes) {
@@ -26,9 +24,10 @@ function SingleComment({comment, postId, refreshFunction}: SingleCommentComponen
     const [commentValue, setCommentValue] = useState<string>("")
     const [OpenReply, setOpenReply] = useState<boolean>(false)
     const [success, setSuccess] = useState<boolean>(false)
+    const [userNotFound,setUserNotFound] = useState<boolean>(false)
 
 
-    const userName = useUserUID(user)
+    const userInfo = useUserUID(user)
 
     const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
         setCommentValue(e.currentTarget.value)
@@ -40,21 +39,29 @@ function SingleComment({comment, postId, refreshFunction}: SingleCommentComponen
 
     const onSubmit = async (event: FormEvent) => {
         event.preventDefault();
+        if(!user){
+            setUserNotFound(true);
+            return
+        }
         const variables = {
             postId: postId,
             responseTo: comment.id,
             writerUID: user?.uid,
-            writerName: userName,
+            writerName: userInfo?.name,
             content: commentValue,
             createdAt: Timestamp.fromDate(new Date()),
         }
         const data = await addDoc(commentsCollectionRef, variables)
         const q = await query(commentsCollectionRef, where(documentId(), "==", data.id))
         const result = await getDocs(q);
+        const tempResult = result.docs.map(doc => ({...doc.data(), id: doc.id}))[0] as SingleCommentTypesWithUser;
+        const getUserQuery = await query(usersCollectionRef,where(documentId(),"==",tempResult.writerUID));
+        const userResult = await getDocs(getUserQuery);
+        const userInformation = userResult.docs.map(doc => (doc.data()))[0] as userInfoTypes
+        refreshFunction({...tempResult,nickName:userInformation.nickName,avatar:userInformation.avatar,name:userInformation.name})
         setCommentValue("");
         setSuccess(true)
         setOpenReply(!OpenReply);
-        refreshFunction(result.docs.map(doc => ({...doc.data(), id: doc.id}))[0] as SingleCommentTypes)
     }
 
     const actions = [
@@ -71,10 +78,10 @@ function SingleComment({comment, postId, refreshFunction}: SingleCommentComponen
             <AntdCommentContainer>
                 <Comment
                     actions={actions}
-                    author={<a>{comment.writerName}</a>}
+                    author={<a>{comment.nickName}</a>}
                     avatar={
                         <Avatar
-                            src="https://joeschmoe.io/api/v1/random"
+                            src={comment.avatar || "/images/personIcon.png"}
                             alt="image"
                         />
                     }
@@ -92,7 +99,9 @@ function SingleComment({comment, postId, refreshFunction}: SingleCommentComponen
             <CommentAreaWithButton onSubmit={onSubmit} handleChange={handleChange}
                                    commentValue={commentValue}
             />
+
             }
+            <TopCenterSnackBar value={userNotFound} setValue={setUserNotFound} severity={"error"} content={"로그인 후 다시 이용해주세요 !"}/>
 
         </div>
     )

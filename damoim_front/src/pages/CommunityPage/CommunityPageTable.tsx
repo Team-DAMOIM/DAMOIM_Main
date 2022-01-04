@@ -34,8 +34,6 @@ function CommunityPageTable({classification, sortType, searchWord, selectedOTTs}
         const getCommunityPosts = async () => {
             let sortTypeEN = getSortTypeEN(sortType);
             let selectedOTTsKR: string[] = getSelectedOTTsKR(selectedOTTs);
-            console.log(selectedOTTsKR
-            )
             let communityPostQuery: Query<DocumentData>;
             if (classification === "전체") {
                 communityPostQuery = await query(communityCollectionRef, orderBy(sortTypeEN, "desc"))
@@ -72,15 +70,16 @@ function CommunityPageTable({classification, sortType, searchWord, selectedOTTs}
 
     return (
         <TableContainer component={Paper}>
-            <Table sx={{minWidth: 700}} aria-label="customized table">
+            <Table aria-label="customized table">
                 <TableHead>
                     <TableRow>
-                        <StyledTableCell>분류</StyledTableCell>
+                        <StyledTableCell className={"mobile-hide"}>분류</StyledTableCell>
                         <StyledTableCell>제목</StyledTableCell>
-                        <StyledTableCell align="right">작성자</StyledTableCell>
-                        <StyledTableCell align="right">플랫폼</StyledTableCell>
-                        <StyledTableCell align="right">추천수</StyledTableCell>
-                        <StyledTableCell align="right">날짜</StyledTableCell>
+                        <StyledTableCell className={"mobile-hide"} align="right">작성자</StyledTableCell>
+                        <StyledTableCell className={"mobile-hide"}  align="right">플랫폼</StyledTableCell>
+                        <StyledTableCell  align="right">추천수</StyledTableCell>
+                        <StyledTableCell className={"mobile-hide"} align="right">날짜</StyledTableCell>
+                        <StyledTableCell  align="right">조회수</StyledTableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -89,16 +88,17 @@ function CommunityPageTable({classification, sortType, searchWord, selectedOTTs}
                             : communityPosts
                     ).map((row, index) => (
                         <StyledTableRow key={index}>
-                            <StyledTableCell component="th" scope="row">
+                            <StyledTableCell className={"mobile-hide"} component="th" scope="row">
                                 {row.classification}
                             </StyledTableCell>
                             <StyledTableCell><Link
-                                to={`/communityDetail/${row.id}`}>{row.title}</Link></StyledTableCell>
-                            <StyledTableCell align="right">{row.writerName}</StyledTableCell>
-                            <StyledTableCell align="right">{row.platform}</StyledTableCell>
+                                to={`/communityDetail/${row.id}`}>{ row.title}</Link></StyledTableCell>
+                            <StyledTableCell className={"mobile-hide"} align="right">{row.writerNickName || row.writerName}</StyledTableCell>
+                            <StyledTableCell className={"mobile-hide"} align="right">{row.platform}</StyledTableCell>
                             <StyledTableCell align="right">💜{row.loves}</StyledTableCell>
-                            <StyledTableCell
-                                align="right">{row.createdAt.toDate().getMonth() + 1 + "." + row.createdAt.toDate().getDate()}</StyledTableCell>
+                            <StyledTableCell className={"mobile-hide"} align="right">{row.createdAt.toDate().getMonth() + 1 + "." + row.createdAt.toDate().getDate()}</StyledTableCell>
+                            <StyledTableCell align="right">{row.views}</StyledTableCell>
+
                         </StyledTableRow>
                     ))}
                     {emptyRows > 0 && (

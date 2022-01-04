@@ -35,6 +35,7 @@ function CommunityPage() {
             <CommunityTableContainer>
                 <CommunityPageTable classification={classification} sortType={sortType} searchWord={searchWord} selectedOTTs={selectedOTTs}/>
             </CommunityTableContainer>
+
         </CommunityPageContainer>
     );
 }

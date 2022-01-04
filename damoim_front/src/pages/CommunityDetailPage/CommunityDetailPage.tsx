@@ -1,10 +1,9 @@
-import React, { useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
     CommunityDetailPageContainer,
     CommunityDetailPageIconContainer,
     UserWithDetailContainer
 } from "./communityDetailPageStyles";
-import userProfile from '../../assets/images/dummy/userprofile.png'
 import UserWithProfile from "../../components/UserWithProfile/UserWithProfile";
 import CommunityPostDetail from "../../components/CommunityPostDetail/CommunityPostDetail";
 import {CardActions, CardContent, IconButton, Typography} from "@mui/material";
@@ -12,34 +11,58 @@ import Card from '@mui/material/Card';
 import ShareIcon from '@mui/icons-material/Share';
 import GppBadIcon from '@mui/icons-material/GppBad';
 import Comment from "../../components/Comment/Comment";
-import {getDocs, query, where, documentId, doc, updateDoc} from "firebase/firestore";
+import {getDocs, query, where, documentId, doc, updateDoc, orderBy} from "firebase/firestore";
 import {useParams} from "react-router-dom";
-import {commentsCollectionRef, communityCollectionRef, likesCollectionRef} from "../../firestoreRef/ref";
-import {postTypes, SingleCommentTypes} from "../../utils/types";
+import {
+    commentsCollectionRef,
+    communityCollectionRef,
+    usersCollectionRef
+} from "../../firestoreRef/ref";
+import {postTypes, SingleCommentTypesWithUser, userInfoTypes} from "../../utils/types";
 import {Tag} from "antd";
 import LikeDislikes from "../../components/LikeDislikes/LikeDislikes";
 import {db} from "../../firebase-config";
 import {useScript} from "../../hooks/useScript";
 import ReportForm from "../../components/ReportForm/ReportForm";
-
+import {AuthContext} from "../../context/AuthContext";
+import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
+import moment from "moment";
+import 'moment/locale/ko';
 
 declare global {
     interface Window {
         Kakao: any;
     }
 }
+
+
 function CommunityDetailPage() {
     const {id} = useParams<{ id: string }>()
-    const [commentLists, setCommentLists] = useState<SingleCommentTypes[] | undefined>()
+    const [commentLists, setCommentLists] = useState<SingleCommentTypesWithUser[] | undefined>()
     const [post, setPost] = useState<postTypes | undefined>()
     const [reportOpen,setReportOpen] = useState<boolean>(false);
-
+    const [writerInfo,setWriterInfo] = useState<userInfoTypes>();
+    const user = useContext(AuthContext);
+    const [userNotFound,setUserNotFound] = useState<boolean>(false)
 
     useEffect(() => {
         const getCommentList = async () => {
-            const q = await query(commentsCollectionRef, where("postId", "==", id))
+            const q = await query(commentsCollectionRef, where("postId", "==", id),orderBy("createdAt",'desc'))
             const data = await getDocs(q);
-            setCommentLists(data.docs.map(doc => ({...doc.data(), id: doc.id})) as SingleCommentTypes[])
+
+            const tempComments = data.docs.map(doc => ({...doc.data(), id: doc.id})) as SingleCommentTypesWithUser[]
+            let tempCommentsWithUser:SingleCommentTypesWithUser[] = []
+            tempComments.map(async (comment) => {
+                const getUserQuery = await query(usersCollectionRef,where(documentId(),"==",comment.writerUID))
+                const user = await getDocs(getUserQuery);
+                const userInformation = user.docs.map(doc => (doc.data()))[0] as userInfoTypes
+                tempCommentsWithUser.push({
+                    ...comment, nickName:userInformation.nickName,avatar:userInformation.avatar,name:userInformation.name
+                })
+                if(tempComments.length === tempCommentsWithUser.length){
+                    setCommentLists(tempCommentsWithUser)
+                }
+            })
         }
         getCommentList()
     }, [])
@@ -54,13 +77,19 @@ function CommunityDetailPage() {
             await updateDoc(communityDoc, {
                 views: tempPost.views + 1
             })
+
+            const userQuery = await query(usersCollectionRef, where("uid", "==", tempPost.writerUID))
+            const userData = await getDocs(userQuery);
+            setWriterInfo(userData.docs.map(doc => ({...doc.data()}))[0] as userInfoTypes);
         }
         getPost()
     }, [])
 
 
 
-    const updateComment = (newComment: SingleCommentTypes) => {
+
+
+    const updateComment = (newComment: SingleCommentTypesWithUser) => {
         if (commentLists) {
             setCommentLists([...commentLists, newComment])
         }
@@ -96,12 +125,12 @@ function CommunityDetailPage() {
             {post && <> <Tag color="geekblue">{post.platform}</Tag> <Tag color="blue">{post.classification}</Tag>
                 <h2>{post.title}</h2>
                 <UserWithDetailContainer>
-                    <UserWithProfile img={userProfile} userName={post.writerName}/>
+                    <UserWithProfile img={writerInfo?.avatar || "/images/personIcon.png"} userName={writerInfo?.nickName as string || writerInfo?.name as string}/>
                     <CommunityPostDetail views={post.views} loves={post.loves}
                                          comments={commentLists ? commentLists.length : 0}
-                                         date={post.createdAt.toDate().toString().substring(0, 24)}/>
+                                         date={moment(post.createdAt.toDate()).format('YYYY년 MM월 DD일 HH시 MM분')}/>
                 </UserWithDetailContainer>
-                <Card>
+                <Card raised={true}>
                     <CardContent>
                         <Typography variant="body1" color="text.secondary">
                             {
@@ -115,7 +144,13 @@ function CommunityDetailPage() {
                             <IconButton aria-label="share" onClick={handleKakaoButton}>
                                 <ShareIcon />
                             </IconButton>
-                            <IconButton aria-label="" onClick={()=>{setReportOpen(true)}}>
+                            <IconButton aria-label="" onClick={()=>{
+                                if(!user){
+                                    setUserNotFound(true);
+                                    return;
+                                }
+                                setReportOpen(true)
+                            }}>
                                 <GppBadIcon/>
                             </IconButton>
                         </CommunityDetailPageIconContainer>
@@ -125,6 +160,7 @@ function CommunityDetailPage() {
                          refreshFunction={updateComment}/>
 
                 <ReportForm reportOpen={reportOpen} setReportOpen={setReportOpen} postId={id} />
+                <TopCenterSnackBar value={userNotFound} setValue={setUserNotFound} severity={"error"} content={"로그인 후 다시 이용해주세요 !"}/>
 
             </>}
         </CommunityDetailPageContainer>
