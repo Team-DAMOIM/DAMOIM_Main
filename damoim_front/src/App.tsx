@@ -11,6 +11,7 @@ import PagesURL from './PagesURL';
 import Navbar from './components/Navbar/Navbar';
 import {AuthProvider} from "./context/AuthProvider";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
+import Footer from "./components/Footer/Footer";
 
 function App() {
     return (
@@ -26,6 +27,7 @@ function App() {
                         ))}
                         <Redirect from="*" to="/"/>
                     </Switch>
+                    <Footer/>
                 </Router>
             </AuthProvider>
         </>
