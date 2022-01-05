@@ -6,19 +6,19 @@ interface PartyCardProps {
   id: string;
   OTTsNameArray: string[];
   headerText: string;
-  temperature: number;
+  avgTemperature: number;
   memberNum: number;
 }
 
-const PartyCard = ({ id, OTTsNameArray, headerText, temperature, memberNum }: PartyCardProps) => {
+const PartyCard = ({ id, OTTsNameArray, headerText, avgTemperature, memberNum }: PartyCardProps) => {
   
   let textColor = "blue";
 
-  if(temperature < 30) {
+  if(avgTemperature < 30) {
     textColor = "gray";
-  } else if (40 <= temperature && temperature < 50) {
+  } else if (40 <= avgTemperature && avgTemperature < 50) {
     textColor = "orange";
-  } else if (50 <= temperature) {
+  } else if (50 <= avgTemperature) {
     textColor = "red";
   }
 
@@ -65,7 +65,7 @@ const PartyCard = ({ id, OTTsNameArray, headerText, temperature, memberNum }: Pa
               })}
             </PersonIconArea>
             <ExplainText>평균온도</ExplainText>
-            <TemperatureText style={{color: textColor}}>{temperature}도</TemperatureText>
+            <TemperatureText style={{color: textColor}}>{avgTemperature}도</TemperatureText>
           </PartyCardBody>
         </PartyCardInner>
       </PartyDetailLink>
