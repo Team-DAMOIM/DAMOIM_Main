@@ -27,12 +27,24 @@ export const FooterContainer = styled.div`
   }
 
   h1 {
+    font-size: 7rem;
     position: absolute;
     font-weight: bold;
     top:150px;
     left: 50px;
     color: white;
     opacity: 0.3;
+  }
+
+  @media screen and (max-width: 768px) {
+    h1{
+      font-size: 5rem;
+    }
+  }
+  @media screen and (max-width: 480px) {
+    h1{
+      font-size: 3rem;
+    }
   }
 `
 
@@ -43,6 +55,9 @@ export const FooterContentContainer = styled.div`
   left: 60px;
   color: black;
   font-weight: bold;
+  @media screen and (max-width: 480px) {
+    left:50px;
+  }
 `
 
 export const FooterLinkContentContainer = styled.div`
@@ -55,5 +70,9 @@ export const FooterLinkContentContainer = styled.div`
   font-weight: bold;
   a{
     color: black;
+  }
+  @media screen and (max-width: 480px) {
+    left:50px;
+
   }
 `
