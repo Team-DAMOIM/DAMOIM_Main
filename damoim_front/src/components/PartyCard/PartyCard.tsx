@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BgPerson, ExplainText, HeaderTextArea, IconImg, IncludedOTTs, OTTIcon, OTTIconCover, PartyCardBody, PartyCardContainer, PartyCardHeader, PartyCardInner, PartyDetailLink, PersonIcon, PersonIconArea, TemperatureText } from './partyCardStyles';
 import netflixIcon from '../../assets/images/OTTIcons/netflixIcon.png';
 
@@ -11,7 +11,7 @@ interface PartyCardProps {
 }
 
 const PartyCard = ({ id, OTTsNameArray, headerText, avgTemperature, memberNum }: PartyCardProps) => {
-  
+
   let textColor = "blue";
 
   if(avgTemperature < 30) {

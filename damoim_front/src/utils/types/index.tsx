@@ -24,13 +24,13 @@ export interface postTypes {
 
 export interface userInfoTypes {
     uid : string;
-    name:string;
-    nickName:string;
-    isOnline:false;
-    email:string;
+    name: string;
+    nickName: string;
+    isOnline: false;
+    email: string;
     createdAt: Timestamp;
-    avatar:string;
-    avatarPath:string;
+    avatar: string;
+    avatarPath: string;
 }
 
 export interface SingleCommentTypesWithUser extends SingleCommentTypes,userInfoTypes{
@@ -45,4 +45,5 @@ export interface partyTypes {
   startDate: Timestamp;
   wishPeriod: number;
   createdAt: Timestamp;
+  memberTalk: string;
 }

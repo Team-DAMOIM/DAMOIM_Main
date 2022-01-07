@@ -93,13 +93,20 @@ export const InfoTextArea = styled.div`
 
 export const MemberTalkBox = styled.div`
   width: 80%;
-  margin: auto;
+  margin: 80px auto 0;
 `
 
 export const MemberTalkArea = styled.div`
   width: 100%;
-  padding: 20px 10px;
+  padding: 30px;
   margin-top: 10px;
   border-radius: 20px;
   box-shadow: rgb(221 221 221) 0px 0px 10px;
 `
+
+export const LoadingArea = styled.div`
+  margin: 400px auto 300px;
+  width: 1200px;
+  text-align: center;
+`;
+
