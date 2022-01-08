@@ -58,6 +58,11 @@ export const MemberInfoBox = styled.div`
   align-content: center;
 `
 
+export const MemberInfoBoxFlexStart = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
 interface MemberInfoTextProps{
   isBold: boolean;
   fontSize: string;
@@ -79,6 +84,14 @@ export const PersonIconLink = styled(Link)`
   background: url(/images/personIcon.png) no-repeat;
   background-size : cover;
   margin: auto;
+`
+
+export const PersonIconNotLink = styled.div`
+  display: block;
+  width: 70px;
+  height: 70px;
+  background: url(/images/personIcon.png) no-repeat;
+  background-size : cover;
 `
 
 export const InfoTextArea = styled.div`

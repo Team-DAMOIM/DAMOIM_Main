@@ -31,6 +31,8 @@ export interface userInfoTypes {
     createdAt: Timestamp;
     avatar: string;
     avatarPath: string;
+    temperature: number;
+    joinPeriod: number;
 }
 
 export interface SingleCommentTypesWithUser extends SingleCommentTypes,userInfoTypes{
@@ -39,6 +41,7 @@ export interface SingleCommentTypesWithUser extends SingleCommentTypes,userInfoT
 
 export interface partyTypes {
   id: string;
+  hostUID: string;
   memberUIDs: string[];
   openChatLink: string;
   selectedOTTs: string[];

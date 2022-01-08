@@ -2,7 +2,7 @@ import {doc, getDoc} from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import {useParams} from "react-router-dom";
 import { db } from '../../firebase-config';
-import { DetailBox, MemberInfoBox, MemberInfoContainer, InfoText, PartyDetailPageContainer, PersonIconLink, SelectedOTTBox, TrimOTTIcon, InfoTextArea, MemberTalkBox, MemberTalkArea, LoadingArea } from './partyDetailPageStyles';
+import { DetailBox, MemberInfoBox, MemberInfoBoxFlexStart, MemberInfoContainer, InfoText, PartyDetailPageContainer, PersonIconLink, PersonIconNotLink, SelectedOTTBox, TrimOTTIcon, InfoTextArea, MemberTalkBox, MemberTalkArea, LoadingArea } from './partyDetailPageStyles';
 import { CircularProgress } from "@material-ui/core";
 import {partyTypes, userInfoTypes} from "../../utils/types";
 import moment from "moment";
@@ -24,6 +24,7 @@ const PartyDetailPage = () => {
     if (docSnap.exists()) {
       setPartyData({
         id: partyID,
+        hostUID: docSnap.data().hostUID,
         memberUIDs: docSnap.data().memberUIDs,
         openChatLink: docSnap.data().openChatLink,
         selectedOTTs: docSnap.data().selectedOTTs,
@@ -58,7 +59,9 @@ const PartyDetailPage = () => {
         email: docSnap.data().email,
         createdAt: docSnap.data().createdAt,
         avatar: docSnap.data().avatar,
-        avatarPath: docSnap.data().avatarPath
+        avatarPath: docSnap.data().avatarPath,
+        temperature: docSnap.data().temperature,
+        joinPeriod: docSnap.data().joinPeriod
       }]);
     } else {
       console.log("No such document!");
@@ -84,26 +87,34 @@ const PartyDetailPage = () => {
             })}
           </SelectedOTTBox>
           <MemberInfoContainer>
-            {memberData.map(member => {
-              return(
-                <MemberInfoBox>
-                  {/* 밑에 이거 하드코딩됨. */}
-                  {/*<InfoText isBold={true} fontSize='14px' fontColor='black' textAlign='center'>{member.isHost ? "파티장" : "X"}</InfoText>*/}
-                  <PersonIconLink to={'/'}/>
-                  <InfoText isBold={true} fontSize='18px' fontColor='black' textAlign='center'>{member.nickName}</InfoText>
-                  {/*<InfoText isBold={true} fontSize='18px' textAlign='center'*/}
-                  {/*  fontColor={member.temperature < 30 ? "gray"*/}
-                  {/*  : member.temperature < 40 ? "blue" */}
-                  {/*  : member.temperature < 50 ? "orange" */}
-                  {/*  : "red"}*/}
-                  {/*>*/}
-                  {/*    {member.temperature}도*/}
-                  {/*</InfoText>*/}
-                  <InfoText isBold={false} fontSize='12px' fontColor='black' textAlign='center'>
-                    {/*{member.joinPeriod}개월 참여*/}
-                  </InfoText>
-                </MemberInfoBox>
-              )
+            {[0, 1, 2, 3].map(idx => {
+              if (idx < memberData.length) {
+                return (
+                  <MemberInfoBox>
+                    <InfoText isBold={true} fontSize='14px' fontColor='black' textAlign='center'>{memberData[idx].uid === partyData?.hostUID ? "파티장" : "파티원"}</InfoText>
+                    <PersonIconLink to={'/'}/>
+                    <InfoText isBold={true} fontSize='18px' fontColor='black' textAlign='center'>{memberData[idx].nickName}</InfoText>
+                    <InfoText isBold={true} fontSize='18px' textAlign='center'
+                      fontColor={memberData[idx].temperature < 30 ? "gray"
+                      : memberData[idx].temperature < 40 ? "blue"
+                      : memberData[idx].temperature < 50 ? "orange"
+                      : "red"}
+                    >
+                      {memberData[idx].temperature}도
+                    </InfoText>
+                    <InfoText isBold={false} fontSize='12px' fontColor='black' textAlign='center'>
+                      {memberData[idx].joinPeriod}개월 참여
+                    </InfoText>
+                  </MemberInfoBox>
+                )
+              } else {
+                return (
+                  <MemberInfoBoxFlexStart>
+                    <InfoText isBold={true} fontSize='14px' fontColor='black' textAlign='center'>X</InfoText>
+                    <PersonIconNotLink/>
+                  </MemberInfoBoxFlexStart>
+                )
+              }
             })}
           </MemberInfoContainer>
           <InfoTextArea>
