@@ -18,11 +18,15 @@ export const InfoInputBox = styled.div`
   justify-content: space-between;
   max-width: 90%;
   margin: 50px auto 0;
-  height: 1800px;
+  height: 100%;
   border: 3px solid gray;
   border-radius: 20px;
   box-shadow: rgb(0 0 0 / 12%) 0px 3px 6px, rgb(0 0 0 / 24%) 0px 2px 5px;
   padding: 30px 50px 100px;
+  row-gap: 50px;
+  @media screen and (max-width: 768px) {
+    padding: 1vh;
+  }
 `
 
 export const RawFlexInfoCont = styled.div`
@@ -48,7 +52,7 @@ export const CreatePartyBtn = styled.div`
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   text-decoration: none;
-  margin: 0 auto 0;
+  margin: 100px auto 50px;
   text-align: center;
   line-height: 30px;
 
