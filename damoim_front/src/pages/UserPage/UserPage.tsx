@@ -52,7 +52,7 @@ function UserPage(props: any) {
     return (
         <UserPageContainer>
             <CustomHalfTextArea title='마이페이지'
-                                content={`다모임과 ${moment(userInfo?.createdAt.toDate()).fromNow()} 부터 함께하고 있어요🥳`}/>
+                                content={`다모임과 ${moment(userInfo?.createdAt.toDate()).fromNow()} 부터 함께하고 있어요 🥳`}/>
             <UserPageInfoBox>
                 <UserPageCardSection>
                     <UserMainCardSection>
@@ -71,7 +71,7 @@ function UserPage(props: any) {
 
                     <UserSemiCardSection>
                         <CardWithIcon title={"회원권한"} content={"일반회원"} icon={<BadgeTwoToneIcon/>}/>
-                        <CardWithIcon title={"매너온도"} content={"40도"} icon={<ThermostatTwoToneIcon/>}/>
+                        <CardWithIcon title={"매너온도"} content={`${userInfo?.temperature}`} icon={<ThermostatTwoToneIcon/>}/>
                         <CardWithIcon title={"회원가입일"}
                                       content={moment(userInfo?.createdAt.toDate()).format('YYYY년 MM월 DD일')}
                                       icon={<EventNoteTwoToneIcon/>}/>

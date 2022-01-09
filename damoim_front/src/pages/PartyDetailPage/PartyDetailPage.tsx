@@ -92,7 +92,7 @@ const PartyDetailPage = () => {
                 return (
                   <MemberInfoBox>
                     <InfoText isBold={true} fontSize='14px' fontColor='black' textAlign='center'>{memberData[idx].uid === partyData?.hostUID ? "파티장" : "파티원"}</InfoText>
-                    <PersonIconLink to={'/'}/>
+                    <PersonIconLink to={`/otherUserPage/${memberData[idx].uid}`}/>
                     <InfoText isBold={true} fontSize='18px' fontColor='black' textAlign='center'>{memberData[idx].nickName}</InfoText>
                     <InfoText isBold={true} fontSize='18px' textAlign='center'
                       fontColor={memberData[idx].temperature < 30 ? "gray"

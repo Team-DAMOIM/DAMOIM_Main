@@ -9,6 +9,7 @@ import Register from "./pages/RegisterPage/RegisterPage";
 import PartyDetailPage from "./pages/PartyDetailPage/PartyDetailPage";
 import CreatePartyPage from "./pages/CreatePartyPage/CreatePartyPage";
 import UserPage from "./pages/UserPage/UserPage";
+import OtherUserPage from "./pages/OtherUserPage/OtherUserPage";
 
 
 export default [
@@ -60,5 +61,8 @@ export default [
         component: UserPage,
         private: true
     },
-
+    {
+      path: "/otherUserPage/:id",
+      component: OtherUserPage
+    },
 ]

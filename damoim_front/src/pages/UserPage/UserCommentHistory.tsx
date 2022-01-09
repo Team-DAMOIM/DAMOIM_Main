@@ -24,10 +24,10 @@ function UserPageCommentHistory() {
     const [comments, setComments] = useState<SingleCommentTypesWithLikes[]>();
     useEffect(() => {
         const getComments = async () => {
-            const q = await query(commentsCollectionRef, where("writerUID", "==", user?.uid), orderBy("createdAt", "desc"))
+            const q = await query(commentsCollectionRef, where("writerUID", "==", user?.uid), orderBy("createdAt", "desc"));
             const result = await getDocs(q);
-            const tempComments = result.docs.map(doc => ({...doc.data(), id: doc.id})) as SingleCommentTypesWithLikes[]
-            let tempCommentsWithLikes:SingleCommentTypesWithLikes[] = []
+            const tempComments = result.docs.map(doc => ({...doc.data(), id: doc.id})) as SingleCommentTypesWithLikes[];
+            let tempCommentsWithLikes:SingleCommentTypesWithLikes[] = [];
             tempComments.map(async (comment) => {
                 const getLikeQuery = await query(likesCollectionRef, where("commentId", "==", comment.id))
                 const getDisLikeQuery = await query(disLikesCollectionRef, where("commentId", "==", comment.id))
