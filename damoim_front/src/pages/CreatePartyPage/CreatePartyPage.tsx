@@ -17,30 +17,48 @@ const CreatePartyPage = () => {
   const user = useContext(AuthContext);
   const history = useHistory();
   const [selectedOTTs, setSelectedOTTs] = useState<string[]>([]);
-  const [memberUIDs, setMemberUIDs] = useState<string[]>(["M7HnYj6qsbUxT38e7G9IBaDFB9g2", "OffdydZ5O3S3o3OX8U5ip9KI1up2", "ST5N27xZSse3lgegCy3t0CqJrTy1"]);
+  const [memberUIDs, setMemberUIDs] = useState<string[]>([]);
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [wishPeriod, setWishPeriod] = useState<number>(1);
   const [openChatLink, setOpenChatLink] = useState<string>("https://open.kakao.com/");
   const [memberTalk, setMemberTalk] = useState<string>("");
-  const [avgTemperature, setAvgTemperature] = useState<number>(0);
+  // const [temperature, setTemperature] = useState<number[]>([]);
+  // const [avgTemperature, setAvgTemperature] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false)
   const [fail, setFail] = useState<boolean>(false)
 
-  // useEffect(() => {
-  //   console.log(wishPeriod);
-  //   console.log(openChatLink);
-  // }, [wishPeriod, openChatLink]);
+  const addParty = async (UIDs: string[], startDate: Date, hostUID: string) => {
+    let temperatures: number[] = [];
+    for (let i = 0; i < UIDs.length; i++) {
+      const docRef = doc(db, "users", UIDs[i]);
+      const docSnap = await getDoc(docRef);
 
-  const getTemperature = async (uid: string) => {
-    const docRef = doc(db, "users", uid);
-    const docSnap = await getDoc(docRef);
-    
-    if (docSnap.exists()) {
-      return docSnap.data().temperature
-    } else {
-      alert('사용자 정보 없음!');
+      if (docSnap.exists()) {
+        // setTemperature(temperature => [...temperature, docSnap.data().temperature]);
+        temperatures.push(docSnap.data().temperature);
+      } else {
+        console.log("No such document!");
+      }
     }
+
+    let sum: number = 0;
+    for (let j = 0; j < temperatures.length; j++) {
+      sum += temperatures[j];
+    }
+    let avgTemperature = Math.round((sum / temperatures.length));
+
+    await addDoc(partysCollectionRef, {
+      selectedOTTs: selectedOTTs,
+      memberUIDs: memberUIDs,
+      startDate: Timestamp.fromDate(startDate),
+      wishPeriod: wishPeriod,
+      openChatLink: openChatLink,
+      memberTalk: memberTalk,
+      hostUID: hostUID,
+      avgTemperature: avgTemperature,
+      createdAt: Timestamp.fromDate(new Date())
+    })
   }
 
   const createPartyHandler = async () => {
@@ -52,18 +70,9 @@ const CreatePartyPage = () => {
       setLoading(true);
       if (startDate && user) {
         memberUIDs.splice(0, 0, user.uid);
-        
-        await addDoc(partysCollectionRef, {
-          selectedOTTs: selectedOTTs,
-          memberUIDs: memberUIDs,
-          startDate: Timestamp.fromDate(startDate),
-          wishPeriod: wishPeriod,
-          openChatLink: openChatLink,
-          memberTalk: memberTalk,
-          hostUID: user.uid,
-          avgTemperature: avgTemperature,
-          createdAt: Timestamp.fromDate(new Date())
-        })
+
+        addParty(memberUIDs, startDate, user.uid);
+
         setLoading(false);
         setSuccess(true);
 
