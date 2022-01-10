@@ -15,6 +15,7 @@ import TablePaginationActions from "../../components/TablePaginationActions/Tabl
 import {StyledTableCell, StyledTableRow} from "./communityPageStyles";
 import {getSelectedOTTsKR, getSortTypeEN} from "../../utils/functions/indes";
 import {postTypes} from "../../utils/types";
+import {initialSelectedOTTs} from "../../utils/variables";
 
 
 interface CommunityPageTableProps {
@@ -41,9 +42,20 @@ function CommunityPageTable({classification, sortType, searchWord, selectedOTTs}
                 communityPostQuery = await query(communityCollectionRef, where("classification", "==", classification), orderBy(sortTypeEN, "desc"))
             }
             const data = await getDocs(communityPostQuery);
-            setCommunityPosts(data.docs.map((doc) => ({...doc.data(), id: doc.id} as postTypes)).filter((post:postTypes) => {
-                return selectedOTTsKR.includes(post.platform)
-            }))
+
+            if(selectedOTTs.length === initialSelectedOTTs.length){
+                setCommunityPosts(data.docs.map((doc) => ({
+                    ...doc.data(),
+                    id: doc.id
+                } as postTypes)));
+            }else{
+                setCommunityPosts(data.docs.map((doc) => ({
+                    ...doc.data(),
+                    id: doc.id
+                } as postTypes)).filter((post: postTypes) => {
+                    return selectedOTTsKR.includes(post.platform)
+                }))
+            }
         }
         getCommunityPosts()
     }, [classification, sortType, selectedOTTs])

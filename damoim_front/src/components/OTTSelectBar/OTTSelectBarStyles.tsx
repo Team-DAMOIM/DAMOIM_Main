@@ -1,13 +1,27 @@
-import styled from "styled-components";
+import styled, {keyframes} from "styled-components";
 
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`
 
 export const OTTSelectBarContainer = styled.div`
   display: flex;
   font-size: 50px;
   margin-top: 20px;
   flex-direction: column;
-  button{
+
+  button {
     margin: 0 auto;
+    animation-duration: 0.75s;
+    animation-timing-function: ease-in-out;
+    animation-name: ${fadeIn};
+    animation-fill-mode: forwards;
   }
 `
 
