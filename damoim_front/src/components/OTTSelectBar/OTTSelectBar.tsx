@@ -10,6 +10,8 @@ import laftelIcon from '../../assets/images/OTTIcons/laftelIcon.png'
 import appleTVIcon from '../../assets/images/OTTIcons/appleTVIcon.jpg'
 import amazonIcon from '../../assets/images/OTTIcons/amazonIcon.png'
 import welaaaIcon from '../../assets/images/OTTIcons/welaaaIcon.png'
+import {Button} from "@mui/material";
+import {initialSelectedOTTs} from "../../utils/variables";
 
 
 interface OTTSelectBarTypes {
@@ -59,6 +61,9 @@ function OTTSelectBar({selectedOTTs, setSelectedOTTs, selectOnlyOne}: OTTSelectB
         },
     ]
 
+    const selectAllHandler = () => {
+        setSelectedOTTs(initialSelectedOTTs)
+    }
 
     return (
         <OTTSelectBarContainer>
@@ -66,10 +71,16 @@ function OTTSelectBar({selectedOTTs, setSelectedOTTs, selectOnlyOne}: OTTSelectB
                 {
                     OTTs.map(OTT => (
                         <OTTIcon img={OTT.img} key={OTT.name} name={OTT.name} selected={selectedOTTs.includes(OTT.name)}
-                                 selectedOTTs={selectedOTTs} setSelectedOTTs={setSelectedOTTs} selectOnlyOne={selectOnlyOne}/>
+                                 selectedOTTs={selectedOTTs} setSelectedOTTs={setSelectedOTTs}
+                                 selectOnlyOne={selectOnlyOne}/>
                     ))
                 }
             </OTTIconsContainer>
+            {
+                selectedOTTs.length === 0 && <Button onClick={selectAllHandler} variant="outlined">
+                    전체 선택
+                </Button>
+            }
         </OTTSelectBarContainer>
     );
 }

@@ -5,6 +5,10 @@ export const OTTSelectBarContainer = styled.div`
   display: flex;
   font-size: 50px;
   margin-top: 20px;
+  flex-direction: column;
+  button{
+    margin: 0 auto;
+  }
 `
 
 export const OTTIconsContainer = styled.div`
