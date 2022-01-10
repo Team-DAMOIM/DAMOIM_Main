@@ -90,8 +90,11 @@ function CommunityDetailPage() {
 
 
     const updateComment = (newComment: SingleCommentTypesWithUser) => {
+        console.log(newComment)
         if (commentLists) {
             setCommentLists([...commentLists, newComment])
+        }else{
+            setCommentLists([newComment])
         }
     }
 
