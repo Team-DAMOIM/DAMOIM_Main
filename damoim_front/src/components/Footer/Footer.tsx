@@ -1,7 +1,8 @@
 import React from 'react';
 import {FooterContainer, FooterContentContainer, FooterLinkContentContainer} from "./FooterStyles";
 import {Link} from 'react-router-dom'
-function Footer(props:any) {
+
+function Footer(props: any) {
     return (
         <FooterContainer>
 
@@ -24,15 +25,17 @@ function Footer(props:any) {
                 <Link to={"/"}>
                     소개
                 </Link>
-                <Link to={"/"}>
+                <a href={"#"} onClick={() => window.open('https://jumpy-hornet-f9d.notion.site/DAMOIM-b8b02df07afa4fe99b80456f75b1390d', '_blank')}
+                >
                     이용약관
-                </Link>
-                <Link to={"/"}>
-                    개인정보 처리방침
-                </Link>
-                <Link to={"/"}>
+                </a>
+                {/*<Link to={"/"}>*/}
+                {/*    개인정보 처리방침*/}
+                {/*</Link>*/}
+                <a href={"#"} onClick={() => window.open('https://open.kakao.com/o/solEdOTd\n', '_blank')}
+                >
                     1:1 문의
-                </Link>
+                </a>
             </FooterLinkContentContainer>
         </FooterContainer>
     );

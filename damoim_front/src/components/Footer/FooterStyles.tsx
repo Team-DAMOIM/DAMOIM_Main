@@ -61,18 +61,24 @@ export const FooterContentContainer = styled.div`
 `
 
 export const FooterLinkContentContainer = styled.div`
-  width: 300px;
+  width: 230px;
   position: absolute;
-  top:400px;
+  top: 400px;
   left: 60px;
   display: flex;
   justify-content: space-between;
   font-weight: bold;
-  a{
+
+  a {
     color: black;
+
+    &:hover {
+      color: #3b3b3b
+    }
   }
+
   @media screen and (max-width: 480px) {
-    left:50px;
+    left: 50px;
 
   }
 `
