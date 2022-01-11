@@ -74,11 +74,10 @@ export const OTTIcon = styled.div`
 `
 
 export const IconImg = styled.img`
-  width: 70%;
-  margin: auto;
-  padding: 5px;
+  width: 100%;
   -webkit-box-align: center;
   align-items: center;
+  border-radius: 100%;
 `
 
 export const PartyCardBody = styled.div`
