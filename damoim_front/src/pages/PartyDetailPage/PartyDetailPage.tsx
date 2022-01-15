@@ -1,5 +1,5 @@
 import {doc, getDoc} from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
 import { db } from '../../firebase-config';
 import {
@@ -26,9 +26,12 @@ import CardWithIcon from "../../components/CardWithIcon/CardWithIcon";
 import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
 import TimelapseTwoToneIcon from '@mui/icons-material/TimelapseTwoTone';
 import {Button} from "@mui/material";
+import {AuthContext} from "../../context/AuthContext";
+
 
 const PartyDetailPage = () => {
   const { id } = useParams<{ id: string }>();
+  const user = useContext(AuthContext);
 
   // 밑에 useState 하드코딩한거 수정
   const [partyData, setPartyData] = useState<partyTypes | null>();
@@ -111,7 +114,8 @@ const PartyDetailPage = () => {
                 return (
                   <MemberInfoBox>
                     <InfoText isBold={true} fontSize='14px' fontColor='black' textAlign='center'>{memberData[idx].uid === partyData?.hostUID ? "파티장" : "파티원"}</InfoText>
-                    <PersonIconLink to={`/otherUserPage/${memberData[idx].uid}`}/>
+                    {/* 아래 삼항연산자 설명 : 만약 자기 프로필을 클릭하면 otherUserPage로 가는게 아니라 userPage(마이페이지)로 갈 수 있게 처리 */}
+                    <PersonIconLink to={user ? (memberData[idx].uid === user.uid) ? `/userPage/${user.uid}` : `/otherUserPage/${memberData[idx].uid}` : `/otherUserPage/${memberData[idx].uid}`}/>
                     <InfoText isBold={true} fontSize='18px' fontColor='black' textAlign='center'>{memberData[idx].nickName}</InfoText>
                     <InfoText isBold={true} fontSize='18px' textAlign='center'
                       fontColor={memberData[idx].temperature < 30 ? "gray"

@@ -50,3 +50,10 @@ export interface partyTypes {
   createdAt: Timestamp;
   memberTalk: string;
 }
+
+export interface relationTypes {
+  member1: string;
+  member2: string;
+  state: string;
+  createdAt: Timestamp;
+}
