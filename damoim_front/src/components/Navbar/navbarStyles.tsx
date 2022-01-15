@@ -27,7 +27,6 @@ export const Nav = styled.nav`
   .logo {
     width: 118.8px;
     height: 22px;
-    margin-bottom: 4px;
   }
 
   .nav-options {
@@ -46,6 +45,7 @@ export const Nav = styled.nav`
   .option {
     font-weight: bold;
     cursor: pointer;
+  font-size: 1rem;
   }
 
   .option > a {
