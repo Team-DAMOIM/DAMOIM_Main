@@ -102,7 +102,7 @@ const PartyDetailPage = () => {
           <SelectedOTTBox>
             {selectedOTT.map(OTT => {
               return (
-                <TrimOTTIcon>
+                <TrimOTTIcon key={OTT}>
                   <img src={`/images/OTTIcons/${OTT}Icon.png`} />
                 </TrimOTTIcon>
               )
@@ -112,7 +112,7 @@ const PartyDetailPage = () => {
             {[0, 1, 2, 3].map(idx => {
               if (idx < memberData.length) {
                 return (
-                  <MemberInfoBox>
+                  <MemberInfoBox key={idx}>
                     <InfoText isBold={true} fontSize='14px' fontColor='black' textAlign='center'>{memberData[idx].uid === partyData?.hostUID ? "파티장" : "파티원"}</InfoText>
                     {/* 아래 삼항연산자 설명 : 만약 자기 프로필을 클릭하면 otherUserPage로 가는게 아니라 userPage(마이페이지)로 갈 수 있게 처리 */}
                     <PersonIconLink to={user ? (memberData[idx].uid === user.uid) ? `/userPage/${user.uid}` : `/otherUserPage/${memberData[idx].uid}` : `/otherUserPage/${memberData[idx].uid}`}/>
@@ -132,8 +132,8 @@ const PartyDetailPage = () => {
                 )
               } else {
                 return (
-                  <MemberInfoBoxFlexStart>
-                    <InfoText isBold={true} fontSize='14px' fontColor='black' textAlign='center'>X</InfoText>
+                  <MemberInfoBoxFlexStart key={idx}>
+                    <InfoText isBold={true} fontSize='14px' fontColor='black' textAlign='center'>빈자리</InfoText>
                     <PersonIconNotLink/>
                   </MemberInfoBoxFlexStart>
                 )

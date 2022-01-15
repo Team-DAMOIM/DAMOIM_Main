@@ -224,7 +224,7 @@ const CreatePartyPage = () => {
                 label="코멘트"
                 multiline
                 inputProps={{
-                  maxlength: 100
+                  maxLength: 100
                 }}
                 InputLabelProps={{
                   shrink: true,

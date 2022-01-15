@@ -99,22 +99,22 @@ export const PersonIcon = styled.span<{ url: string }>`
   display: inline-block;
   width: 70px;
   height: 70px;
-
   transform: ${props => props.url === "personIconFilled" ? 'scale(1.15)' : 'scale(1.0)'};
-
   z-index: 100;
   position: relative;
 
-  :after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: ${props => `url(images/${props.url}.png)`} no-repeat;
-    background-size: cover;
-  }
+  background: ${props => `url(images/${props.url}.png)`} no-repeat;
+  background-size: cover;
+  // :after {
+  //   content: '';
+  //   position: absolute;
+  //   top: 0;
+  //   bottom: 0;
+  //   left: 0;
+  //   right: 0;
+  //   background: ${props => `url(images/${props.url}.png)`} no-repeat;
+  //   background-size: cover;
+  // }
 `
 //
 // export const BgPerson = styled.span`
