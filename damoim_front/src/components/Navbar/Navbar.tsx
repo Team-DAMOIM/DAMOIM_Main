@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Nav, NavLink, Bars, NavMenu, NavBtn, NavBtnLink, Logo} from './navbarStyles';
+import {Nav} from './navbarStyles';
 import {AuthContext} from "../../context/AuthContext";
 import {auth, db} from "../../firebase-config";
 import {doc, updateDoc} from "firebase/firestore";
@@ -18,6 +18,9 @@ const Navbar = () => {
     const [registerSuccess, setRegisterSuccess] = useState<boolean>(false)
     const [resetPasswordSuccess, setResetPasswordSuccess] = useState<boolean>(false)
     const [logOutSuccess, setLogOutSuccess] = useState<boolean>(false);
+    const [clickRank,setClickRank] = useState<boolean>(false)
+    
+    
     const [click, setClick] = useState(false);
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
@@ -49,8 +52,11 @@ const Navbar = () => {
                         <li className="option" onClick={closeMobileMenu}>
                             <Link to="/join-party">파티찾기</Link>
                         </li>
-                        <li className="option" onClick={closeMobileMenu}>
-                            <Link to="/rank">순위</Link>
+                        <li className="option" onClick={()=>{
+                            closeMobileMenu();
+                            setClickRank(true);
+                        }}>
+                            순위
                         </li>
                         <li className="option mobile-option" onClick={closeMobileMenu}>
                             {
@@ -125,6 +131,8 @@ const Navbar = () => {
                                content={"로그아웃 성공 !"}/>
             <TopCenterSnackBar value={resetPasswordSuccess} setValue={setResetPasswordSuccess} severity={"success"}
                                content={"이메일로 임시비밀번호를 보냈습니다. 확인후 로그인 해주세요."}/>
+            <TopCenterSnackBar value={clickRank} setValue={setClickRank} severity={"error"}
+                               content={"순위 서비스는 준비중입니다."}/>
         </>
     );
 };

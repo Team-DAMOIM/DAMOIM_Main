@@ -45,6 +45,7 @@ export const Nav = styled.nav`
 
   .option {
     font-weight: bold;
+    cursor: pointer;
   }
 
   .option > a {
