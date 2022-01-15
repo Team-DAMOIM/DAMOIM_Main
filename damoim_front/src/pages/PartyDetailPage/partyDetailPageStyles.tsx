@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import styled from "styled-components";
+import {Button} from "@mui/material";
 
 export const PartyDetailPageContainer = styled.div`
   max-width: 1400px;
@@ -50,6 +51,10 @@ export const MemberInfoContainer = styled.div`
   align-content: center;
   justify-content: space-between;
   width: 80%;
+
+  @media screen and (max-width: 480px) {
+    width: 100%;
+  }
 `
 
 export const MemberInfoBox = styled.div`
@@ -63,11 +68,11 @@ export const MemberInfoBoxFlexStart = styled.div`
   flex-direction: column;
 `
 
-interface MemberInfoTextProps{
-  isBold: boolean;
-  fontSize: string;
-  fontColor: string;
-  textAlign: string;
+interface MemberInfoTextProps {
+    isBold: boolean;
+    fontSize: string;
+    fontColor: string;
+    textAlign: string;
 }
 
 export const InfoText = styled.p<MemberInfoTextProps>`
@@ -75,15 +80,22 @@ export const InfoText = styled.p<MemberInfoTextProps>`
   font-size: ${props => props.fontSize};
   color: ${props => props.fontColor};
   text-align: ${props => props.textAlign};
+
+
 `
 
 export const PersonIconLink = styled(Link)`
   display: block;
   width: 70px;
   height: 70px;
-  background: url(/images/personIcon.png) no-repeat;
-  background-size : cover;
+  background: url(/images/personIconFilled.png) no-repeat;
+  background-size: cover;
+  transform: scale(1.15);
   margin: auto;
+  @media screen and (max-width: 390px) {
+    width: 60px;
+    height: 60px;
+  }
 `
 
 export const PersonIconNotLink = styled.div`
@@ -91,17 +103,26 @@ export const PersonIconNotLink = styled.div`
   width: 70px;
   height: 70px;
   background: url(/images/personIcon.png) no-repeat;
-  background-size : cover;
+  background-size: cover;
+  @media screen and (max-width: 390px) {
+    width: 60px;
+    height: 60px;
+  }
 `
 
 export const InfoTextArea = styled.div`
   width: 80%;
-  height: 140px;
-  margin: 80px auto 40px;
+  margin: 0 auto;
+  margin-top: 10vh;
+
   display: grid;
-  grid-template-columns: 200px 1fr;
-  align-items: center;
-  align-content: space-between;
+  grid-template-columns: repeat(2, auto);
+  grid-gap: 50px;
+
+  @media screen and (max-width: 768px) {
+    grid-template-columns: repeat(1, auto);
+    grid-gap: 15px;
+  }
 `
 
 export const MemberTalkBox = styled.div`
@@ -123,3 +144,10 @@ export const LoadingArea = styled.div`
   text-align: center;
 `;
 
+
+export const JoinButtonContainer  = styled.div`
+  width: 100%;
+  text-align: center;
+  margin-top: 3vh;
+  
+`

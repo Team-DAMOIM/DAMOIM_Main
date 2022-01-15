@@ -2,11 +2,30 @@ import {doc, getDoc} from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import {useParams} from "react-router-dom";
 import { db } from '../../firebase-config';
-import { DetailBox, MemberInfoBox, MemberInfoBoxFlexStart, MemberInfoContainer, InfoText, PartyDetailPageContainer, PersonIconLink, PersonIconNotLink, SelectedOTTBox, TrimOTTIcon, InfoTextArea, MemberTalkBox, MemberTalkArea, LoadingArea } from './partyDetailPageStyles';
+import {
+  DetailBox,
+  MemberInfoBox,
+  MemberInfoBoxFlexStart,
+  MemberInfoContainer,
+  InfoText,
+  PartyDetailPageContainer,
+  PersonIconLink,
+  PersonIconNotLink,
+  SelectedOTTBox,
+  TrimOTTIcon,
+  InfoTextArea,
+  MemberTalkBox,
+  MemberTalkArea,
+  LoadingArea,
+   JoinButtonContainer
+} from './partyDetailPageStyles';
 import { CircularProgress } from "@material-ui/core";
 import {partyTypes, userInfoTypes} from "../../utils/types";
 import moment from "moment";
-
+import CardWithIcon from "../../components/CardWithIcon/CardWithIcon";
+import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
+import TimelapseTwoToneIcon from '@mui/icons-material/TimelapseTwoTone';
+import {Button} from "@mui/material";
 
 const PartyDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -118,14 +137,18 @@ const PartyDetailPage = () => {
             })}
           </MemberInfoContainer>
           <InfoTextArea>
-            <InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>시작일(갱신일)</InfoText>
-            <InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>{moment(partyData.startDate.toDate()).format('YYYY년 MM월 DD일 ~')}</InfoText>
+            <CardWithIcon title={"시작일(갱신일)"} content={moment(partyData.startDate.toDate()).format('YYYY년 MM월 DD일 ~')} icon={<DateRangeTwoToneIcon/>}/>
+            <CardWithIcon title={"구독희망기간"} content={`${partyData.wishPeriod}개월`} icon={<TimelapseTwoToneIcon/>}/>
+            {/*<CardWithIcon title={"오픈채팅 URL"} content={partyData.openChatLink} icon={<ChatBubbleTwoToneIcon/>}/>*/}
 
-            <InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>구독희망기간</InfoText>
-            <InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>{partyData.wishPeriod}개월</InfoText>
+            {/*<InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>시작일(갱신일)</InfoText>*/}
+            {/*<InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>{moment(partyData.startDate.toDate()).format('YYYY년 MM월 DD일 ~')}</InfoText>*/}
 
-            <InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>오픈채팅 URL</InfoText>
-            <InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'><a href={partyData.openChatLink}>{partyData.openChatLink}</a></InfoText>
+            {/*<InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>구독희망기간</InfoText>*/}
+            {/*<InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>{partyData.wishPeriod}개월</InfoText>*/}
+
+            {/*<InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>오픈채팅 URL</InfoText>*/}
+            {/*<InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'><a href={partyData.openChatLink}>{partyData.openChatLink}</a></InfoText>*/}
           </InfoTextArea>
           <MemberTalkBox>
             <InfoText isBold={true} fontSize='16px' fontColor='black' textAlign='left'>파티원들의 한마디</InfoText>
@@ -143,6 +166,10 @@ const PartyDetailPage = () => {
               <InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>{partyData[1].member4}</InfoText> */}
             </MemberTalkArea>
           </MemberTalkBox>
+          <JoinButtonContainer>
+          <Button variant={"outlined"}>파티 참여</Button>
+          </JoinButtonContainer>
+
         </DetailBox>
       </PartyDetailPageContainer>
     ) : (

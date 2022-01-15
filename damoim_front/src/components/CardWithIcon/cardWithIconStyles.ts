@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 export const CardWithIconContainer = styled.div`
-  width: 100%;
   display: flex;
   padding: 1vw;
   justify-content: space-between;
