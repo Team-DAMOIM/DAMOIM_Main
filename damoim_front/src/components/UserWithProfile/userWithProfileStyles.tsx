@@ -3,11 +3,12 @@ import styled from "styled-components";
 export const UserWithProfileContainer = styled.div`
   display: flex;
   width: 20%;
+  align-items: center;
   img{
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    margin-right: 2px;
+    margin-right: 5px;
   }
 
   span {
