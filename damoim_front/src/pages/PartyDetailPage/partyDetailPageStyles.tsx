@@ -16,6 +16,15 @@ export const DetailBox = styled.div`
   border: 3px solid gray;
   border-radius: 20px;
   box-shadow: rgb(0 0 0 / 12%) 0px 3px 6px, rgb(0 0 0 / 24%) 0px 2px 5px;
+
+
+  @media screen and (max-width: 768px) {
+    max-width: 90%;
+  }
+
+  @media screen and (max-width: 480px) {
+    max-width: 95%;
+  }
 `
 
 export const SelectedOTTBox = styled.div`
