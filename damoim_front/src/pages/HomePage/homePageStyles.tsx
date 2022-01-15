@@ -23,4 +23,11 @@ export const PartyCardContainer = styled.div`
   margin: 50px auto 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(330px, 1fr));
+  @media screen and (max-width: 1025px) {
+    grid-template-columns: repeat(2, minmax(330px, 1fr));
+  }
+
+  @media screen and (max-width: 720px) {
+    grid-template-columns: repeat(1, minmax(330px, 1fr));
+  }
 `

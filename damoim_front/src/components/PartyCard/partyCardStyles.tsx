@@ -116,15 +116,15 @@ export const PersonIcon = styled.span<{ url: string }>`
     background-size: cover;
   }
 `
-
-export const BgPerson = styled.span`
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  display: block;
-  background: #1874D0;
-`
+//
+// export const BgPerson = styled.span`
+//   position: absolute;
+//   top: 0;
+//   bottom: 0;
+//   left: 0;
+//   display: block;
+//   background: #1874D0;
+// `
 
 export const ExplainText = styled.div`
   margin-top: 40px;
