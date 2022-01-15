@@ -9,24 +9,57 @@ import { ColFlexInfoCont, CreatePartyBtn, CreatePartyPageContainer, CustomHalfTe
 import { TextField, Alert } from '@mui/material';
 import { LocalizationProvider, StaticDatePicker } from '@mui/lab'
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { addDoc, doc, DocumentData, getDoc, Query, query, Timestamp, where } from 'firebase/firestore';
-import { partysCollectionRef, usersCollectionRef } from '../../firestoreRef/ref';
+import {addDoc, doc, DocumentData, getDoc, getDocs, Query, query, Timestamp, where} from 'firebase/firestore';
+import {partysCollectionRef, relationsCollectionRef, usersCollectionRef} from '../../firestoreRef/ref';
 import { db } from '../../firebase-config';
+import {relationTypes} from "../../utils/types";
 
 const CreatePartyPage = () => {
   const user = useContext(AuthContext);
   const history = useHistory();
   const [selectedOTTs, setSelectedOTTs] = useState<string[]>([]);
   const [memberUIDs, setMemberUIDs] = useState<string[]>([]);
+  let noFriend = false;
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [wishPeriod, setWishPeriod] = useState<number>(1);
   const [openChatLink, setOpenChatLink] = useState<string>("https://open.kakao.com/");
   const [memberTalk, setMemberTalk] = useState<string>("");
+
   // const [temperature, setTemperature] = useState<number[]>([]);
   // const [avgTemperature, setAvgTemperature] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false)
   const [fail, setFail] = useState<boolean>(false)
+
+  useEffect(() => {
+    const getRelations = async () => {
+      if (user) {
+        const relationQuery1 = await query(relationsCollectionRef, where("member1", "==", user.uid), where("state", "==", "active"));
+        const relationQuery2 = await query(relationsCollectionRef, where("member2", "==", user.uid), where("state", "==", "active"));
+        const data1 = await getDocs(relationQuery1);
+        const data2 = await getDocs(relationQuery2);
+        let data1Array = data1.docs.map((doc) => ({...doc.data()} as relationTypes));
+        let data2Array = data2.docs.map((doc) => ({...doc.data()} as relationTypes));
+        let mergeData = data1Array.concat(data2Array);
+
+        if (mergeData.length === 0) {
+          noFriend = true;
+        } else {
+          let resultArr = [];
+          for (let i = 0; i < mergeData.length; i++) {
+            if (mergeData[i].member1 === user.uid) {
+              resultArr.push(mergeData[i].member2)
+            } else {
+              resultArr.push(mergeData[i].member1)
+            }
+          }
+          setMemberUIDs(resultArr);
+        }
+
+      }
+    }
+    getRelations();
+  }, [])
 
   const addParty = async (UIDs: string[], startDate: Date, hostUID: string) => {
     let temperatures: number[] = [];
@@ -86,7 +119,7 @@ const CreatePartyPage = () => {
   }
 
   return (
-    // user ? (
+    user && (memberUIDs.length !== 0 || noFriend) ? (
       <CreatePartyPageContainer>
         {/* 알림창 부분 */}
         <Snackbar open={success} autoHideDuration={2000} anchorOrigin={{vertical: 'top', horizontal: 'center'}}
@@ -131,18 +164,18 @@ const CreatePartyPage = () => {
               {/* 시작일(갱신일) */}
               <Typography fontSize={40} align='left' style={{margin: '0 auto'}}>시작일(갱신일)</Typography>
               <br/>
-              {/*<LocalizationProvider dateAdapter={AdapterDateFns}>*/}
-              {/*  <StaticDatePicker*/}
-              {/*    displayStaticWrapperAs="desktop"*/}
-              {/*    openTo="day"*/}
-              {/*    disablePast*/}
-              {/*    value={startDate}*/}
-              {/*    onChange={(newStartDate) => {*/}
-              {/*      setStartDate(newStartDate);*/}
-              {/*    }}*/}
-              {/*    renderInput={(params) => <TextField {...params} />}*/}
-              {/*  />*/}
-              {/*</LocalizationProvider>*/}
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <StaticDatePicker
+                  displayStaticWrapperAs="desktop"
+                  openTo="day"
+                  disablePast
+                  value={startDate}
+                  onChange={(newStartDate) => {
+                    setStartDate(newStartDate);
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
             </ColFlexInfoCont>
             <ColFlexInfoCont>
               {/* 구독희망기간 */}
@@ -159,7 +192,7 @@ const CreatePartyPage = () => {
                   setWishPeriod(parseInt(e.target.value));
                   console.log(wishPeriod);
                 }}
-                error={wishPeriod < 0 || wishPeriod > 13 ? true : false }
+                error={wishPeriod < 0 || wishPeriod > 13 }
               />
               <br/><br/><br/>
               
@@ -178,7 +211,7 @@ const CreatePartyPage = () => {
                   setOpenChatLink(e.target.value);
                 }}
                 placeholder='https://open.kakao.com/'
-                error={openChatLink?.slice(0, 23) !== "https://open.kakao.com/" ? true : false }
+                error={openChatLink?.slice(0, 23) !== "https://open.kakao.com/"}
               />
             </ColFlexInfoCont>
           </RawFlexInfoCont>
@@ -209,11 +242,12 @@ const CreatePartyPage = () => {
             <CreatePartyBtn onClick={createPartyHandler}>파티 만들기</CreatePartyBtn>
         </InfoInputBox>
       </CreatePartyPageContainer>
-    // ) : loading ? (
-    //   <LoadingArea>
-    //     <CircularProgress />
-    //   </LoadingArea>
-    // ) : <Alert severity="error" sx={{width: '100%'}}>로그인 먼저 해주세요!</Alert>
+    ) : (
+      <LoadingArea>
+        <CircularProgress />
+      </LoadingArea>
+    )
+      // : <Alert severity="error" sx={{width: '100%'}}>로그인 먼저 해주세요!</Alert>
 
   );
 };

@@ -10,12 +10,11 @@ import {
 } from "./OtherUserPageStyles";
 import {CustomHalfTextArea} from "../CreatePartyPage/createPartyPageStyles";
 import moment from "moment";
-import {getDocs, query, where} from "firebase/firestore";
-import {usersCollectionRef} from "../../firestoreRef/ref";
-import {userInfoTypes} from "../../utils/types";
+import {addDoc, getDocs, query, Timestamp, where} from "firebase/firestore";
+import {relationsCollectionRef, usersCollectionRef} from "../../firestoreRef/ref";
+import {relationTypes, userInfoTypes} from "../../utils/types";
 import {AuthContext} from "../../context/AuthContext";
 import {useParams} from "react-router-dom";
-import ModeEditTwoToneIcon from "@mui/icons-material/ModeEditTwoTone";
 import {
   Button,
   CircularProgress,
@@ -30,8 +29,12 @@ import CardWithIcon from "../../components/CardWithIcon/CardWithIcon";
 import BadgeTwoToneIcon from "@mui/icons-material/BadgeTwoTone";
 import ThermostatTwoToneIcon from "@mui/icons-material/ThermostatTwoTone";
 import EventNoteTwoToneIcon from "@mui/icons-material/EventNoteTwoTone";
+import AddIcon from '@mui/icons-material/Add';
 import OtherUserPostHistory from "./OtherUserPostHistory";
 import OtherUserCommentHistory from "./OtherUserCommentHistory";
+import CreateIcon from "@mui/icons-material/Create";
+import {LoadingButton} from "@mui/lab";
+import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
 
 const OtherUserPage = () => {
   // OtherUser UID
@@ -40,11 +43,21 @@ const OtherUserPage = () => {
   const user = useContext(AuthContext);
   const [userInfo, setUserInfo] = useState<userInfoTypes>();
   const [otherUserInfo, setOtherUserInfo] = useState<userInfoTypes>();
+  const [relation, setRelation] = useState<relationTypes>({
+    member1: "",
+    member2: "",
+    state: "notFriend",
+    createdAt: Timestamp.fromDate(new Date())
+  });
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(false)
+  const [fail, setFail] = useState<boolean>(false)
 
   useEffect(() => {
     const getUser = async () => {
       if (user) {
-        const userQuery = await query(usersCollectionRef, where("uid", "==", user.uid))
+        const userQuery = await query(usersCollectionRef, where("uid", "==", user.uid));
         const data = await getDocs(userQuery);
         setUserInfo(data.docs.map(doc => ({...doc.data()}))[0] as userInfoTypes);
       }
@@ -55,13 +68,32 @@ const OtherUserPage = () => {
   useEffect(() => {
     const getOtherUser = async () => {
       if (user) {
-        const userQuery = await query(usersCollectionRef, where("uid", "==", id))
+        const userQuery = await query(usersCollectionRef, where("uid", "==", id));
         const data = await getDocs(userQuery);
         setOtherUserInfo(data.docs.map(doc => ({...doc.data()}))[0] as userInfoTypes);
       }
     }
     getOtherUser();
   }, [])
+
+  useEffect(() => {
+    const getRelations = async () => {
+      if (user) {
+        const relationQuery1 = await query(relationsCollectionRef, where("member1", "==", user.uid), where("member2", "==", id));
+        const relationQuery2 = await query(relationsCollectionRef, where("member1", "==", id), where("member2", "==", user.uid));
+        const data1 = await getDocs(relationQuery1);
+        const data2 = await getDocs(relationQuery2);
+        if (data1.docs.length !== 0 || data2.docs.length !== 0) {
+          if (data1.docs.length !== 0) {
+            setRelation(data1.docs.map(doc => ({...doc.data()}))[0] as relationTypes);
+          } else {
+            setRelation(data2.docs.map(doc => ({...doc.data()}))[0] as relationTypes);
+          }
+        }
+      }
+    }
+    getRelations();
+  }, [success])
 
   const [searchCategory, setSearchCategory] = useState("작성 글");
 
@@ -70,13 +102,29 @@ const OtherUserPage = () => {
   };
 
   // 친구 추가 함수 만들어야함!
-  const addFriend = (userUID: string, otherUserUID: string) => {
+  const addFriend = async (userUID: string, otherUserUID: string) => {
+    setLoading(true);
+    await addDoc(relationsCollectionRef, {
+      member1: userUID,
+      member2: otherUserUID,
+      state: "nonActive",
+      createdAt: Timestamp.fromDate(new Date())
+    })
+    setLoading(false);
+    setSuccess(true);
 
+    setTimeout(() => {
+      setSuccess(false);
+    }, 2000)
   };
 
   return (
     userInfo && otherUserInfo ? (
       <OtherUserPageContainer>
+
+        <TopCenterSnackBar value={success} setValue={setSuccess} severity={"success"} content={"친구 신청을 완료했습니다. 상대가 수락하면 친구 목록에 표시됩니다."}/>
+        <TopCenterSnackBar value={fail} setValue={setFail} severity={"error"} content={"친구 신청에 실패했습니다."}/>
+
         <CustomHalfTextArea
           title={`"${otherUserInfo.nickName}" 회원님의 상세정보`}
           content={`다모임과 ${moment(otherUserInfo.createdAt.toDate()).fromNow()} 부터 함께하고 있어요 🥳`}
@@ -91,9 +139,22 @@ const OtherUserPage = () => {
                 <span>{otherUserInfo.email}</span>
               </UserNameWithEmail>
             </UserImageWithInfo>
-            <Button variant="contained" startIcon={<ModeEditTwoToneIcon/>} onClick={() => {
-              addFriend(userInfo.uid, otherUserInfo.uid);
-            }}>친구추가</Button>
+            {relation.state === "notFriend" ? (
+              <LoadingButton
+                variant="contained"
+                startIcon={<AddIcon/>}
+                onClick={() => {
+                  addFriend(userInfo.uid, otherUserInfo.uid);
+                }}
+                loading={loading}
+              >
+                친구신청
+              </LoadingButton>
+            ) : relation.state === "active" ? (
+              <Button>친구</Button>
+            ) : relation.state === "nonActive" ? (
+              <Button>친구 신청 중</Button>
+            ) : <Button>처리 중 (차단 시 해당 처리 예정)</Button>}
           </MainInfoCard>
 
           <AdditionalInfoCard>

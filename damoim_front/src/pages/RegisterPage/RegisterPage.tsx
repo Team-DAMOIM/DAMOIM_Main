@@ -39,6 +39,9 @@ const Register = () => {
                 email,
                 createdAt: Timestamp.fromDate(new Date()),
                 isOnline: true,
+                isHost: false,
+                joinPeriod: 0,
+                temperature: 38
             });
             setData({
                 name: "",

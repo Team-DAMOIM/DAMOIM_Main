@@ -8,3 +8,4 @@ export const likesCollectionRef = collection(db, "likes");
 export const disLikesCollectionRef = collection(db, "disLikes");
 export const communityReportCollectionRef = collection(db, "communityReports");
 export const partysCollectionRef = collection(db, "partys");
+export const relationsCollectionRef = collection(db, "relations");
