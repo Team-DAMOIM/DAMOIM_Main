@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import styled from "styled-components";
 
 export const PartyCardContainer = styled.div`
@@ -66,11 +66,12 @@ export const OTTIconCover = styled.div`
 export const OTTIcon = styled.div`
   margin: -33px 0px;
   width: 80%;
-  height: 85%;
+  height: 80%;
   background: rgb(255, 255, 255);
   display: flex;
   border-radius: 100%;
   box-shadow: rgb(204 204 204) 0px 0px 2px;
+  border: none;
 `
 
 export const IconImg = styled.img`
@@ -94,12 +95,16 @@ export const PersonIconArea = styled.div`
   justify-content: space-between;
 `
 
-export const PersonIcon = styled.span`
+export const PersonIcon = styled.span<{ url: string }>`
   display: inline-block;
   width: 70px;
   height: 70px;
+
+  transform: ${props => props.url === "personIconFilled" ? 'scale(1.15)' : 'scale(1.0)'};
+
   z-index: 100;
   position: relative;
+
   :after {
     content: '';
     position: absolute;
@@ -107,8 +112,8 @@ export const PersonIcon = styled.span`
     bottom: 0;
     left: 0;
     right: 0;
-    background: url(images/personIcon.png) no-repeat;
-    background-size : cover;
+    background: ${props => `url(images/${props.url}.png)`} no-repeat;
+    background-size: cover;
   }
 `
 
