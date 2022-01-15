@@ -12,4 +12,15 @@ export const PartyCardContainer = styled.div`
   margin: 50px auto 50px;
   display: grid;
   grid-template-columns: repeat(4, minmax(330px, 1fr));
+
+  @media screen and (max-width: 1425px) {
+    grid-template-columns: repeat(3, minmax(330px, 1fr));
+  }
+
+  @media screen and (max-width: 1024px) {
+    grid-template-columns: repeat(2, minmax(330px, 1fr));
+  }
+  @media screen and (max-width: 690px) {
+    grid-template-columns: repeat(1, minmax(330px, 1fr));
+  }
 `

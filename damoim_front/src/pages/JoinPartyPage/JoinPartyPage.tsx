@@ -5,6 +5,7 @@ import { JoinPartyPageContainer, PartyCardContainer } from './joinPartyPageStyle
 import { DocumentData, getDocs, orderBy, Query, query, where } from 'firebase/firestore';
 import { partysCollectionRef } from "../../firestoreRef/ref";
 import { partyTypes } from '../../utils/types';
+import HalfTextArea from "../../components/HalfTextArea/HalfTextArea";
 
 const initialSelectedOTTs = ["netflix", "disneyPlus", "watcha", "wavve", "tving", "laftel", "appleTV", "amazon", "welaaa"];
 
@@ -40,6 +41,7 @@ const JoinPartyPage = () => {
 
   return (
     <JoinPartyPageContainer>
+      <HalfTextArea title={"파티찾기"} content={"원하는 OTT 서비스를 찾아봐요😘"}/>
       <OTTSelectBar selectedOTTs={selectedOTTs} setSelectedOTTs={setSelectedOTTs} selectOnlyOne={false} />
       <PartyCardContainer>
         {/* 이 밑에 '모집중' 하드코딩된거 추후 수정 */}
