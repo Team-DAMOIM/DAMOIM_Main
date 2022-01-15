@@ -40,6 +40,8 @@ const OtherUserPage = () => {
   // OtherUser UID
   const { id } = useParams<{ id: string }>();
 
+  const [nonLogin, setNonLogin] = useState<boolean>(false);
+
   const user = useContext(AuthContext);
   const [userInfo, setUserInfo] = useState<userInfoTypes>();
   const [otherUserInfo, setOtherUserInfo] = useState<userInfoTypes>();
@@ -60,6 +62,8 @@ const OtherUserPage = () => {
         const userQuery = await query(usersCollectionRef, where("uid", "==", user.uid));
         const data = await getDocs(userQuery);
         setUserInfo(data.docs.map(doc => ({...doc.data()}))[0] as userInfoTypes);
+      } else {
+        setNonLogin(true);
       }
     }
     getUser();
@@ -67,11 +71,9 @@ const OtherUserPage = () => {
 
   useEffect(() => {
     const getOtherUser = async () => {
-      if (user) {
-        const userQuery = await query(usersCollectionRef, where("uid", "==", id));
-        const data = await getDocs(userQuery);
-        setOtherUserInfo(data.docs.map(doc => ({...doc.data()}))[0] as userInfoTypes);
-      }
+      const userQuery = await query(usersCollectionRef, where("uid", "==", id));
+      const data = await getDocs(userQuery);
+      setOtherUserInfo(data.docs.map(doc => ({...doc.data()}))[0] as userInfoTypes);
     }
     getOtherUser();
   }, [])
@@ -119,7 +121,7 @@ const OtherUserPage = () => {
   };
 
   return (
-    userInfo && otherUserInfo ? (
+    (userInfo || nonLogin) && otherUserInfo ? (
       <OtherUserPageContainer>
 
         <TopCenterSnackBar value={success} setValue={setSuccess} severity={"success"} content={"친구 신청을 완료했습니다. 상대가 수락하면 친구 목록에 표시됩니다."}/>
@@ -139,7 +141,7 @@ const OtherUserPage = () => {
                 <span>{otherUserInfo.email}</span>
               </UserNameWithEmail>
             </UserImageWithInfo>
-            {relation.state === "notFriend" ? (
+            {nonLogin ? <div></div> : userInfo && relation.state === "notFriend" ? (
               <LoadingButton
                 variant="contained"
                 startIcon={<AddIcon/>}
