@@ -70,7 +70,7 @@ const PartyCard = ({id, OTTsNameArray, headerText, avgTemperature, memberNum}: P
                         <PersonIconArea>
                             {[0, 1, 2, 3].map(idx => {
                                 return (
-                                    <PersonIcon url={idx <= (memberNum - 1) ? "personIconFilled" : "personIcon"}/>
+                                    <PersonIcon key={idx} url={idx <= (memberNum - 1) ? "personIconFilled" : "personIcon"}/>
                                 )
                             })}
                         </PersonIconArea>
