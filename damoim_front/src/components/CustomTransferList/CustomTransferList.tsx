@@ -7,8 +7,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
-import { usersCollectionRef } from "../../firestoreRef/ref";
-import { query, where, getDocs, doc, getDoc } from 'firebase/firestore';
+import {  doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase-config';
 
 function not(a: readonly string[], b: readonly string[]) {
@@ -35,6 +34,21 @@ const CustomTransferList = ({ value, setValue }: CustomTransferListTypes) => {
 
   const leftUIDChecked = intersection(checkedUID, leftUID);
   const rightUIDChecked = intersection(checkedUID, rightUID);
+
+
+  const [width,setWidth] = useState(window.innerWidth) ;
+  const handleResize = () => {
+    setWidth(window.innerWidth)
+  }
+
+
+  useEffect(()=>{
+    window.addEventListener('resize',handleResize);
+    return () => {
+      window.removeEventListener('resize',handleResize)
+    }
+  })
+
 
   // leftUID의 uid들을 가지고 user name으로 바꿔줌
   useEffect(() => {
@@ -116,7 +130,7 @@ const CustomTransferList = ({ value, setValue }: CustomTransferListTypes) => {
   };
 
   const customList = (items: readonly string[], itemsUID: string[]) => (
-    <Paper sx={{ width: 200, height: 230, overflow: 'auto' }}>
+    <Paper sx={{ width: width > 600 ? 240 : width-100, height: width > 600 ? 230 : 150, overflow: 'auto' }}>
       <List dense component="div" role="list">
         {items.map((value: string, idx) => {
           return (
@@ -146,7 +160,7 @@ const CustomTransferList = ({ value, setValue }: CustomTransferListTypes) => {
     <Grid container spacing={2} justifyContent="center" alignItems="center">
       <Grid item>{customList(left, leftUID)}</Grid>
       <Grid item>
-        <Grid container direction="column" alignItems="center">
+        <Grid container direction={width > 600 ? "column" : "row"} alignItems="center">
           <Button
             sx={{ my: 0.5 }}
             variant="outlined"
@@ -155,7 +169,7 @@ const CustomTransferList = ({ value, setValue }: CustomTransferListTypes) => {
             disabled={leftChecked.length === 0}
             aria-label="move selected right"
           >
-            &gt;
+             {width > 600 ? '&gt;' : '⬇' }
           </Button>
           <Button
             sx={{ my: 0.5 }}
@@ -165,8 +179,7 @@ const CustomTransferList = ({ value, setValue }: CustomTransferListTypes) => {
             disabled={rightChecked.length === 0}
             aria-label="move selected left"
           >
-            &lt;
-          </Button>
+            {width > 600 ? '&lt;' : '⬆' }          </Button>
         </Grid>
       </Grid>
       <Grid item>{customList(right, rightUID)}</Grid>
