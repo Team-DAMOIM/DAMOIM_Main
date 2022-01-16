@@ -160,7 +160,7 @@ const CustomTransferList = ({ value, setValue }: CustomTransferListTypes) => {
     <Grid container spacing={2} justifyContent="center" alignItems="center">
       <Grid item>{customList(left, leftUID)}</Grid>
       <Grid item>
-        <Grid container direction={width > 600 ? "column" : "row"} alignItems="center">
+        <Grid container  direction={width > 600 ? "column" : "row"} alignItems="center">
           <Button
             sx={{ my: 0.5 }}
             variant="outlined"
@@ -169,7 +169,7 @@ const CustomTransferList = ({ value, setValue }: CustomTransferListTypes) => {
             disabled={leftChecked.length === 0}
             aria-label="move selected right"
           >
-             {width > 600 ? '&gt;' : '⬇' }
+             {width > 600 ? '▶' : '🔽' }
           </Button>
           <Button
             sx={{ my: 0.5 }}
@@ -179,7 +179,7 @@ const CustomTransferList = ({ value, setValue }: CustomTransferListTypes) => {
             disabled={rightChecked.length === 0}
             aria-label="move selected left"
           >
-            {width > 600 ? '&lt;' : '⬆' }          </Button>
+            {width > 600 ? '◀' : '🔼' }          </Button>
         </Grid>
       </Grid>
       <Grid item>{customList(right, rightUID)}</Grid>
