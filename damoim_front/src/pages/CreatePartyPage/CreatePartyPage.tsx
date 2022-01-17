@@ -2,17 +2,18 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
 import OTTSelectBar from '../../components/OTTSelectBar/OTTSelectBar';
 import CustomTransferList from '../../components/CustomTransferList/CustomTransferList';
-import { CircularProgress, Snackbar, Typography } from '@mui/material';
+import { CircularProgress,  Typography } from '@mui/material';
 import { AuthContext } from '../../context/AuthContext';
-import { ColFlexInfoCont, CreatePartyBtn, CreatePartyPageContainer, CustomHalfTextArea, InfoInputBox, LoadingArea, RawFlexInfoCont } from './createPartyPageStyles';
+import { ColFlexInfoCont, CreatePartyBtn, CreatePartyPageContainer,InfoInputBox, LoadingArea, RawFlexInfoCont ,CustomHalfTextArea} from './createPartyPageStyles';
 
-import { TextField, Alert } from '@mui/material';
+import { TextField} from '@mui/material';
 import { LocalizationProvider, StaticDatePicker } from '@mui/lab'
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import {addDoc, doc, DocumentData, getDoc, getDocs, Query, query, Timestamp, where} from 'firebase/firestore';
-import {partysCollectionRef, relationsCollectionRef, usersCollectionRef} from '../../firestoreRef/ref';
+import {addDoc, doc,  getDoc, getDocs, query, Timestamp, where} from 'firebase/firestore';
+import {partysCollectionRef, relationsCollectionRef} from '../../firestoreRef/ref';
 import { db } from '../../firebase-config';
 import {relationTypes} from "../../utils/types";
+import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
 
 const CreatePartyPage = () => {
   const user = useContext(AuthContext);
@@ -30,6 +31,34 @@ const CreatePartyPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false)
   const [fail, setFail] = useState<boolean>(false)
+  const [titleFontSize,setTitleFontSize] = useState<number>(40)
+
+  const [width,setWidth] = useState(window.innerWidth) ;
+  const handleResize = () => {
+    setWidth(window.innerWidth)
+  }
+
+
+  useEffect(()=>{
+    window.addEventListener('resize',handleResize);
+    return () => {
+      window.removeEventListener('resize',handleResize)
+    }
+  })
+
+
+  useEffect(()=>{
+      if(width > 768){
+        setTitleFontSize(40);
+      }else if (width > 480){
+        setTitleFontSize(26)
+      }else{
+        setTitleFontSize(18)
+      }
+  },[width])
+
+
+
 
   useEffect(() => {
     const getRelations = async () => {
@@ -122,38 +151,23 @@ const CreatePartyPage = () => {
     user && (memberUIDs.length !== 0 || noFriend) ? (
       <CreatePartyPageContainer>
         {/* 알림창 부분 */}
-        <Snackbar open={success} autoHideDuration={2000} anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-          onClose={() => {
-            setSuccess(false);
-          }}
-        >
-          <Alert severity="success" sx={{width: '100%'}}>
-            파티를 만들었습니다!
-          </Alert>
-        </Snackbar>
-        <Snackbar open={fail} autoHideDuration={2000} anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-          onClose={() => {
-              setFail(false);
-          }}
-        >
-          <Alert severity="error" sx={{width: '100%'}}>
-              필수 기입 항목들을 양식에 맞게 작성해주세요.
-          </Alert>
-        </Snackbar>
-          
+
+        <TopCenterSnackBar value={success} setValue={setSuccess} severity={"success"} content={"파티를 만들었습니다!"}/>
+        <TopCenterSnackBar value={fail} setValue={setFail} severity={"error"} content={"필수 기입 항목들을 양식에 맞게 작성해주세요!"}/>
+
         {/* 페이지 소개 */}
         <CustomHalfTextArea title='파티만들기' content='파티장이 작성해주세요! 작성자는 자동으로 파티장이 됩니다🥳'/>
 
         <InfoInputBox>
           <ColFlexInfoCont>
             {/* OTT 선택하기 부분 */}
-            <Typography fontSize={40} align='left'>구독할 OTT</Typography>
+            <Typography fontSize={titleFontSize} align='left'>구독할 OTT</Typography>
             <OTTSelectBar selectedOTTs={selectedOTTs} setSelectedOTTs={setSelectedOTTs} selectOnlyOne={false}/>
           </ColFlexInfoCont>
           
           <ColFlexInfoCont>
             {/* 멤버 선택하기 */}
-            <Typography fontSize={40} align='left'>초기 파티원 선택</Typography>
+            <Typography fontSize={titleFontSize} align='left'>초기 파티원 선택</Typography>
             <Typography variant='body1' align='left'>(친구추가가 된 유저만 초기 파티원로 추가할 수 있습니다. 초기 파티원이 없다면 넘어가도 됩니다 😉)</Typography>
             <br/>
             <CustomTransferList value={memberUIDs} setValue={setMemberUIDs}/>
@@ -162,7 +176,7 @@ const CreatePartyPage = () => {
           <RawFlexInfoCont>
             <ColFlexInfoCont>
               {/* 시작일(갱신일) */}
-              <Typography fontSize={40} align='left' style={{margin: '0 auto'}}>시작일(갱신일)</Typography>
+              <Typography fontSize={titleFontSize} align='left' style={{margin: '0 auto'}}>시작일(갱신일)</Typography>
               <br/>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <StaticDatePicker
@@ -179,7 +193,7 @@ const CreatePartyPage = () => {
             </ColFlexInfoCont>
             <ColFlexInfoCont>
               {/* 구독희망기간 */}
-              <Typography fontSize={40} align='left'>구독 희망 기간(개월)</Typography>
+              <Typography fontSize={titleFontSize} align='left'>구독 희망 기간(개월)</Typography>
               <br/>
               <TextField
                 required
@@ -197,7 +211,7 @@ const CreatePartyPage = () => {
               <br/><br/><br/>
               
               {/* 오픈채팅 URL */}
-              <Typography fontSize={40} align='left'>오픈채팅 URL</Typography>
+              <Typography fontSize={titleFontSize} align='left'>오픈채팅 URL</Typography>
               <br/>
               <TextField
                 required
@@ -218,7 +232,7 @@ const CreatePartyPage = () => {
 
           <ColFlexInfoCont>
               {/* 파티원에게 한마디 */}
-              <Typography fontSize={40} align='left'>파티원에게 한마디</Typography>
+              <Typography fontSize={titleFontSize} align='left'>파티원에게 한마디</Typography>
               <br/>
               <TextField
                 label="코멘트"

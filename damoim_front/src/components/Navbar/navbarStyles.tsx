@@ -162,7 +162,7 @@ export const Nav = styled.nav`
       flex-direction: column;
       justify-content: center;
       text-align: center;
-      margin-top: 5vh;
+      margin-top: 10vh;
 
       button {
         margin-left: 0;

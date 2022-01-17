@@ -27,6 +27,7 @@ import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
 import TimelapseTwoToneIcon from '@mui/icons-material/TimelapseTwoTone';
 import {Button} from "@mui/material";
 import {AuthContext} from "../../context/AuthContext";
+import JoinPartyForm from "./JoinPartyForm";
 
 
 const PartyDetailPage = () => {
@@ -38,6 +39,7 @@ const PartyDetailPage = () => {
   const [selectedOTT, setSelectedOTT] = useState<string[]>([]);
   const [memberUIDs, setMemberUIDs] = useState<string[]>([]);
   const [memberData, setMemberData] = useState<userInfoTypes[]>([]);
+  const [joinPartyOpen,setJoinPartyOpen] = useState<boolean>(false)
 
   const getPartyData = async (partyID: string) => {
     const docRef = doc(db, "partys", partyID);
@@ -93,6 +95,9 @@ const PartyDetailPage = () => {
   useEffect(() => {
     getPartyData(id)
   }, [])
+
+
+
 
   return (
     partyData && (selectedOTT.length !== 0)   // partyData 받아오고 선택한 OTT 데이터 받아오면
@@ -171,10 +176,13 @@ const PartyDetailPage = () => {
             </MemberTalkArea>
           </MemberTalkBox>
           <JoinButtonContainer>
-          <Button variant={"outlined"}>파티 참여</Button>
+          <Button disabled={memberUIDs.length === 4} onClick={()=>{
+            setJoinPartyOpen(true);
+          }} variant={"outlined"}>파티 참여</Button>
           </JoinButtonContainer>
 
         </DetailBox>
+        <JoinPartyForm joinPartyOpen={joinPartyOpen} setJoinPartyOpen={setJoinPartyOpen} openChatLink={partyData.openChatLink}/>
       </PartyDetailPageContainer>
     ) : (
       <LoadingArea>
