@@ -89,8 +89,6 @@ export const InfoText = styled.p<MemberInfoTextProps>`
   font-size: ${props => props.fontSize};
   color: ${props => props.fontColor};
   text-align: ${props => props.textAlign};
-
-
 `
 
 export const PersonIconLink = styled(Link)`

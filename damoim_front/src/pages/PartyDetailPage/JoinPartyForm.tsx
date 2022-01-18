@@ -34,8 +34,8 @@ function JoinPartyForm({joinPartyOpen, setJoinPartyOpen,openChatLink}: JoinParty
                 <DialogTitle>파티 참여</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        <span style={{color: 'black', fontWeight: 'bold'}}>오픈 채팅에 참여해주세요</span><br/><br/>
-                        <span style={{color: '#777', fontWeight: 'bold'}}>{openChatLink}</span><br/><br/>
+                      <span style={{color: 'black', fontWeight: 'bold'}}>오픈 채팅에 참여해주세요</span><br/><br/>
+                      <span style={{color: '#777', fontWeight: 'bold'}}><a href={openChatLink}>{openChatLink}</a></span><br/><br/>
                         우측하단에 파티참여 버튼을 누르면 파티장에게 알림 메세지가 전송됩니다. 오픈 채팅에 참가하여 파티원들과 대화를 나눈후
                         파티장에게 다모임 페이지에서 파티를 수락해달라고 요청하세요!
                     </DialogContentText>

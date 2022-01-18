@@ -151,7 +151,6 @@ const CreatePartyPage = () => {
     user && (memberUIDs.length !== 0 || noFriend) ? (
       <CreatePartyPageContainer>
         {/* 알림창 부분 */}
-
         <TopCenterSnackBar value={success} setValue={setSuccess} severity={"success"} content={"파티를 만들었습니다!"}/>
         <TopCenterSnackBar value={fail} setValue={setFail} severity={"error"} content={"필수 기입 항목들을 양식에 맞게 작성해주세요!"}/>
 

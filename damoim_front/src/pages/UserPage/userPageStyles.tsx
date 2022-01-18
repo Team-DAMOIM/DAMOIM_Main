@@ -82,9 +82,30 @@ export const UserSemiCardSection = styled.div`
   }
 `
 
+export const UserPageFriendSection = styled.div`
+  display: flex;
+  border-radius: 5px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5vh;
+  padding:1vw;
+  gap: 1vw;
+  box-shadow: rgb(0 0 0 / 12%) 0px 3px 6px, rgb(0 0 0 / 24%) 0px 2px 5px;
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    button {
+      margin-top: 2vh;
+    }
+  }
+`
 
 export const UserPagePostHistoryContainer = styled.div`
   border-radius: 5px;
   box-shadow: rgb(0 0 0 / 12%) 0px 3px 6px, rgb(0 0 0 / 24%) 0px 2px 5px;
 `
 
+export const LoadingArea = styled.div`
+  margin: 400px auto 300px;
+  width: 1200px;
+  text-align: center;
+`;

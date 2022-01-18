@@ -7,8 +7,6 @@ export const UserPageFriendsContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  
 `
 
 export const UserPageFriendsSVGContainer = styled.div`
