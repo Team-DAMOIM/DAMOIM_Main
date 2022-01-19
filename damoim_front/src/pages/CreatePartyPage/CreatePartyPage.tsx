@@ -20,7 +20,7 @@ const CreatePartyPage = () => {
   const history = useHistory();
   const [selectedOTTs, setSelectedOTTs] = useState<string[]>([]);
   const [memberUIDs, setMemberUIDs] = useState<string[]>([]);
-  let noFriend = false;
+  const [noFriend, setNoFriend] = useState<boolean>(false);
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [wishPeriod, setWishPeriod] = useState<number>(1);
   const [openChatLink, setOpenChatLink] = useState<string>("https://open.kakao.com/");
@@ -72,7 +72,7 @@ const CreatePartyPage = () => {
         let mergeData = data1Array.concat(data2Array);
 
         if (mergeData.length === 0) {
-          noFriend = true;
+          setNoFriend(true);
         } else {
           let resultArr = [];
           for (let i = 0; i < mergeData.length; i++) {
