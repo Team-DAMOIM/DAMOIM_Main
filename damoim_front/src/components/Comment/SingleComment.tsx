@@ -11,6 +11,8 @@ import CommentAreaWithButton from "./CommentAreaWithButton";
 import {AntdCommentContainer} from "./commentStyles";
 import LikeDislikes from "../LikeDislikes/LikeDislikes";
 import TopCenterSnackBar from "../TopCenterSnackBar/TopCenterSnackBar";
+import {Link} from 'react-router-dom'
+
 
 interface SingleCommentComponentTypes {
     comment: SingleCommentTypesWithUser;
@@ -78,12 +80,14 @@ function SingleComment({comment, postId, refreshFunction}: SingleCommentComponen
             <AntdCommentContainer>
                 <Comment
                     actions={actions}
-                    author={<a>{comment.nickName}</a>}
+                    author={ <Link to={ user?.uid === comment.writerUID ? `/userPage/${user?.uid}` :`/otherUserPage/${comment.writerUID}`}>{comment.nickName}</Link>}
                     avatar={
+                    <Link to={ user?.uid === comment.writerUID ? `/userPage/${user?.uid}` :`/otherUserPage/${comment.writerUID}`}>
                         <Avatar
                             src={comment.avatar || "/images/personIcon.png"}
                             alt="image"
                         />
+                    </Link>
                     }
                     content={
                         <p>

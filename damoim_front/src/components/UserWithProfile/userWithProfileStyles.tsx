@@ -1,6 +1,7 @@
 import styled from "styled-components";
+import {Link} from "react-router-dom";
 
-export const UserWithProfileContainer = styled.div`
+export const UserWithProfileContainer = styled(Link)`
   display: flex;
   width: 20%;
   align-items: center;

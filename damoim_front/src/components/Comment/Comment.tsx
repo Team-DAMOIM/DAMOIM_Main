@@ -59,7 +59,7 @@ function Comment({commentLists, postId, refreshFunction}: CommentTypes) {
         <div>
             <TopCenterSnackBar value={success} setValue={setSuccess} severity={"success"} content={"댓글 작성 성공했습니다 !"}/>
             <br/>
-            <p> 댓글 {commentLists ? commentLists.length : '0'}개</p>
+            <p> 댓글 {commentLists ? commentLists.length : '0'}개 </p>
             <br/>
             <hr/>
             <br/>
