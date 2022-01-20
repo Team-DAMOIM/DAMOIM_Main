@@ -15,6 +15,7 @@ import { db } from '../../firebase-config';
 import {relationTypes} from "../../utils/types";
 import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
 
+
 const CreatePartyPage = () => {
   const user = useContext(AuthContext);
   const history = useHistory();
@@ -181,18 +182,18 @@ const CreatePartyPage = () => {
               {/* 시작일(갱신일) */}
               <Typography fontSize={titleFontSize} align='left' style={{margin: '0 auto'}}>시작일(갱신일)</Typography>
               <br/>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <StaticDatePicker
-                  displayStaticWrapperAs="desktop"
-                  openTo="day"
-                  disablePast
-                  value={startDate}
-                  onChange={(newStartDate) => {
-                    setStartDate(newStartDate);
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
+              {/*<LocalizationProvider dateAdapter={AdapterDateFns}>*/}
+              {/*  <StaticDatePicker*/}
+              {/*    displayStaticWrapperAs="desktop"*/}
+              {/*    openTo="day"*/}
+              {/*    disablePast*/}
+              {/*    value={startDate}*/}
+              {/*    onChange={(newStartDate) => {*/}
+              {/*      setStartDate(newStartDate);*/}
+              {/*    }}*/}
+              {/*    renderInput={(params) => <TextField {...params} />}*/}
+              {/*  />*/}
+              {/*</LocalizationProvider>*/}
             </ColFlexInfoCont>
             <ColFlexInfoCont>
               {/* 구독희망기간 */}
