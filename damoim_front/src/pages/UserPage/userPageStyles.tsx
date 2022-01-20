@@ -94,7 +94,8 @@ export const UserPageFriendSection = styled.div`
   @media screen and (max-width: 768px) {
     flex-direction: column;
     button {
-      margin-top: 2vh;
+      margin: 1vh;
+      width: 100%;
     }
   }
 `
