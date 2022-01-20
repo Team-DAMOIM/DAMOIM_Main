@@ -21,7 +21,10 @@ const CreatePartyPage = () => {
   const history = useHistory();
   const [selectedOTTs, setSelectedOTTs] = useState<string[]>([]);
   const [memberUIDs, setMemberUIDs] = useState<string[]>([]);
+
+  const [haveFriend, setHaveFriend] = useState<boolean>(false);
   const [noFriend, setNoFriend] = useState<boolean>(false);
+
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [wishPeriod, setWishPeriod] = useState<number>(1);
   const [openChatLink, setOpenChatLink] = useState<string>("https://open.kakao.com/");
@@ -84,6 +87,7 @@ const CreatePartyPage = () => {
             }
           }
           setMemberUIDs(resultArr);
+          setHaveFriend(true);
         }
 
       }
@@ -149,7 +153,7 @@ const CreatePartyPage = () => {
   }
 
   return (
-    user && (memberUIDs.length !== 0 || noFriend) ? (
+    user && (haveFriend || noFriend) ? (
       <CreatePartyPageContainer>
         {/* 알림창 부분 */}
         <TopCenterSnackBar value={success} setValue={setSuccess} severity={"success"} content={"파티를 만들었습니다!"}/>
