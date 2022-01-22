@@ -16,10 +16,8 @@ import {
   InfoTextArea,
   MemberTalkBox,
   MemberTalkArea,
-  LoadingArea,
    JoinButtonContainer
 } from './partyDetailPageStyles';
-import { CircularProgress } from "@material-ui/core";
 import {partyTypes, userInfoTypes} from "../../utils/types";
 import moment from "moment";
 import CardWithIcon from "../../components/CardWithIcon/CardWithIcon";
@@ -28,6 +26,7 @@ import TimelapseTwoToneIcon from '@mui/icons-material/TimelapseTwoTone';
 import {Button} from "@mui/material";
 import {AuthContext} from "../../context/AuthContext";
 import JoinPartyForm from "./JoinPartyForm";
+import Loading from "../../components/Loading/Loading";
 
 
 const PartyDetailPage = () => {
@@ -185,9 +184,7 @@ const PartyDetailPage = () => {
         <JoinPartyForm joinPartyOpen={joinPartyOpen} setJoinPartyOpen={setJoinPartyOpen} openChatLink={partyData.openChatLink}/>
       </PartyDetailPageContainer>
     ) : (
-      <LoadingArea>
-        <CircularProgress />
-      </LoadingArea>
+     <Loading/>
     )
   );
 };
