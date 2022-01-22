@@ -27,6 +27,7 @@ import {Button} from "@mui/material";
 import {AuthContext} from "../../context/AuthContext";
 import JoinPartyForm from "./JoinPartyForm";
 import Loading from "../../components/Loading/Loading";
+ import OpenChatLinkForm from "./OpenChatLinkForm";
 
 
 const PartyDetailPage = () => {
@@ -39,6 +40,7 @@ const PartyDetailPage = () => {
   const [memberUIDs, setMemberUIDs] = useState<string[]>([]);
   const [memberData, setMemberData] = useState<userInfoTypes[]>([]);
   const [joinPartyOpen,setJoinPartyOpen] = useState<boolean>(false)
+  const [showOpenChatLink,setShowOpenChatLink] = useState<boolean>(false)
 
   const getPartyData = async (partyID: string) => {
     const docRef = doc(db, "partys", partyID);
@@ -181,7 +183,8 @@ const PartyDetailPage = () => {
           </JoinButtonContainer>
 
         </DetailBox>
-        <JoinPartyForm joinPartyOpen={joinPartyOpen} setJoinPartyOpen={setJoinPartyOpen} openChatLink={partyData.openChatLink}/>
+        <JoinPartyForm joinPartyOpen={joinPartyOpen} setJoinPartyOpen={setJoinPartyOpen} setShowOpenChatLink={setShowOpenChatLink}/>
+        <OpenChatLinkForm showOpenChatLink={showOpenChatLink} setShowOpenChatLink={setShowOpenChatLink} openChatLink={partyData.openChatLink}/>
       </PartyDetailPageContainer>
     ) : (
      <Loading/>
