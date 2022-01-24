@@ -35,10 +35,11 @@ import OtherUserCommentHistory from "./OtherUserCommentHistory";
 import CreateIcon from "@mui/icons-material/Create";
 import {LoadingButton} from "@mui/lab";
 import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
+import LoadingCircularProgress from "../../components/LoadingCircularProgress/LoadingCircularProgress";
 
 const OtherUserPage = () => {
   // OtherUser UID
-  const { id } = useParams<{ id: string }>();
+  const {id} = useParams<{ id: string }>();
 
   const [nonLogin, setNonLogin] = useState<boolean>(false);
 
@@ -120,85 +121,82 @@ const OtherUserPage = () => {
     }, 2000)
   };
 
+  if (!((userInfo || nonLogin) && otherUserInfo)) return <LoadingCircularProgress/>
+
   return (
-    (userInfo || nonLogin) && otherUserInfo ? (
-      <OtherUserPageContainer>
+    <OtherUserPageContainer>
 
-        <TopCenterSnackBar value={success} setValue={setSuccess} severity={"success"} content={"친구 신청을 완료했습니다. 상대가 수락하면 친구 목록에 표시됩니다."}/>
-        <TopCenterSnackBar value={fail} setValue={setFail} severity={"error"} content={"친구 신청에 실패했습니다."}/>
+      <TopCenterSnackBar value={success} setValue={setSuccess} severity={"success"}
+                         content={"친구 신청을 완료했습니다. 상대가 수락하면 친구 목록에 표시됩니다."}/>
+      <TopCenterSnackBar value={fail} setValue={setFail} severity={"error"} content={"친구 신청에 실패했습니다."}/>
 
-        <CustomHalfTextArea
-          title={`"${otherUserInfo.nickName}" 회원님의 상세정보`}
-          content={`다모임과 ${moment(otherUserInfo.createdAt.toDate()).fromNow()} 부터 함께하고 있어요 🥳`}
-        />
-        <OtherUserInfoBox>
-          <MainInfoCard>
-            <UserImageWithInfo>
-              <img src={otherUserInfo.avatar || '/images/personIcon.png'} alt={"avatar"}/>
-              <UserNameWithEmail>
-                <h4>{otherUserInfo.name}</h4>
-                <span>{otherUserInfo.nickName}</span>
-                <span>{otherUserInfo.email}</span>
-              </UserNameWithEmail>
-            </UserImageWithInfo>
-            {nonLogin ? <div></div> : userInfo && relation.state === "notFriend" ? (
-              <LoadingButton
-                variant="contained"
-                startIcon={<AddIcon/>}
-                onClick={() => {
-                  addFriend(userInfo.uid, otherUserInfo.uid);
-                }}
-                loading={loading}
-              >
-                친구신청
-              </LoadingButton>
-            ) : relation.state === "active" ? (
-              <Button>친구</Button>
-            ) : relation.state === "nonActive" ? (
-              <Button>친구 신청 중</Button>
-            ) : <Button>처리 중 (차단 시 해당 처리 예정)</Button>}
-          </MainInfoCard>
+      <CustomHalfTextArea
+        title={`"${otherUserInfo.nickName}" 회원님의 상세정보`}
+        content={`다모임과 ${moment(otherUserInfo.createdAt.toDate()).fromNow()} 부터 함께하고 있어요 🥳`}
+      />
+      <OtherUserInfoBox>
+        <MainInfoCard>
+          <UserImageWithInfo>
+            <img src={otherUserInfo.avatar || '/images/personIcon.png'} alt={"avatar"}/>
+            <UserNameWithEmail>
+              <h4>{otherUserInfo.name}</h4>
+              <span>{otherUserInfo.nickName}</span>
+              <span>{otherUserInfo.email}</span>
+            </UserNameWithEmail>
+          </UserImageWithInfo>
+          {nonLogin ? <div></div> : userInfo && relation.state === "notFriend" ? (
+            <LoadingButton
+              variant="contained"
+              startIcon={<AddIcon/>}
+              onClick={() => {
+                addFriend(userInfo.uid, otherUserInfo.uid);
+              }}
+              loading={loading}
+            >
+              친구신청
+            </LoadingButton>
+          ) : relation.state === "active" ? (
+            <Button>친구</Button>
+          ) : relation.state === "nonActive" ? (
+            <Button>친구 신청 중</Button>
+          ) : <Button>처리 중 (차단 시 해당 처리 예정)</Button>}
+        </MainInfoCard>
 
-          <AdditionalInfoCard>
-            <CardWithIcon title={"회원권한"} content={"일반회원"} icon={<BadgeTwoToneIcon/>}/>
-            <CardWithIcon title={"매너온도"} content={`${otherUserInfo.temperature}`} icon={<ThermostatTwoToneIcon/>}/>
-            <CardWithIcon title={"회원가입일"}
-                          content={moment(otherUserInfo.createdAt.toDate()).format('YYYY년 MM월 DD일')}
-                          icon={<EventNoteTwoToneIcon/>}/>
-          </AdditionalInfoCard>
+        <AdditionalInfoCard>
+          <CardWithIcon title={"회원권한"} content={"일반회원"} icon={<BadgeTwoToneIcon/>}/>
+          <CardWithIcon title={"매너온도"} content={`${otherUserInfo.temperature}`} icon={<ThermostatTwoToneIcon/>}/>
+          <CardWithIcon title={"회원가입일"}
+                        content={moment(otherUserInfo.createdAt.toDate()).format('YYYY년 MM월 DD일')}
+                        icon={<EventNoteTwoToneIcon/>}/>
+        </AdditionalInfoCard>
 
-          <OtherUserHistorySection>
-            <FormControl sx={{mb: 1, minWidth: 120}}>
-              <InputLabel id="demo-simple-select-helper-label">조회</InputLabel>
-              <Select
-                labelId="demo-simple-select-helper-label"
-                id="demo-simple-select-helper"
-                value={searchCategory}
-                label="조회"
-                onChange={handleChange}
-              >
-                <MenuItem value={'작성 글'}>작성 글</MenuItem>
-                <MenuItem value={'작성 댓글'}>작성 댓글</MenuItem>
-                <MenuItem value={'로그인 기록'} disabled>로그인 기록</MenuItem>
-                <MenuItem value={'쪽지함'} disabled>쪽지함</MenuItem>
-                <MenuItem value={'회원차단내역'} disabled>회원차단내역</MenuItem>
-              </Select>
-              <FormHelperText>조회하고싶은 것을 선택해주세요</FormHelperText>
-            </FormControl>
-            {
-              searchCategory === "작성 글" && <OtherUserPostHistory otherUserUID={otherUserInfo.uid}/>
-            }
-            {
-              searchCategory === "작성 댓글" && <OtherUserCommentHistory otherUserUID={otherUserInfo.uid}/>
-            }
-          </OtherUserHistorySection>
-        </OtherUserInfoBox>
-      </OtherUserPageContainer>
-    ) : (
-      <LoadingArea>
-        <CircularProgress />
-      </LoadingArea>
-    )
+        <OtherUserHistorySection>
+          <FormControl sx={{mb: 1, minWidth: 120}}>
+            <InputLabel id="demo-simple-select-helper-label">조회</InputLabel>
+            <Select
+              labelId="demo-simple-select-helper-label"
+              id="demo-simple-select-helper"
+              value={searchCategory}
+              label="조회"
+              onChange={handleChange}
+            >
+              <MenuItem value={'작성 글'}>작성 글</MenuItem>
+              <MenuItem value={'작성 댓글'}>작성 댓글</MenuItem>
+              <MenuItem value={'로그인 기록'} disabled>로그인 기록</MenuItem>
+              <MenuItem value={'쪽지함'} disabled>쪽지함</MenuItem>
+              <MenuItem value={'회원차단내역'} disabled>회원차단내역</MenuItem>
+            </Select>
+            <FormHelperText>조회하고싶은 것을 선택해주세요</FormHelperText>
+          </FormControl>
+          {
+            searchCategory === "작성 글" && <OtherUserPostHistory otherUserUID={otherUserInfo.uid}/>
+          }
+          {
+            searchCategory === "작성 댓글" && <OtherUserCommentHistory otherUserUID={otherUserInfo.uid}/>
+          }
+        </OtherUserHistorySection>
+      </OtherUserInfoBox>
+    </OtherUserPageContainer>
   );
 };
 
