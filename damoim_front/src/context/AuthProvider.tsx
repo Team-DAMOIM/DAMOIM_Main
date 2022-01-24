@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { auth } from "../firebase-config";
 import {User} from '@firebase/auth-types';
-import Loading from "../components/Loading/Loading";
+import LoadingCircularProgress from "../components/LoadingCircularProgress/LoadingCircularProgress";
 
 export const AuthProvider: React.FC = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
@@ -17,7 +17,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         return unsubscribe;
     }, []);
     if (loading) {
-        return <Loading />;
+        return <LoadingCircularProgress />;
     }
     return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
 };
