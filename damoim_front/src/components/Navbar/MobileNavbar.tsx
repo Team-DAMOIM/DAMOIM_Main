@@ -11,59 +11,59 @@ import MailIcon from '@mui/icons-material/Mail';
 import {Dispatch, SetStateAction, useState} from "react";
 
 interface MobileNavbarTypes {
-    setUserActionModalOpen: Dispatch<SetStateAction<boolean>>;
+  setUserActionModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function MobileNavbar({setUserActionModalOpen} : MobileNavbarTypes) {
-    const [open, setOpen] = useState(false);
+export default function MobileNavbar({setUserActionModalOpen}: MobileNavbarTypes) {
+  const [open, setOpen] = useState(false);
 
-    const toggleDrawer = () => {
-        setOpen(true);
-    }
+  const toggleDrawer = () => {
+    setOpen(true);
+  }
 
-    const list = () => (
-        <Box
-            sx={{width: 'auto'}}
-            role="presentation"
-            onClick={toggleDrawer}
-            onKeyDown={toggleDrawer}
-        >
-            <List>
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem button key={text}>
-                        <ListItemIcon>
-                            {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
-                        </ListItemIcon>
-                        <ListItemText primary={text}/>
-                    </ListItem>
-                ))}
-            </List>
-            <Divider/>
-            <List>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                    <ListItem button key={text}>
-                        <ListItemIcon>
-                            {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
-                        </ListItemIcon>
-                        <ListItemText primary={text}/>
-                    </ListItem>
-                ))}
-            </List>
-        </Box>
-    );
+  const list = () => (
+    <Box
+      sx={{width: 'auto'}}
+      role="presentation"
+      onClick={toggleDrawer}
+      onKeyDown={toggleDrawer}
+    >
+      <List>
+        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+          <ListItem button key={text}>
+            <ListItemIcon>
+              {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
+            </ListItemIcon>
+            <ListItemText primary={text}/>
+          </ListItem>
+        ))}
+      </List>
+      <Divider/>
+      <List>
+        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+          <ListItem button key={text}>
+            <ListItemIcon>
+              {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
+            </ListItemIcon>
+            <ListItemText primary={text}/>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
 
-    return (
-        <div>
-                <Button onClick={toggleDrawer}>sdada</Button>
-                <Drawer
-                    anchor={'top'}
-                    open={open}
-                    onClose={() => {
-                        setOpen(false)
-                    }}
-                >
-                    {list()}
-                </Drawer>
-        </div>
-    );
+  return (
+    <div>
+      <Button onClick={toggleDrawer}>sdada</Button>
+      <Drawer
+        anchor={'top'}
+        open={open}
+        onClose={() => {
+          setOpen(false)
+        }}
+      >
+        {list()}
+      </Drawer>
+    </div>
+  );
 }
