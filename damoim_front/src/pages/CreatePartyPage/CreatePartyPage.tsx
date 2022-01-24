@@ -1,17 +1,25 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useHistory } from "react-router-dom";
+import React, {useContext, useEffect, useState} from 'react';
+import {useHistory} from "react-router-dom";
 import OTTSelectBar from '../../components/OTTSelectBar/OTTSelectBar';
 import CustomTransferList from '../../components/CustomTransferList/CustomTransferList';
-import { CircularProgress,  Typography } from '@mui/material';
-import { AuthContext } from '../../context/AuthContext';
-import { ColFlexInfoCont, CreatePartyBtn, CreatePartyPageContainer,InfoInputBox, LoadingArea, RawFlexInfoCont ,CustomHalfTextArea} from './createPartyPageStyles';
+import {CircularProgress, Typography} from '@mui/material';
+import {AuthContext} from '../../context/AuthContext';
+import {
+  ColFlexInfoCont,
+  CreatePartyBtn,
+  CreatePartyPageContainer,
+  InfoInputBox,
+  LoadingArea,
+  RawFlexInfoCont,
+  CustomHalfTextArea
+} from './createPartyPageStyles';
 
-import { TextField} from '@mui/material';
-import { LocalizationProvider, StaticDatePicker } from '@mui/lab'
+import {TextField} from '@mui/material';
+import {LocalizationProvider, StaticDatePicker} from '@mui/lab'
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import {addDoc, doc,  getDoc, getDocs, query, Timestamp, where} from 'firebase/firestore';
+import {addDoc, doc, getDoc, getDocs, query, Timestamp, where} from 'firebase/firestore';
 import {partysCollectionRef, relationsCollectionRef} from '../../firestoreRef/ref';
-import { db } from '../../firebase-config';
+import {db} from '../../firebase-config';
 import {relationTypes} from "../../utils/types";
 import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
 
@@ -35,33 +43,31 @@ const CreatePartyPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false)
   const [fail, setFail] = useState<boolean>(false)
-  const [titleFontSize,setTitleFontSize] = useState<number>(40)
+  const [titleFontSize, setTitleFontSize] = useState<number>(40)
 
-  const [width,setWidth] = useState(window.innerWidth) ;
+  const [width, setWidth] = useState(window.innerWidth);
   const handleResize = () => {
     setWidth(window.innerWidth)
   }
 
 
-  useEffect(()=>{
-    window.addEventListener('resize',handleResize);
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
     return () => {
-      window.removeEventListener('resize',handleResize)
+      window.removeEventListener('resize', handleResize)
     }
   })
 
 
-  useEffect(()=>{
-      if(width > 768){
-        setTitleFontSize(40);
-      }else if (width > 480){
-        setTitleFontSize(26)
-      }else{
-        setTitleFontSize(18)
-      }
-  },[width])
-
-
+  useEffect(() => {
+    if (width > 768) {
+      setTitleFontSize(40);
+    } else if (width > 480) {
+      setTitleFontSize(26)
+    } else {
+      setTitleFontSize(18)
+    }
+  }, [width])
 
 
   useEffect(() => {
@@ -168,15 +174,16 @@ const CreatePartyPage = () => {
             <Typography fontSize={titleFontSize} align='left'>구독할 OTT</Typography>
             <OTTSelectBar selectedOTTs={selectedOTTs} setSelectedOTTs={setSelectedOTTs} selectOnlyOne={false}/>
           </ColFlexInfoCont>
-          
+
           <ColFlexInfoCont>
             {/* 멤버 선택하기 */}
             <Typography fontSize={titleFontSize} align='left'>초기 파티원 선택</Typography>
-            <Typography variant='body1' align='left'>(친구추가가 된 유저만 초기 파티원로 추가할 수 있습니다. 초기 파티원이 없다면 넘어가도 됩니다 😉)</Typography>
+            <Typography variant='body1' align='left'>(친구추가가 된 유저만 초기 파티원로 추가할 수 있습니다. 초기 파티원이 없다면 넘어가도 됩니다
+              😉)</Typography>
             <br/>
             <CustomTransferList value={memberUIDs} setValue={setMemberUIDs}/>
           </ColFlexInfoCont>
-          
+
           <RawFlexInfoCont>
             <ColFlexInfoCont>
               {/* 시작일(갱신일) */}
@@ -203,17 +210,17 @@ const CreatePartyPage = () => {
                 required
                 label="개월수"
                 type="number"
-                InputProps={{ inputProps: { min: 1, max: 12 } }}
+                InputProps={{inputProps: {min: 1, max: 12}}}
                 helperText="최소 1개월 ~ 최대 12개월 선택 가능"
                 value={wishPeriod}
-                onChange = {(e: React.ChangeEvent<HTMLInputElement>)=> {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setWishPeriod(parseInt(e.target.value));
                   console.log(wishPeriod);
                 }}
-                error={wishPeriod < 0 || wishPeriod > 13 }
+                error={wishPeriod < 0 || wishPeriod > 13}
               />
               <br/><br/><br/>
-              
+
               {/* 오픈채팅 URL */}
               <Typography fontSize={titleFontSize} align='left'>오픈채팅 URL</Typography>
               <br/>
@@ -225,7 +232,7 @@ const CreatePartyPage = () => {
                   shrink: true,
                 }}
                 helperText="파티 가입 희망자가 연락하기 위한 카카오톡 오픈채팅 링크를 입력해주세요."
-                onChange = {(e: React.ChangeEvent<HTMLInputElement>)=> {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setOpenChatLink(e.target.value);
                 }}
                 placeholder='https://open.kakao.com/'
@@ -235,37 +242,37 @@ const CreatePartyPage = () => {
           </RawFlexInfoCont>
 
           <ColFlexInfoCont>
-              {/* 파티원에게 한마디 */}
-              <Typography fontSize={titleFontSize} align='left'>파티원에게 한마디</Typography>
-              <br/>
-              <TextField
-                label="코멘트"
-                multiline
-                inputProps={{
-                  maxLength: 100
-                }}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                value={memberTalk}
-                onChange = {(e: React.ChangeEvent<HTMLInputElement>)=> {
-                  setMemberTalk(e.target.value);
-                }}
-                placeholder='욕설, 비속어, 타인을 비방하는 문구를 사용하시면 운영자가 임의로 삭제할 수 있습니다.'
-                helperText="파티 가입 희망자에게 남길 말을 작성해주세요."
-              />
-            </ColFlexInfoCont>
+            {/* 파티원에게 한마디 */}
+            <Typography fontSize={titleFontSize} align='left'>파티원에게 한마디</Typography>
+            <br/>
+            <TextField
+              label="코멘트"
+              multiline
+              inputProps={{
+                maxLength: 100
+              }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={memberTalk}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setMemberTalk(e.target.value);
+              }}
+              placeholder='욕설, 비속어, 타인을 비방하는 문구를 사용하시면 운영자가 임의로 삭제할 수 있습니다.'
+              helperText="파티 가입 희망자에게 남길 말을 작성해주세요."
+            />
+          </ColFlexInfoCont>
 
-            {/* 파티 만들기 버튼 */}
-            <CreatePartyBtn onClick={createPartyHandler}>파티 만들기</CreatePartyBtn>
+          {/* 파티 만들기 버튼 */}
+          <CreatePartyBtn onClick={createPartyHandler}>파티 만들기</CreatePartyBtn>
         </InfoInputBox>
       </CreatePartyPageContainer>
     ) : (
       <LoadingArea>
-        <CircularProgress />
+        <CircularProgress/>
       </LoadingArea>
     )
-      // : <Alert severity="error" sx={{width: '100%'}}>로그인 먼저 해주세요!</Alert>
+    // : <Alert severity="error" sx={{width: '100%'}}>로그인 먼저 해주세요!</Alert>
 
   );
 };
