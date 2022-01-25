@@ -199,8 +199,10 @@ const PartyDetailPage = () => {
           {/*const [showPartyJoinDuplicateSnackBar,setShowPartyJoinDuplicateSnackBar] = useState<boolean>(false);*/}
           {/*  const [showPartyJoinFailSnackBar,setShowPartyJoinFailSnackBar] = useState<boolean>(false);*/}
 
-          <PartyAcceptTable partyId={partyData.id} />
-
+        {
+          user?.uid === partyData.hostUID &&
+          <PartyAcceptTable partyId={partyData.id}/>
+        }
         </DetailBox>
 
         {/*파티 참여 모달*/}
