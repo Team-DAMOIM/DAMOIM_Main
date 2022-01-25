@@ -12,7 +12,8 @@ export const PartyDetailPageContainer = styled.div`
 export const DetailBox = styled.div`
   max-width: 80%;
   margin: 50px auto 0;
-  height: 1000px;
+  padding-bottom: 3vh;
+  height: 100%;
   border: 3px solid gray;
   border-radius: 20px;
   box-shadow: rgb(0 0 0 / 12%) 0px 3px 6px, rgb(0 0 0 / 24%) 0px 2px 5px;
@@ -78,10 +79,10 @@ export const MemberInfoBoxFlexStart = styled.div`
 `
 
 interface MemberInfoTextProps {
-    isBold: boolean;
-    fontSize: string;
-    fontColor: string;
-    textAlign: string;
+  isBold: boolean;
+  fontSize: string;
+  fontColor: string;
+  textAlign: string;
 }
 
 export const InfoText = styled.p<MemberInfoTextProps>`
@@ -146,10 +147,16 @@ export const MemberTalkArea = styled.div`
 `
 
 
-
-export const JoinButtonContainer  = styled.div`
+export const JoinButtonContainer = styled.div`
   width: 100%;
   text-align: center;
   margin-top: 3vh;
-  
+`
+
+
+export const PartyAcceptTableContainer = styled.div`
+  width: 80%;
+
+  margin: 80px auto 0;
+
 `

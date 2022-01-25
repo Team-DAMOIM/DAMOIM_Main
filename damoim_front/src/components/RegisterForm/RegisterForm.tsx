@@ -67,7 +67,9 @@ function RegisterForm({setCurrentForm, setRegisterSuccess, handleClose}: Registe
                     name: values.name,
                     nickName: values.nickName,
                     isOnline: true,
-                    createdAt: Timestamp.fromDate(new Date())
+                    createdAt: Timestamp.fromDate(new Date()),
+                    avatar:"https://user-images.githubusercontent.com/69495129/150787523-d582c9ee-9852-43be-9abb-f4b330baef6d.png",
+                    temperature:"36"
                 })
                 handleClose();
                 setRegisterSuccess(true);

@@ -110,3 +110,4 @@ export const LoadingArea = styled.div`
   width: 1200px;
   text-align: center;
 `;
+

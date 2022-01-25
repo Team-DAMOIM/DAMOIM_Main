@@ -9,9 +9,13 @@ interface UserWithProfileProps {
 }
 
 function UserWithProfile({img, userName, uid}: UserWithProfileProps) {
-    const user = useContext(AuthContext);
+    const me = useContext(AuthContext);
+
+
+
+
     return (
-        <UserWithProfileContainer to={user?.uid === uid ? `/userPage/${uid}`: `/otherUserPage/${uid}`}>
+        <UserWithProfileContainer to={me?.uid === uid ? `/userPage/${uid}`: `/otherUserPage/${uid}`}>
             <img src={img} alt={img}/>
             <span>
                 {userName}

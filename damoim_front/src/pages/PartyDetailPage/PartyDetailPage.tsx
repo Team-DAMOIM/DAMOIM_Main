@@ -1,7 +1,7 @@
- import {doc, getDoc} from 'firebase/firestore';
-import React, {useContext, useEffect, useState} from 'react';
+import {doc, getDoc} from 'firebase/firestore';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
-import { db } from '../../firebase-config';
+import {db} from '../../firebase-config';
 import {
   DetailBox,
   MemberInfoBox,
@@ -16,7 +16,7 @@ import {
   InfoTextArea,
   MemberTalkBox,
   MemberTalkArea,
-   JoinButtonContainer
+  JoinButtonContainer
 } from './partyDetailPageStyles';
 import {partyTypes, userInfoTypes} from "../../utils/types";
 import moment from "moment";
@@ -27,11 +27,13 @@ import {Button} from "@mui/material";
 import {AuthContext} from "../../context/AuthContext";
 import JoinPartyForm from "./JoinPartyForm";
 import Loading from "../../components/Loading/Loading";
- import OpenChatLinkForm from "./OpenChatLinkForm";
+import OpenChatLinkForm from "./OpenChatLinkForm";
+import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
+import PartyAcceptTable from "./PartyAcceptTable";
 
 
 const PartyDetailPage = () => {
-  const { id } = useParams<{ id: string }>();
+  const {id} = useParams<{ id: string }>();
   const user = useContext(AuthContext);
 
   // 밑에 useState 하드코딩한거 수정
@@ -39,16 +41,19 @@ const PartyDetailPage = () => {
   const [selectedOTT, setSelectedOTT] = useState<string[]>([]);
   const [memberUIDs, setMemberUIDs] = useState<string[]>([]);
   const [memberData, setMemberData] = useState<userInfoTypes[]>([]);
-  const [joinPartyOpen,setJoinPartyOpen] = useState<boolean>(false)
-  const [showOpenChatLink,setShowOpenChatLink] = useState<boolean>(false)
+  const [joinPartyOpen, setJoinPartyOpen] = useState<boolean>(false)
+  const [showOpenChatLink, setShowOpenChatLink] = useState<boolean>(false)
+  const [showPartyJoinSuccessSnackBar, setShowPartyJoinSuccessSnackBar] = useState<boolean>(false);
+  const [showPartyJoinDuplicateSnackBar, setShowPartyJoinDuplicateSnackBar] = useState<boolean>(false);
+  const [showPartyJoinFailSnackBar, setShowPartyJoinFailSnackBar] = useState<boolean>(false);
 
-  const getPartyData = async (partyID: string) => {
-    const docRef = doc(db, "partys", partyID);
+  const getPartyData = async (partyId: string) => {
+    const docRef = doc(db, "partys", partyId);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
       setPartyData({
-        id: partyID,
+        id: partyId,
         hostUID: docSnap.data().hostUID,
         memberUIDs: docSnap.data().memberUIDs,
         openChatLink: docSnap.data().openChatLink,
@@ -77,7 +82,7 @@ const PartyDetailPage = () => {
 
     if (docSnap.exists()) {
       setMemberData(memberData => [...memberData, {
-        uid : docSnap.data().uid,
+        uid: docSnap.data().uid,
         name: docSnap.data().name,
         nickName: docSnap.data().nickName,
         isOnline: docSnap.data().isOnline,
@@ -94,6 +99,8 @@ const PartyDetailPage = () => {
   }
 
   useEffect(() => {
+
+
     getPartyData(id)
   }, [])
 
@@ -109,7 +116,7 @@ const PartyDetailPage = () => {
             {selectedOTT.map(OTT => {
               return (
                 <TrimOTTIcon key={OTT}>
-                  <img src={`/images/OTTIcons/${OTT}Icon.png`} />
+                  <img src={`/images/OTTIcons/${OTT}Icon.png`}/>
                 </TrimOTTIcon>
               )
             })}
@@ -119,15 +126,18 @@ const PartyDetailPage = () => {
               if (idx < memberData.length) {
                 return (
                   <MemberInfoBox key={idx}>
-                    <InfoText isBold={true} fontSize='14px' fontColor='black' textAlign='center'>{memberData[idx].uid === partyData?.hostUID ? "파티장" : "파티원"}</InfoText>
+                    <InfoText isBold={true} fontSize='14px' fontColor='black'
+                              textAlign='center'>{memberData[idx].uid === partyData?.hostUID ? "파티장" : "파티원"}</InfoText>
                     {/* 아래 삼항연산자 설명 : 만약 자기 프로필을 클릭하면 otherUserPage로 가는게 아니라 userPage(마이페이지)로 갈 수 있게 처리 */}
-                    <PersonIconLink to={user ? (memberData[idx].uid === user.uid) ? `/userPage/${user.uid}` : `/otherUserPage/${memberData[idx].uid}` : `/otherUserPage/${memberData[idx].uid}`}/>
-                    <InfoText isBold={true} fontSize='18px' fontColor='black' textAlign='center'>{memberData[idx].nickName}</InfoText>
+                    <PersonIconLink
+                      to={user ? (memberData[idx].uid === user.uid) ? `/userPage/${user.uid}` : `/otherUserPage/${memberData[idx].uid}` : `/otherUserPage/${memberData[idx].uid}`}/>
+                    <InfoText isBold={true} fontSize='18px' fontColor='black'
+                              textAlign='center'>{memberData[idx].nickName}</InfoText>
                     <InfoText isBold={true} fontSize='18px' textAlign='center'
-                      fontColor={memberData[idx].temperature < 30 ? "gray"
-                      : memberData[idx].temperature < 40 ? "blue"
-                      : memberData[idx].temperature < 50 ? "orange"
-                      : "red"}
+                              fontColor={memberData[idx].temperature < 30 ? "gray"
+                                : memberData[idx].temperature < 40 ? "blue"
+                                  : memberData[idx].temperature < 50 ? "orange"
+                                    : "red"}
                     >
                       {memberData[idx].temperature}도
                     </InfoText>
@@ -147,7 +157,8 @@ const PartyDetailPage = () => {
             })}
           </MemberInfoContainer>
           <InfoTextArea>
-            <CardWithIcon title={"시작일(갱신일)"} content={moment(partyData.startDate.toDate()).format('YYYY년 MM월 DD일 ~')} icon={<DateRangeTwoToneIcon/>}/>
+            <CardWithIcon title={"시작일(갱신일)"} content={moment(partyData.startDate.toDate()).format('YYYY년 MM월 DD일 ~')}
+                          icon={<DateRangeTwoToneIcon/>}/>
             <CardWithIcon title={"구독희망기간"} content={`${partyData.wishPeriod}개월`} icon={<TimelapseTwoToneIcon/>}/>
             {/*<CardWithIcon title={"오픈채팅 URL"} content={partyData.openChatLink} icon={<ChatBubbleTwoToneIcon/>}/>*/}
 
@@ -163,8 +174,10 @@ const PartyDetailPage = () => {
           <MemberTalkBox>
             <InfoText isBold={true} fontSize='16px' fontColor='black' textAlign='left'>파티원들의 한마디</InfoText>
             <MemberTalkArea>
-              <InfoText isBold={true} fontSize='16px' fontColor='black' textAlign='left'>{memberData[0].nickName}(파티장)</InfoText>
-              <InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left' style={{marginTop: '10px'}}>{partyData.memberTalk}</InfoText>
+              <InfoText isBold={true} fontSize='16px' fontColor='black'
+                        textAlign='left'>{memberData[0].nickName}(파티장)</InfoText>
+              <InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'
+                        style={{marginTop: '10px'}}>{partyData.memberTalk}</InfoText>
               <br/>
               {/* <InfoText isBold={true} fontSize='16px' fontColor='black' textAlign='left'>Dan2029(파티원1)</InfoText>
               <InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>{partyData.member2}</InfoText>
@@ -177,17 +190,46 @@ const PartyDetailPage = () => {
             </MemberTalkArea>
           </MemberTalkBox>
           <JoinButtonContainer>
-          <Button disabled={memberUIDs.length === 4} onClick={()=>{
-            setJoinPartyOpen(true);
-          }} variant={"outlined"}>파티 참여</Button>
+            <Button disabled={memberUIDs.length === 4} onClick={() => {
+              setJoinPartyOpen(true);
+            }} variant={"outlined"}>파티 참여</Button>
           </JoinButtonContainer>
 
+
+          {/*const [showPartyJoinSuccessSnackBar,setShowPartyJoinSuccessSnackBar] = useState<boolean>(false);*/}
+          {/*const [showPartyJoinDuplicateSnackBar,setShowPartyJoinDuplicateSnackBar] = useState<boolean>(false);*/}
+          {/*  const [showPartyJoinFailSnackBar,setShowPartyJoinFailSnackBar] = useState<boolean>(false);*/}
+
+          <PartyAcceptTable partyId={partyData.id} />
+
         </DetailBox>
-        <JoinPartyForm joinPartyOpen={joinPartyOpen} setJoinPartyOpen={setJoinPartyOpen} setShowOpenChatLink={setShowOpenChatLink}/>
-        <OpenChatLinkForm showOpenChatLink={showOpenChatLink} setShowOpenChatLink={setShowOpenChatLink} openChatLink={partyData.openChatLink}/>
+
+        {/*파티 참여 모달*/}
+        <JoinPartyForm joinPartyOpen={joinPartyOpen}
+                       setJoinPartyOpen={setJoinPartyOpen}
+                       setShowOpenChatLink={setShowOpenChatLink}
+                       masterUID={partyData.hostUID}
+                       partyId={partyData.id}
+                       setShowPartyJoinSuccessSnackBar={setShowPartyJoinSuccessSnackBar}
+                       setShowPartyJoinDuplicateSnackBar={setShowPartyJoinDuplicateSnackBar}
+                       setShowPartyJoinFailSnackBar={setShowPartyJoinFailSnackBar}
+        />
+
+        {/*오픈 채팅 모달*/}
+        <OpenChatLinkForm showOpenChatLink={showOpenChatLink} setShowOpenChatLink={setShowOpenChatLink}
+                          openChatLink={partyData.openChatLink}/>
+
+
+        <TopCenterSnackBar value={showPartyJoinSuccessSnackBar} setValue={setShowPartyJoinSuccessSnackBar}
+                           severity={"success"} content={"파티 참여 메세지 전송 완료!"}/>
+        <TopCenterSnackBar value={showPartyJoinDuplicateSnackBar} setValue={setShowPartyJoinDuplicateSnackBar}
+                           severity={"warning"} content={"이미 파티 참여 메세지를 전송하였습니다!"}/>
+        <TopCenterSnackBar value={showPartyJoinFailSnackBar} setValue={setShowPartyJoinFailSnackBar} severity={"error"}
+                           content={"파티 참여 실패"}/>
+
       </PartyDetailPageContainer>
     ) : (
-     <Loading/>
+      <Loading/>
     )
   );
 };
