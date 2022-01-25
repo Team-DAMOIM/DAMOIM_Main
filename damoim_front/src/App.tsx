@@ -1,10 +1,10 @@
 import React from 'react';
 import './App.css';
 import {
-    BrowserRouter as Router,
-    Route,
-    Switch,
-    Redirect,
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
 } from "react-router-dom";
 import GlobalStyles from './GlobalStyles';
 import PagesURL from './PagesURL';
@@ -15,26 +15,25 @@ import Footer from "./components/Footer/Footer";
 import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
-    return (
-        <>
-            <GlobalStyles/>
-            <AuthProvider>
-                <Router>
-
-                    <ScrollToTop/>
-                    <Navbar/>
-                    <Switch>
-                        {PagesURL.map((route) => (
-                            route.private ? <PrivateRoute key={route.path} path={route.path}  component={route.component} />:
-                            <Route exact key={route.path} path={route.path}  component={route.component}/>
-                        ))}
-                        <Redirect from="*" to="/"/>
-                    </Switch>
-                    <Footer/>
-                </Router>
-            </AuthProvider>
-        </>
-    );
+  return (
+    <>
+      <GlobalStyles/>
+      <AuthProvider>
+        <Router>
+          <ScrollToTop/>
+          <Navbar/>
+          <Switch>
+            {PagesURL.map((route) => (
+              route.private ? <PrivateRoute key={route.path} path={route.path} component={route.component}/> :
+                <Route exact key={route.path} path={route.path} component={route.component}/>
+            ))}
+            <Redirect from="*" to="/"/>
+          </Switch>
+          <Footer/>
+        </Router>
+      </AuthProvider>
+    </>
+  );
 }
 
 export default App;

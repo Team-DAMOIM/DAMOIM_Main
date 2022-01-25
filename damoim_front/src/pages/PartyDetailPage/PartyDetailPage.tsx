@@ -26,17 +26,15 @@ import TimelapseTwoToneIcon from '@mui/icons-material/TimelapseTwoTone';
 import {Button} from "@mui/material";
 import {AuthContext} from "../../context/AuthContext";
 import JoinPartyForm from "./JoinPartyForm";
-import Loading from "../../components/Loading/Loading";
 import OpenChatLinkForm from "./OpenChatLinkForm";
 import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
 import PartyAcceptTable from "./PartyAcceptTable";
-
+import LoadingCircularProgress from "../../components/LoadingCircularProgress/LoadingCircularProgress";
 
 const PartyDetailPage = () => {
   const {id} = useParams<{ id: string }>();
   const user = useContext(AuthContext);
 
-  // 밑에 useState 하드코딩한거 수정
   const [partyData, setPartyData] = useState<partyTypes | null>();
   const [selectedOTT, setSelectedOTT] = useState<string[]>([]);
   const [memberUIDs, setMemberUIDs] = useState<string[]>([]);
@@ -104,23 +102,23 @@ const PartyDetailPage = () => {
     getPartyData(id)
   }, [])
 
-
-
+  if (!(partyData && (selectedOTT.length !== 0)   // partyData 받아오고 선택한 OTT 데이터 받아오면
+    && (memberUIDs.length !== 0) && (memberData.length === memberUIDs.length))) {  // 여기중요! memberUID목록을 받아오면 (length가 0이 아닐 때) 해당 member수와 받아온 memberData 수가 일치하는지 확인
+    return <LoadingCircularProgress/>
+  }
 
   return (
-    partyData && (selectedOTT.length !== 0)   // partyData 받아오고 선택한 OTT 데이터 받아오면
-    && (memberUIDs.length !== 0) && (memberData.length === memberUIDs.length) ? ( // 여기중요! memberUID목록을 받아오면 (length가 0이 아닐 때) 해당 member수와 받아온 memberData 수가 일치하는지 확인
-      <PartyDetailPageContainer>
-        <DetailBox>
-          <SelectedOTTBox>
-            {selectedOTT.map(OTT => {
-              return (
-                <TrimOTTIcon key={OTT}>
-                  <img src={`/images/OTTIcons/${OTT}Icon.png`}/>
-                </TrimOTTIcon>
-              )
-            })}
-          </SelectedOTTBox>
+    <PartyDetailPageContainer>
+      <DetailBox>
+        <SelectedOTTBox>
+          {selectedOTT.map(OTT => {
+            return (
+              <TrimOTTIcon key={OTT}>
+                <img src={`/images/OTTIcons/${OTT}Icon.png`}/>
+              </TrimOTTIcon>
+            )
+          })}
+        </SelectedOTTBox>
           <MemberInfoContainer>
             {[0, 1, 2, 3].map(idx => {
               if (idx < memberData.length) {
@@ -180,6 +178,7 @@ const PartyDetailPage = () => {
                         style={{marginTop: '10px'}}>{partyData.memberTalk}</InfoText>
               <br/>
               {/* <InfoText isBold={true} fontSize='16px' fontColor='black' textAlign='left'>Dan2029(파티원1)</InfoText>
+
               <InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>{partyData.member2}</InfoText>
               <br/>
               <InfoText isBold={true} fontSize='16px' fontColor='black' textAlign='left'></InfoText>
@@ -228,9 +227,8 @@ const PartyDetailPage = () => {
                            content={"파티 참여 실패"}/>
 
       </PartyDetailPageContainer>
-    ) : (
-      <Loading/>
-    )
+
+
   );
 };
 

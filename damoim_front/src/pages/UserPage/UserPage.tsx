@@ -1,6 +1,5 @@
 import React, {Dispatch, SetStateAction, useContext, useEffect, useState} from 'react';
 import {
-  LoadingArea,
   UserImageWithInfo,
   UserMainCardSection, UserNameWithEmail,
   UserPageCardSection,
@@ -13,7 +12,6 @@ import {CustomHalfTextArea} from "../CreatePartyPage/createPartyPageStyles";
 import {AuthContext} from "../../context/AuthContext";
 import {
   Button,
-  CircularProgress,
   FormControl,
   FormHelperText,
   InputLabel,
@@ -39,11 +37,12 @@ import {relationsCollectionRef, usersCollectionRef} from "../../firestoreRef/ref
 import {relationTypes, userInfoTypes} from "../../utils/types";
 import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
 import FriendListForm from "../../components/FriendListForm/FriendListForm";
+import LoadingCircularProgress from "../../components/LoadingCircularProgress/LoadingCircularProgress";
 
 function UserPage(props: any) {
   const user = useContext(AuthContext);
   const [userInfoChangeOpen, setUserInfoChangeOpen] = useState<boolean>(false);
-  const [userInfoChangeSuccess,setUserInfoChangeSuccess] = useState<boolean>(false)
+  const [userInfoChangeSuccess, setUserInfoChangeSuccess] = useState<boolean>(false)
   const [userInfo, setUserInfo] = useState<userInfoTypes>();
 
   const [activeFriendModalOpen, setActiveFriendModalOpen] = useState<boolean>(false);
@@ -112,125 +111,121 @@ function UserPage(props: any) {
   const [searchCategory, setSearchCategory] = useState("작성 글");
 
   const handleChange = (event: SelectChangeEvent) => {
-      setSearchCategory(event.target.value);
+    setSearchCategory(event.target.value);
   };
 
+  if (!(user && userInfo && friendUIDs)) return <LoadingCircularProgress/>
 
   return (
-    user && userInfo && friendUIDs ? (
-      <UserPageContainer>
-        <CustomHalfTextArea title='마이페이지'
-                            content={`다모임과 ${moment(userInfo.createdAt.toDate()).fromNow()} 부터 함께하고 있어요 🥳`}/>
-        <UserPageInfoBox>
-          <UserPageCardSection>
-            <UserMainCardSection>
-              <UserImageWithInfo>
-                <img src={userInfo.avatar || '/images/personIcon.png'} alt={"avatar"}/>
-                <UserNameWithEmail>
-                  <h4>{userInfo.name}</h4>
-                  <span>{userInfo.nickName}</span>
-                  <span>{userInfo.email}</span>
-                </UserNameWithEmail>
-              </UserImageWithInfo>
-              <Button variant="contained" startIcon={<ModeEditTwoToneIcon/>} onClick={() => {
-                setUserInfoChangeOpen(true)
-              }}>정보 수정</Button>
-            </UserMainCardSection>
+    <UserPageContainer>
+      <CustomHalfTextArea title='마이페이지'
+                          content={`다모임과 ${moment(userInfo.createdAt.toDate()).fromNow()} 부터 함께하고 있어요 🥳`}/>
+      <UserPageInfoBox>
+        <UserPageCardSection>
+          <UserMainCardSection>
+            <UserImageWithInfo>
+              <img src={userInfo.avatar || '/images/personIcon.png'} alt={"avatar"}/>
+              <UserNameWithEmail>
+                <h4>{userInfo.name}</h4>
+                <span>{userInfo.nickName}</span>
+                <span>{userInfo.email}</span>
+              </UserNameWithEmail>
+            </UserImageWithInfo>
+            <Button variant="contained" startIcon={<ModeEditTwoToneIcon/>} onClick={() => {
+              setUserInfoChangeOpen(true)
+            }}>정보 수정</Button>
+          </UserMainCardSection>
 
-            <UserSemiCardSection>
-              <CardWithIcon title={"회원권한"} content={"일반회원"} icon={<BadgeTwoToneIcon/>}/>
-              <CardWithIcon title={"매너온도"} content={`${userInfo.temperature}`} icon={<ThermostatTwoToneIcon/>}/>
-              <CardWithIcon title={"회원가입일"}
-                            content={moment(userInfo.createdAt.toDate()).format('YYYY년 MM월 DD일')}
-                            icon={<EventNoteTwoToneIcon/>}/>
-            </UserSemiCardSection>
-          </UserPageCardSection>
+          <UserSemiCardSection>
+            <CardWithIcon title={"회원권한"} content={"일반회원"} icon={<BadgeTwoToneIcon/>}/>
+            <CardWithIcon title={"매너온도"} content={`${userInfo.temperature}`} icon={<ThermostatTwoToneIcon/>}/>
+            <CardWithIcon title={"회원가입일"}
+                          content={moment(userInfo.createdAt.toDate()).format('YYYY년 MM월 DD일')}
+                          icon={<EventNoteTwoToneIcon/>}/>
+          </UserSemiCardSection>
+        </UserPageCardSection>
 
-          <UserPageFriendSection>
-            <Button
-              variant="outlined"
-              startIcon={<AddReactionOutlinedIcon/>}
-              onClick={() => setNonActiveFriendModalOpen(true)}
-              style={{flexGrow: '1', color: 'black', border: '1px solid black'}}
+        <UserPageFriendSection>
+          <Button
+            variant="outlined"
+            startIcon={<AddReactionOutlinedIcon/>}
+            onClick={() => setNonActiveFriendModalOpen(true)}
+            style={{flexGrow: '1', color: 'black', border: '1px solid black'}}
+          >
+            친구 요청 {nonActiveFriendUIDs.length}건
+          </Button>
+          <Button
+            variant="outlined"
+            startIcon={<EmojiPeopleOutlinedIcon/>}
+            onClick={() => setActiveFriendModalOpen(true)}
+            style={{flexGrow: '1', color: 'black', border: '1px solid black'}}
+          >
+            친구 {friendUIDs.length}명
+          </Button>
+        </UserPageFriendSection>
+
+        <UserPageFriends/>
+        <UserPageHistorySection>
+          <FormControl sx={{mb: 1, minWidth: 120}}>
+            <InputLabel id="demo-simple-select-helper-label">조회</InputLabel>
+            <Select
+              labelId="demo-simple-select-helper-label"
+              id="demo-simple-select-helper"
+              value={searchCategory}
+              label="조회"
+              onChange={handleChange}
             >
-              친구 요청 {nonActiveFriendUIDs.length}건
-            </Button>
-            <Button
-              variant="outlined"
-              startIcon={<EmojiPeopleOutlinedIcon/>}
-              onClick={() => setActiveFriendModalOpen(true)}
-              style={{flexGrow: '1', color: 'black', border: '1px solid black'}}
-            >
-              친구 {friendUIDs.length}명
-            </Button>
-          </UserPageFriendSection>
+              <MenuItem value={'작성 글'}>작성 글</MenuItem>
+              <MenuItem value={'작성 댓글'}>작성 댓글</MenuItem>
+              <MenuItem value={'로그인 기록'} disabled>로그인 기록</MenuItem>
+              <MenuItem value={'쪽지함'} disabled>쪽지함</MenuItem>
+              <MenuItem value={'회원차단내역'} disabled>회원차단내역</MenuItem>
+            </Select>
+            <FormHelperText>조회하고싶은 것을 선택해주세요</FormHelperText>
+          </FormControl>
+          {
+            searchCategory === "작성 글" && <UserPagePostHistory/>
+          }
+          {
+            searchCategory === "작성 댓글" && <UserCommentHistory/>
+          }
+        </UserPageHistorySection>
+      </UserPageInfoBox>
+      {
+        userInfoChangeOpen &&
+        <UserInfoChangeForm
+          userInfoChangeOpen={userInfoChangeOpen}
+          setUserInfoChangeOpen={setUserInfoChangeOpen}
+          setUserInfo={setUserInfo as Dispatch<SetStateAction<userInfoTypes>>}
+          userInfo={userInfo as userInfoTypes}
+          setUserInfoChangeSuccess={setUserInfoChangeSuccess}
+        />
+      }
 
-          <UserPageFriends/>
-          <UserPageHistorySection>
-            <FormControl sx={{mb: 1, minWidth: 120}}>
-              <InputLabel id="demo-simple-select-helper-label">조회</InputLabel>
-              <Select
-                labelId="demo-simple-select-helper-label"
-                id="demo-simple-select-helper"
-                value={searchCategory}
-                label="조회"
-                onChange={handleChange}
-              >
-                <MenuItem value={'작성 글'}>작성 글</MenuItem>
-                <MenuItem value={'작성 댓글'}>작성 댓글</MenuItem>
-                <MenuItem value={'로그인 기록'} disabled>로그인 기록</MenuItem>
-                <MenuItem value={'쪽지함'} disabled>쪽지함</MenuItem>
-                <MenuItem value={'회원차단내역'} disabled>회원차단내역</MenuItem>
-              </Select>
-              <FormHelperText>조회하고싶은 것을 선택해주세요</FormHelperText>
-            </FormControl>
-            {
-              searchCategory === "작성 글" && <UserPagePostHistory/>
-            }
-            {
-              searchCategory === "작성 댓글" && <UserCommentHistory/>
-            }
-          </UserPageHistorySection>
-        </UserPageInfoBox>
-        {
-          userInfoChangeOpen &&
-          <UserInfoChangeForm
-            userInfoChangeOpen={userInfoChangeOpen}
-            setUserInfoChangeOpen={setUserInfoChangeOpen}
-            setUserInfo={setUserInfo as Dispatch<SetStateAction<userInfoTypes>>}
-            userInfo={userInfo as userInfoTypes}
-            setUserInfoChangeSuccess={setUserInfoChangeSuccess}
-          />
-        }
-
-        {/* 친구 목록 모달 */}
-        {
-          activeFriendModalOpen &&
-          <FriendListForm
-            mode={0}
-            formOpen={activeFriendModalOpen}
-            setFormOpen={setActiveFriendModalOpen}
-            userUID={user.uid} friendUIDs={friendUIDs}
-            setFriendUIDs={setFriendUIDs}
-          />
-        }
-        {
-          nonActiveFriendModalOpen &&
-            <FriendListForm
-              mode={1}
-              formOpen={nonActiveFriendModalOpen}
-              setFormOpen={setNonActiveFriendModalOpen}
-              userUID={user.uid} friendUIDs={nonActiveFriendUIDs}
-              setFriendUIDs={setNonActiveFriendUIDs}
-            />
-        }
-        <TopCenterSnackBar value={userInfoChangeSuccess} setValue={setUserInfoChangeSuccess} severity={"success"} content={"프로필 정보 수정 성공!"}/>
-      </UserPageContainer>
-    ) : (
-      <LoadingArea>
-        <CircularProgress/>
-      </LoadingArea>
-    )
+      {/* 친구 목록 모달 */}
+      {
+        activeFriendModalOpen &&
+        <FriendListForm
+          mode={0}
+          formOpen={activeFriendModalOpen}
+          setFormOpen={setActiveFriendModalOpen}
+          userUID={user.uid} friendUIDs={friendUIDs}
+          setFriendUIDs={setFriendUIDs}
+        />
+      }
+      {
+        nonActiveFriendModalOpen &&
+        <FriendListForm
+          mode={1}
+          formOpen={nonActiveFriendModalOpen}
+          setFormOpen={setNonActiveFriendModalOpen}
+          userUID={user.uid} friendUIDs={nonActiveFriendUIDs}
+          setFriendUIDs={setNonActiveFriendUIDs}
+        />
+      }
+      <TopCenterSnackBar value={userInfoChangeSuccess} setValue={setUserInfoChangeSuccess} severity={"success"}
+                         content={"프로필 정보 수정 성공!"}/>
+    </UserPageContainer>
   )
 }
 
