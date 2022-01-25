@@ -16,6 +16,7 @@ import {
 import moment from "moment";
 import UserWithProfile from "../../components/UserWithProfile/UserWithProfile";
 import {Button} from "@mui/material";
+import {LoadingButton} from "@mui/lab";
 
 
 interface PartyAcceptTableTypes {
@@ -27,6 +28,8 @@ function PartyAcceptTable({partyId}: PartyAcceptTableTypes) {
 
 
   const [acceptDatas, setAcceptDatas] = useState<partyAcceptTypes[]>([])
+  const [loading, setLoading] = useState<boolean>(false);
+
 
   useEffect(() => {
     const getAcceptDatas = async () => {
@@ -44,6 +47,9 @@ function PartyAcceptTable({partyId}: PartyAcceptTableTypes) {
 
 
   const onAcceptHandler = async (partyAcceptId: string, applicantId: string) => {
+
+    setLoading(true);
+
     const partyAcceptQuery = await query(partyAcceptsCollectionRef, where(documentId(), "==", partyAcceptId));
     const partyQuery = await query(partysCollectionRef, where(documentId(), "==", partyId));
 
@@ -59,12 +65,37 @@ function PartyAcceptTable({partyId}: PartyAcceptTableTypes) {
       await updateDoc(partyData.docs[0].ref, {
         memberUIDs: [...partyData.docs.map(doc => doc.data())[0].memberUIDs, applicantId]
       })
+
+      const q = await query(partyAcceptsCollectionRef, where("partyId", "==", partyId))
+      const result = await getDocs(q);
+
+      setAcceptDatas(result.docs.map(doc => ({...doc.data(), id: doc.id})) as partyAcceptTypes[])
+      setLoading(false);
+
     } else {
       console.log("인원초과")
     }
   }
 
 
+  const onRefuseHandler = async (partyAcceptId: string, applicantId: string) => {
+
+    setLoading(true);
+
+    const partyAcceptQuery = await query(partyAcceptsCollectionRef, where(documentId(), "==", partyAcceptId));
+
+    const partyAcceptData = await getDocs(partyAcceptQuery);
+
+    await updateDoc(partyAcceptData.docs[0].ref, {
+      state: "refused"
+    })
+
+    const q = await query(partyAcceptsCollectionRef, where("partyId", "==", partyId))
+    const result = await getDocs(q);
+
+    setAcceptDatas(result.docs.map(doc => ({...doc.data(), id: doc.id})) as partyAcceptTypes[])
+    setLoading(false);
+  }
   return (
     <PartyAcceptTableContainer>
       <TableContainer component={Paper}>
@@ -81,7 +112,7 @@ function PartyAcceptTable({partyId}: PartyAcceptTableTypes) {
           </TableHead>
           <TableBody>
             {acceptDatas?.map((acceptData) => (
-              // 아직 처리안된 파티참여 메시지만 보여줌
+                // 아직 처리안된 파티참여 메시지만 보여줌
                 acceptData.state === "nonActive" &&
                 <TableRow
                   key={acceptData.id}
@@ -98,11 +129,14 @@ function PartyAcceptTable({partyId}: PartyAcceptTableTypes) {
                   </TableCell>
                   <TableCell align="right">{acceptData.temperature}</TableCell>
                   <TableCell align="right">{moment(acceptData.createdAt.toDate()).format('MM월 DD일')}</TableCell>
-                  <TableCell align="right"> <Button variant={"outlined"} size={"small"} onClick={() => {
-                    onAcceptHandler(acceptData.id, acceptData.applicant)
-                  }}>수락</Button></TableCell>
-                  <TableCell align="right"> <Button variant={"outlined"} color={"error"}
-                                                    size={"small"}>거부</Button></TableCell>
+                  <TableCell align="right"> <LoadingButton loading={loading} variant={"outlined"} size={"small"}
+                                                           onClick={() => {
+                                                             onAcceptHandler(acceptData.id, acceptData.applicant)
+                                                           }}>수락</LoadingButton></TableCell>
+                  <TableCell align="right"> <LoadingButton onClick={() => {
+                    onRefuseHandler(acceptData.id, acceptData.applicant)
+                  }} loading={loading} variant={"outlined"} color={"error"}
+                                                           size={"small"}>거부</LoadingButton></TableCell>
                 </TableRow>
               )
             )
