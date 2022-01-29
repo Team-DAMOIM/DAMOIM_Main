@@ -6,17 +6,17 @@ interface PrivateRouteProps extends RouteProps {
     path: string;
 }
 const PrivateRoute = ({ component: Component,path}: PrivateRouteProps) => {
-    const  user  = useContext(AuthContext);
+    const  isLogin  = useContext(AuthContext);
     return (
         <Route
             exact
             path={path}
             render={(props) =>
-                user ? (
+              isLogin ? (
                     <Component {...props} />
                 ) : (
                     <Redirect
-                        to={{ pathname: '/', state: { from: "로그인" } }}
+                        to={{ pathname: '/accounts/signin', state: { from: "로그인" } }}
                     />
                 )
             }
