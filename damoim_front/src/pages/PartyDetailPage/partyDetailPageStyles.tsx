@@ -151,6 +151,14 @@ export const JoinButtonContainer = styled.div`
   width: 100%;
   text-align: center;
   margin-top: 3vh;
+  position: relative;
+  
+  span{
+    position: absolute;
+    right: 80px;
+    top: 50%;
+    transform: translate3d(0,-50%,0);
+  }
 `
 
 

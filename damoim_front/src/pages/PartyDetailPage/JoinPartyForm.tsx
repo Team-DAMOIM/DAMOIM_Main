@@ -54,7 +54,7 @@ function JoinPartyForm({
     const duplicateCheckQuery = await query(partyAcceptsCollectionRef, where("partyId", "==", partyId), where("applicant", "==", user?.uid))
     const duplicateCheckData = await getDocs(duplicateCheckQuery);
     const isDuplicated = duplicateCheckData.docs.map(doc => ({...doc.data(), id: doc.id})).length !== 0
-
+    console.log(userInfo)
     if (!isDuplicated) {
       await addDoc(partyAcceptsCollectionRef, {
         master: masterUID,
@@ -88,7 +88,7 @@ function JoinPartyForm({
   return (
     <div>
       <TopCenterSnackBar value={success} setValue={setSuccess} severity={"success"}
-                         content={"신고가 접수되었습니다 확인 후 조치하겠습니다"}/>
+                         content={"파티 신청 완료!"}/>
       <Dialog open={joinPartyOpen} onClose={handleClose}>
         <DialogTitle>파티 참여</DialogTitle>
         <DialogContent>

@@ -1,4 +1,4 @@
-import {doc, getDoc} from 'firebase/firestore';
+import {doc, getDoc, getDocs, query, where} from 'firebase/firestore';
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
 import {db} from '../../firebase-config';
@@ -30,6 +30,7 @@ import OpenChatLinkForm from "./OpenChatLinkForm";
 import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
 import PartyAcceptTable from "./PartyAcceptTable";
 import LoadingCircularProgress from "../../components/LoadingCircularProgress/LoadingCircularProgress";
+import {partyAcceptsCollectionRef} from "../../firestoreRef/ref";
 
 const PartyDetailPage = () => {
   const {id} = useParams<{ id: string }>();
@@ -44,6 +45,8 @@ const PartyDetailPage = () => {
   const [showPartyJoinSuccessSnackBar, setShowPartyJoinSuccessSnackBar] = useState<boolean>(false);
   const [showPartyJoinDuplicateSnackBar, setShowPartyJoinDuplicateSnackBar] = useState<boolean>(false);
   const [showPartyJoinFailSnackBar, setShowPartyJoinFailSnackBar] = useState<boolean>(false);
+  const [partyAcceptsLength,setPartyAcceptsLength] = useState<number>(0)
+
 
   const getPartyData = async (partyId: string) => {
     const docRef = doc(db, "partys", partyId);
@@ -101,6 +104,15 @@ const PartyDetailPage = () => {
 
     getPartyData(id)
   }, [])
+
+  useEffect(()=>{
+    const getPartyAccepts = async () => {
+      const partyAcceptsQuery = await query(partyAcceptsCollectionRef,where("partyId","==",id))
+      const data = await getDocs(partyAcceptsQuery);
+      setPartyAcceptsLength(data.docs.map(doc => doc.data()).length)
+    }
+    getPartyAccepts()
+  },[])
 
   if (!(partyData && (selectedOTT.length !== 0)   // partyData 받아오고 선택한 OTT 데이터 받아오면
     && (memberUIDs.length !== 0) && (memberData.length === memberUIDs.length))) {  // 여기중요! memberUID목록을 받아오면 (length가 0이 아닐 때) 해당 member수와 받아온 memberData 수가 일치하는지 확인
@@ -192,6 +204,7 @@ const PartyDetailPage = () => {
             <Button disabled={memberUIDs.length === 4} onClick={() => {
               setJoinPartyOpen(true);
             }} variant={"outlined"}>파티 참여</Button>
+            <span>현재 {partyAcceptsLength}명이 이 파티에 관심있습니다</span>
           </JoinButtonContainer>
 
 
