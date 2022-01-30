@@ -102,7 +102,8 @@ function LoginForm({setCurrentForm, handleClose, setLoginSuccess}: LoginFormType
                         nickName: user.displayName,
                         isOnline: true,
                         createdAt: Timestamp.fromDate(new Date()),
-                        avatar: user.photoURL
+                        avatar: user.photoURL,
+                        temperature:"36"
                     })
                 }
                 handleClose();

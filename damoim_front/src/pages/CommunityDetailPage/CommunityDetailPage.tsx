@@ -123,7 +123,7 @@ function CommunityDetailPage() {
                 <UserWithDetailContainer>
                     <UserWithProfile
                         uid={writerInfo?.uid as string}
-                        img={writerInfo?.avatar || "/images/personIcon.png"}
+                        img={writerInfo?.avatar || "https://user-images.githubusercontent.com/69495129/150787523-d582c9ee-9852-43be-9abb-f4b330baef6d.png"}
                                      userName={writerInfo?.nickName as string || writerInfo?.name as string}/>
                     <CommunityPostDetail views={post.views} loves={post.loves}
                                          comments={commentLists ? commentLists.length : 0}
