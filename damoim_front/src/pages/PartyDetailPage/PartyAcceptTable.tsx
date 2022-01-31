@@ -15,7 +15,6 @@ import {
 } from "../../firestoreRef/ref";
 import moment from "moment";
 import UserWithProfile from "../../components/UserWithProfile/UserWithProfile";
-import {Button} from "@mui/material";
 import {LoadingButton} from "@mui/lab";
 
 
@@ -71,7 +70,7 @@ function PartyAcceptTable({partyId}: PartyAcceptTableTypes) {
 
       setAcceptDatas(result.docs.map(doc => ({...doc.data(), id: doc.id})) as partyAcceptTypes[])
       setLoading(false);
-
+      window.location.replace(`/partyDetail/${partyId}`)
     } else {
       console.log("인원초과")
     }
