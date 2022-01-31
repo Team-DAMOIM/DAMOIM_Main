@@ -16,7 +16,7 @@ type Props = RouteComponentProps;
 
 const HomePage: React.FC<Props> = (props) => {
 
-  const [partys, setPartys] = useState<DocumentData[]>([]);
+  const [partys, setPartys] = useState<partyTypes[]>([]);
   const [userNotFound, setUserNotFound] = useState<boolean>(false);
   const [selectedOTTs, setSelectedOTTs] = useState<string[]>(initialSelectedOTTs);
   const [loading, setLoading] = useState<boolean>(false);
@@ -73,7 +73,7 @@ const HomePage: React.FC<Props> = (props) => {
               key={party.id}
               id={party.id}
               OTTsNameArray={party.selectedOTTs}
-              headerText='모집중'
+              headerText={party.memberUIDs.length === 4 ? "모집완료" : "모집중"}
               avgTemperature={party.avgTemperature}
               memberNum={party.memberUIDs.length}
             />

@@ -54,7 +54,6 @@ function JoinPartyForm({
     const duplicateCheckQuery = await query(partyAcceptsCollectionRef, where("partyId", "==", partyId), where("applicant", "==", user?.uid))
     const duplicateCheckData = await getDocs(duplicateCheckQuery);
     const isDuplicated = duplicateCheckData.docs.map(doc => ({...doc.data(), id: doc.id})).length !== 0
-    console.log(userInfo)
     if (!isDuplicated) {
       await addDoc(partyAcceptsCollectionRef, {
         master: masterUID,
