@@ -30,10 +30,9 @@ const HomePage: React.FC<Props> = (props) => {
 
   useEffect(() => {
     const getPartys = async () => {
-      let partysQuery: Query<DocumentData>;
+      setLoading(true);
 
-      partysQuery = await query(partysCollectionRef, orderBy("createdAt", "desc"))
-
+      const partysQuery = await query(partysCollectionRef, orderBy("createdAt", "desc"))
       const data = await getDocs(partysQuery);
       setPartys(data.docs.map((doc) => ({
         ...doc.data(),
@@ -53,10 +52,10 @@ const HomePage: React.FC<Props> = (props) => {
         }
         return fetch
       }))
+      setLoading(false);
+
     }
-    setLoading(true);
     getPartys();
-    setLoading(false);
   }, [selectedOTTs])
 
   if (loading) return <LoadingCircularProgress/>
@@ -65,7 +64,6 @@ const HomePage: React.FC<Props> = (props) => {
     <HomePageContainer>
       <MainBanner/>
       <OTTSelectBar selectedOTTs={selectedOTTs} setSelectedOTTs={setSelectedOTTs} selectOnlyOne={false}/>
-      {/* 이 밑에 '모집중' 하드코딩된거 추후 수정 */}
       <PartyCardContainer>
         {partys.map(party => {
           return (

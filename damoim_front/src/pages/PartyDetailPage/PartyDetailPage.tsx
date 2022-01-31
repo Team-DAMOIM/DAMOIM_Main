@@ -37,8 +37,6 @@ const PartyDetailPage = () => {
   const user = useContext(AuthContext);
 
   const [partyData, setPartyData] = useState<partyTypes | null>();
-  const [selectedOTT, setSelectedOTT] = useState<string[]>([]);
-  const [memberUIDs, setMemberUIDs] = useState<string[]>([]);
   const [memberData, setMemberData] = useState<userInfoTypes[]>([]);
   const [joinPartyOpen, setJoinPartyOpen] = useState<boolean>(false)
   const [showOpenChatLink, setShowOpenChatLink] = useState<boolean>(false)
@@ -48,60 +46,36 @@ const PartyDetailPage = () => {
   const [partyAcceptsLength, setPartyAcceptsLength] = useState<number>(0)
   const [alreadySubmit, setAlreadySubmit] = useState<boolean>(false)
 
-  const getPartyData = async (partyId: string) => {
-    const docRef = doc(db, "partys", partyId);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      setPartyData({
-        id: partyId,
-        hostUID: docSnap.data().hostUID,
-        memberUIDs: docSnap.data().memberUIDs,
-        openChatLink: docSnap.data().openChatLink,
-        selectedOTTs: docSnap.data().selectedOTTs,
-        startDate: docSnap.data().startDate,
-        wishPeriod: docSnap.data().wishPeriod,
-        createdAt: docSnap.data().createdAt,
-        memberTalk: docSnap.data().memberTalk,
-        avgTemperature: docSnap.data().avgTemperature
-      });
-      setSelectedOTT(docSnap.data().selectedOTTs);
-      setMemberUIDs(docSnap.data().memberUIDs);
-
-      for (let i = 0; i < docSnap.data().memberUIDs.length; i++) {
-        // docSnap.data().memberUIDs 말고 memberUIDs를 사용하면 useState도 비동기이기 때문에 undefined가 들어간다.
-        getUserData(docSnap.data().memberUIDs[i]);
-      }
-
-    } else {
-      console.log("No such document!");
-    }
-  }
-
   const getUserData = async (uid: string) => {
     const docRef = doc(db, "users", uid);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      setMemberData(memberData => [...memberData, {
-        uid: docSnap.data().uid,
-        name: docSnap.data().name,
-        nickName: docSnap.data().nickName,
-        isOnline: docSnap.data().isOnline,
-        email: docSnap.data().email,
-        createdAt: docSnap.data().createdAt,
-        avatar: docSnap.data().avatar,
-        avatarPath: docSnap.data().avatarPath,
-        temperature: docSnap.data().temperature,
-        joinPeriod: docSnap.data().joinPeriod
-      }]);
+      setMemberData(memberData => [...memberData, {...docSnap.data()} as userInfoTypes]);
     } else {
       console.log("No such document!");
     }
   }
-
+  // 초기 partyDetail 에 대한정보
   useEffect(() => {
+    const getPartyData = async (partyId: string) => {
+      const docRef = doc(db, "partys", partyId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setPartyData({id: docSnap.id, ...docSnap.data()} as partyTypes)
+        for (let i = 0; i < docSnap.data().memberUIDs.length; i++) {
+          // docSnap.data().memberUIDs 말고 memberUIDs를 사용하면 useState도 비동기이기 때문에 undefined가 들어간다.
+          await getUserData(docSnap.data().memberUIDs[i]);
+        }
+      } else {
+        console.log("No such document!");
+      }
+    }
+
     getPartyData(id)
+    return () => {
+      setMemberData([])
+    }
   }, [])
 
 
@@ -131,16 +105,17 @@ const PartyDetailPage = () => {
   }, [])
 
 
-  if (!(partyData && (selectedOTT.length !== 0)   // partyData 받아오고 선택한 OTT 데이터 받아오면
-    && (memberUIDs.length !== 0) && (memberData.length === memberUIDs.length))) {  // 여기중요! memberUID목록을 받아오면 (length가 0이 아닐 때) 해당 member수와 받아온 memberData 수가 일치하는지 확인
+  if (!(partyData    // partyData 받아오고 선택한 OTT 데이터 받아오면
+    && (partyData.memberUIDs.length !== 0) && (memberData.length >= partyData.memberUIDs.length))) {  // 여기중요! memberUID목록을 받아오면 (length가 0이 아닐 때) 해당 member수와 받아온 memberData 수가 일치하는지 확인
     return <LoadingCircularProgress/>
   }
+
 
   return (
     <PartyDetailPageContainer>
       <DetailBox>
         <SelectedOTTBox>
-          {selectedOTT.map(OTT => {
+          {partyData.selectedOTTs.map(OTT => {
             return (
               <TrimOTTIcon key={OTT}>
                 <img src={`/images/OTTIcons/${OTT}Icon.png`}/>
@@ -149,8 +124,14 @@ const PartyDetailPage = () => {
           })}
         </SelectedOTTBox>
         <MemberInfoContainer>
-          {[0, 1, 2, 3].map(idx => {
+          {[...Array(4)].map((item, idx) => {
             if (idx < memberData.length) {
+
+              const temperatureColor = memberData[idx].temperature < 30 ? "gray"
+                : memberData[idx].temperature < 40 ? "blue"
+                  : memberData[idx].temperature < 50 ? "orange"
+                    : "red"
+
               return (
                 <MemberInfoBox key={idx}>
                   <InfoText isBold={true} fontSize='14px' fontColor='black'
@@ -161,10 +142,7 @@ const PartyDetailPage = () => {
                   <InfoText isBold={true} fontSize='18px' fontColor='black'
                             textAlign='center'>{memberData[idx].nickName}</InfoText>
                   <InfoText isBold={true} fontSize='18px' textAlign='center'
-                            fontColor={memberData[idx].temperature < 30 ? "gray"
-                              : memberData[idx].temperature < 40 ? "blue"
-                                : memberData[idx].temperature < 50 ? "orange"
-                                  : "red"}
+                            fontColor={temperatureColor}
                   >
                     {memberData[idx].temperature}도
                   </InfoText>
@@ -187,16 +165,6 @@ const PartyDetailPage = () => {
           <CardWithIcon title={"시작일(갱신일)"} content={moment(partyData.startDate.toDate()).format('YYYY년 MM월 DD일 ~')}
                         icon={<DateRangeTwoToneIcon/>}/>
           <CardWithIcon title={"구독희망기간"} content={`${partyData.wishPeriod}개월`} icon={<TimelapseTwoToneIcon/>}/>
-          {/*<CardWithIcon title={"오픈채팅 URL"} content={partyData.openChatLink} icon={<ChatBubbleTwoToneIcon/>}/>*/}
-
-          {/*<InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>시작일(갱신일)</InfoText>*/}
-          {/*<InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>{moment(partyData.startDate.toDate()).format('YYYY년 MM월 DD일 ~')}</InfoText>*/}
-
-          {/*<InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>구독희망기간</InfoText>*/}
-          {/*<InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>{partyData.wishPeriod}개월</InfoText>*/}
-
-          {/*<InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>오픈채팅 URL</InfoText>*/}
-          {/*<InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'><a href={partyData.openChatLink}>{partyData.openChatLink}</a></InfoText>*/}
         </InfoTextArea>
         <MemberTalkBox>
           <InfoText isBold={true} fontSize='16px' fontColor='black' textAlign='left'>파티원들의 한마디</InfoText>
@@ -206,39 +174,26 @@ const PartyDetailPage = () => {
             <InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'
                       style={{marginTop: '10px'}}>{partyData.memberTalk}</InfoText>
             <br/>
-            {/* <InfoText isBold={true} fontSize='16px' fontColor='black' textAlign='left'>Dan2029(파티원1)</InfoText>
-
-              <InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>{partyData.member2}</InfoText>
-              <br/>
-              <InfoText isBold={true} fontSize='16px' fontColor='black' textAlign='left'></InfoText>
-              <InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>{partyData[1].member3}</InfoText>
-              <br/>
-              <InfoText isBold={true} fontSize='16px' fontColor='black' textAlign='left'></InfoText>
-              <InfoText isBold={false} fontSize='16px' fontColor='black' textAlign='left'>{partyData[1].member4}</InfoText> */}
           </MemberTalkArea>
         </MemberTalkBox>
-        <JoinButtonContainer>
-          {
-            user?.uid !== partyData.hostUID &&
-            alreadySubmit ? <Button onClick={() => {
-                setShowOpenChatLink(true);
-              }} variant={"outlined"}>오픈 채팅 주소보기</Button>
-              :
-              <Button disabled={memberUIDs.length === 4} onClick={() => {
-                setJoinPartyOpen(true);
-              }} variant={"outlined"}>파티 참여</Button>
-          }
-          <span>현재 {partyAcceptsLength}명이 이 파티에 관심있습니다</span>
-        </JoinButtonContainer>
-
-
-        {/*const [showPartyJoinSuccessSnackBar,setShowPartyJoinSuccessSnackBar] = useState<boolean>(false);*/}
-        {/*const [showPartyJoinDuplicateSnackBar,setShowPartyJoinDuplicateSnackBar] = useState<boolean>(false);*/}
-        {/*  const [showPartyJoinFailSnackBar,setShowPartyJoinFailSnackBar] = useState<boolean>(false);*/}
-
+        {
+          user?.uid !== partyData.hostUID &&
+          <JoinButtonContainer>
+            {
+              alreadySubmit ? <Button onClick={() => {
+                  setShowOpenChatLink(true);
+                }} variant={"outlined"}>오픈 채팅 주소보기</Button>
+                :
+                <Button disabled={partyData.memberUIDs.length === 4} onClick={() => {
+                  setJoinPartyOpen(true);
+                }} variant={"outlined"}>파티 참여</Button>
+            }
+            <span>현재 {partyAcceptsLength}명이 이 파티에 관심있습니다</span>
+          </JoinButtonContainer>
+        }
         {
           user?.uid === partyData.hostUID &&
-          <PartyAcceptTable partyId={partyData.id}/>
+          <PartyAcceptTable partyId={partyData.id} getUserData={getUserData}/>
         }
       </DetailBox>
 

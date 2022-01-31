@@ -74,6 +74,7 @@ export const SocialLoginIconContainer = styled.div`
   margin: 3vh 0;
 
   img {
+    cursor: pointer;
     margin: 1vh;
     width: 35px;
     height: 35px;
@@ -87,9 +88,9 @@ export const RegisterGuideContainer = styled.div`
 `
 
 export const BootstrapDialog = MUIstyled(Dialog)(({theme}) => ({
-    '& .MuiDialogContent-root': {
-        padding: 0
-    },
+  '& .MuiDialogContent-root': {
+    padding: 0
+  },
 
 }));
 
