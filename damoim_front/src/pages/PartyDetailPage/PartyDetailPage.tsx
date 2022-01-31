@@ -63,7 +63,7 @@ const PartyDetailPage = () => {
         wishPeriod: docSnap.data().wishPeriod,
         createdAt: docSnap.data().createdAt,
         memberTalk: docSnap.data().memberTalk,
-        avgTemperature:docSnap.data().avgTemperature
+        avgTemperature: docSnap.data().avgTemperature
       });
       setSelectedOTT(docSnap.data().selectedOTTs);
       setMemberUIDs(docSnap.data().memberUIDs);
@@ -119,13 +119,14 @@ const PartyDetailPage = () => {
   // 이미 파티참여를 신청했는지 가져오기
 
   useEffect(() => {
-    const partyAlreadyAcceptQuery = async () => {
+    const partyAlreadyAccept = async () => {
       const partyAlreadyAcceptQuery = await query(partyAcceptsCollectionRef, where("partyId", "==", id), where("applicant", "==", user?.uid))
       const data = await getDocs(partyAlreadyAcceptQuery);
       if (data.docs.map(doc => doc.data())[0]) setAlreadySubmit(true)
     }
-
-    partyAlreadyAcceptQuery();
+    if (user) {
+      partyAlreadyAccept();
+    }
 
   }, [])
 
