@@ -52,7 +52,7 @@ const PartyCard = ({id, OTTsNameArray, headerText, avgTemperature, memberNum}: P
         <PartyCardContainer>
             <PartyDetailLink to={`/partyDetail/${id}`}>
                 <PartyCardInner>
-                    <PartyCardHeader>
+                    <PartyCardHeader full={memberNum === 4}>
                         <HeaderTextArea>{headerText}</HeaderTextArea>
                         <IncludedOTTs>
                             {OTTsNameArray.map(OTT => {

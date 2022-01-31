@@ -31,12 +31,12 @@ export const PartyCardInner = styled.div`
   width: 100%;
 `
 
-export const PartyCardHeader = styled.div`
+export const PartyCardHeader = styled.div<{ full: boolean }>`
   position: relative;
   width: 100%;
   height: 55px;
   border-radius: 21px 21px 0px 0px;
-  background-color: rgb(110 116 120);
+  background: ${(props) => props.full ? 'rgb(0 0 0)' : "radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)"};
 `
 
 export const HeaderTextArea = styled.div`
@@ -112,7 +112,7 @@ export const PersonIcon = styled.span<{ url: string }>`
   //   bottom: 0;
   //   left: 0;
   //   right: 0;
-  //   background: ${props => `url(images/${props.url}.png)`} no-repeat;
+    //   background: ${props => `url(images/${props.url}.png)`} no-repeat;
   //   background-size: cover;
   // }
 `

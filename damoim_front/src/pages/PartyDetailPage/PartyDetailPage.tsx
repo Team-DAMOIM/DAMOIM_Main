@@ -62,7 +62,8 @@ const PartyDetailPage = () => {
         startDate: docSnap.data().startDate,
         wishPeriod: docSnap.data().wishPeriod,
         createdAt: docSnap.data().createdAt,
-        memberTalk: docSnap.data().memberTalk
+        memberTalk: docSnap.data().memberTalk,
+        avgTemperature:docSnap.data().avgTemperature
       });
       setSelectedOTT(docSnap.data().selectedOTTs);
       setMemberUIDs(docSnap.data().memberUIDs);
