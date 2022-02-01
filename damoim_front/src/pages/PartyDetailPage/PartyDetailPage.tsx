@@ -31,6 +31,7 @@ import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnack
 import PartyAcceptTable from "./PartyAcceptTable";
 import LoadingCircularProgress from "../../components/LoadingCircularProgress/LoadingCircularProgress";
 import {partyAcceptsCollectionRef} from "../../firestoreRef/ref";
+import {getTemperatureColor} from "../../utils/functions";
 
 const PartyDetailPage = () => {
   const {id} = useParams<{ id: string }>();
@@ -127,11 +128,6 @@ const PartyDetailPage = () => {
           {[...Array(4)].map((item, idx) => {
             if (idx < memberData.length) {
 
-              const temperatureColor = memberData[idx].temperature < 30 ? "gray"
-                : memberData[idx].temperature < 40 ? "blue"
-                  : memberData[idx].temperature < 50 ? "orange"
-                    : "red"
-
               return (
                 <MemberInfoBox key={idx}>
                   <InfoText isBold={true} fontSize='14px' fontColor='black'
@@ -142,7 +138,7 @@ const PartyDetailPage = () => {
                   <InfoText isBold={true} fontSize='18px' fontColor='black'
                             textAlign='center'>{memberData[idx].nickName}</InfoText>
                   <InfoText isBold={true} fontSize='18px' textAlign='center'
-                            fontColor={temperatureColor}
+                            fontColor={getTemperatureColor(memberData[idx].temperature)}
                   >
                     {memberData[idx].temperature}도
                   </InfoText>

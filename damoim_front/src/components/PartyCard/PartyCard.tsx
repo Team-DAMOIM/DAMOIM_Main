@@ -15,7 +15,7 @@ import {
   PersonIconArea,
   TemperatureText
 } from './partyCardStyles';
-import useTemperatureColor from "../../hooks/useTemperatureColor";
+import {getTemperatureColor} from "../../utils/functions";
 
 interface PartyCardProps {
   id: string;
@@ -28,7 +28,7 @@ interface PartyCardProps {
 const PartyCard = ({id, OTTsNameArray, headerText, avgTemperature, memberNum}: PartyCardProps) => {
 
 
-  const textColor = useTemperatureColor(avgTemperature);
+  const textColor = getTemperatureColor(avgTemperature)
 
   return (
     <PartyCardContainer>
