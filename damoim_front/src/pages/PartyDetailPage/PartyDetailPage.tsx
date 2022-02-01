@@ -92,7 +92,6 @@ const PartyDetailPage = () => {
 
 
   // 이미 파티참여를 신청했는지 가져오기
-
   useEffect(() => {
     const partyAlreadyAccept = async () => {
       const partyAlreadyAcceptQuery = await query(partyAcceptsCollectionRef, where("partyId", "==", id), where("applicant", "==", user?.uid))
@@ -102,7 +101,6 @@ const PartyDetailPage = () => {
     if (user) {
       partyAlreadyAccept();
     }
-
   }, [])
 
 

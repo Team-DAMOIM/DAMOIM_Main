@@ -111,7 +111,11 @@ function PartyAcceptTable({partyId,getUserData}: PartyAcceptTableTypes) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {acceptDatas?.map((acceptData) => (
+            {acceptDatas.find((data) => {
+              if (data.state === "nonActive") {
+                return true
+              }
+            }) ? acceptDatas.map((acceptData) => (
                 // 아직 처리안된 파티참여 메시지만 보여줌
                 acceptData.state === "nonActive" &&
                 <TableRow
@@ -139,8 +143,9 @@ function PartyAcceptTable({partyId,getUserData}: PartyAcceptTableTypes) {
                                                            size={"small"}>거부</LoadingButton></TableCell>
                 </TableRow>
               )
-            )
-            }
+            ) : (
+              <div style={{margin: '30px auto', textAlign: 'center'}}>파티 참여를 신청한 사람이 없습니다.</div>
+            )}
           </TableBody>
         </Table>
       </TableContainer>
