@@ -20,10 +20,11 @@ import {LoadingButton} from "@mui/lab";
 
 interface PartyAcceptTableTypes {
   partyId: string;
+  getUserData: (uid:string) => void
 }
 
 
-function PartyAcceptTable({partyId}: PartyAcceptTableTypes) {
+function PartyAcceptTable({partyId,getUserData}: PartyAcceptTableTypes) {
 
 
   const [acceptDatas, setAcceptDatas] = useState<partyAcceptTypes[]>([])
@@ -69,8 +70,8 @@ function PartyAcceptTable({partyId}: PartyAcceptTableTypes) {
       const result = await getDocs(q);
 
       setAcceptDatas(result.docs.map(doc => ({...doc.data(), id: doc.id})) as partyAcceptTypes[])
+      getUserData(applicantId)
       setLoading(false);
-      window.location.replace(`/partyDetail/${partyId}`)
     } else {
       console.log("인원초과")
     }
