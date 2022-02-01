@@ -11,8 +11,8 @@ import {
   PartyCardHeader,
   PartyCardInner,
   PartyDetailLink,
-  PersonIcon,
-  PersonIconArea,
+  // PersonIcon,
+  PersonIconArea, PersonIconImg,
   TemperatureText
 } from './partyCardStyles';
 import {getTemperatureColor} from "../../utils/functions";
@@ -51,8 +51,17 @@ const PartyCard = ({id, OTTsNameArray, headerText, avgTemperature, memberNum}: P
           <PartyCardBody>
             <PersonIconArea>
               {[...Array(4)].map((item,idx) => {
+
+                let iconType: string;
+                if (idx <= (memberNum - 1)) {
+                  iconType = "personIconFilled"
+                } else {
+                  iconType = "personIcon"
+                }
+
                 return (
-                  <PersonIcon key={idx} url={idx <= (memberNum - 1) ? "personIconFilled" : "personIcon"}/>
+                  // <PersonIcon key={idx} url={idx <= (memberNum - 1) ? "personIconFilled" : "personIcon"}/>
+                  <PersonIconImg key={idx} src={`images/${iconType}.png`} url={iconType}/>
                 )
               })}
             </PersonIconArea>

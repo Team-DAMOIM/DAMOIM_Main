@@ -95,17 +95,26 @@ export const PersonIconArea = styled.div`
   justify-content: space-between;
 `
 
-export const PersonIcon = styled.span<{ url: string }>`
+// export const PersonIcon = styled.span<{ url: string }>`
+//   display: inline-block;
+//   width: 70px;
+//   height: 70px;
+//   transform: ${props => props.url === "personIconFilled" ? 'scale(1.15)' : 'scale(1.0)'};
+//   z-index: 100;
+//   position: relative;
+//
+//   background: ${props => `url(images/${props.url}.png)`} no-repeat;
+//   background-size: cover;
+//
+// `
+
+export const PersonIconImg = styled.img<{ url: string }>`
   display: inline-block;
   width: 70px;
   height: 70px;
   transform: ${props => props.url === "personIconFilled" ? 'scale(1.15)' : 'scale(1.0)'};
   z-index: 100;
   position: relative;
-
-  background: ${props => `url(images/${props.url}.png)`} no-repeat;
-  background-size: cover;
-  
 `
 
 export const ExplainText = styled.div`
