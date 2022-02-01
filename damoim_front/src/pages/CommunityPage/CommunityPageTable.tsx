@@ -13,7 +13,7 @@ import {Link} from 'react-router-dom'
 import {communityCollectionRef} from "../../firestoreRef/ref";
 import TablePaginationActions from "../../components/TablePaginationActions/TablePaginationActions";
 import {StyledTableCell, StyledTableRow} from "./communityPageStyles";
-import {getSelectedOTTsKR, getSortTypeEN} from "../../utils/functions/indes";
+import {getSelectedOTTsKR, getSortTypeEN} from "../../utils/functions";
 import {postTypes} from "../../utils/types";
 import {initialSelectedOTTs} from "../../utils/variables";
 
