@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import {
   BrowserRouter as Router,
@@ -13,6 +13,7 @@ import {AuthProvider} from "./context/AuthProvider";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import Footer from "./components/Footer/Footer";
 import ScrollToTop from "./components/ScrollToTop";
+import ScrollToTopButton from "./components/ScrollToTopButton/ScrollToTopButton";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <GlobalStyles/>
       <AuthProvider>
         <Router>
+          <ScrollToTopButton/>
           <ScrollToTop/>
           <Navbar/>
           <Switch>
