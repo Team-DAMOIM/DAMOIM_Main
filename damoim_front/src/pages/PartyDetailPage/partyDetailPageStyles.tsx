@@ -168,3 +168,10 @@ export const PartyAcceptTableContainer = styled.div`
   margin: 80px auto 0;
 
 `
+
+export const StartButtonContainer = styled.div`
+  width: 100%;
+  text-align: center;
+  margin-top: 7vh;
+  position: relative;
+`

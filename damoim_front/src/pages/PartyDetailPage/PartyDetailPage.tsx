@@ -16,7 +16,7 @@ import {
   InfoTextArea,
   MemberTalkBox,
   MemberTalkArea,
-  JoinButtonContainer
+  JoinButtonContainer, StartButtonContainer
 } from './partyDetailPageStyles';
 import {partyTypes, userInfoTypes} from "../../utils/types";
 import moment from "moment";
@@ -32,6 +32,7 @@ import PartyAcceptTable from "./PartyAcceptTable";
 import LoadingCircularProgress from "../../components/LoadingCircularProgress/LoadingCircularProgress";
 import {partyAcceptsCollectionRef} from "../../firestoreRef/ref";
 import {getTemperatureColor} from "../../utils/functions";
+import StartPartyForm from "./StartPartyForm";
 
 const PartyDetailPage = () => {
   const {id} = useParams<{ id: string }>();
@@ -41,11 +42,13 @@ const PartyDetailPage = () => {
   const [memberData, setMemberData] = useState<userInfoTypes[]>([]);
   const [joinPartyOpen, setJoinPartyOpen] = useState<boolean>(false)
   const [showOpenChatLink, setShowOpenChatLink] = useState<boolean>(false)
+  const [startPartyOpen, setStartPartyOpen] = useState<boolean>(false);
   const [showPartyJoinSuccessSnackBar, setShowPartyJoinSuccessSnackBar] = useState<boolean>(false);
   const [showPartyJoinDuplicateSnackBar, setShowPartyJoinDuplicateSnackBar] = useState<boolean>(false);
   const [showPartyJoinFailSnackBar, setShowPartyJoinFailSnackBar] = useState<boolean>(false);
-  const [partyAcceptsLength, setPartyAcceptsLength] = useState<number>(0)
-  const [alreadySubmit, setAlreadySubmit] = useState<boolean>(false)
+  const [partyAcceptsLength, setPartyAcceptsLength] = useState<number>(0);
+  const [alreadySubmit, setAlreadySubmit] = useState<boolean>(false);
+  // const [alreadyStart, setAlreadyStart] = useState<boolean>(false);
 
   const getUserData = async (uid: string) => {
     const docRef = doc(db, "users", uid);
@@ -102,6 +105,14 @@ const PartyDetailPage = () => {
       partyAlreadyAccept();
     }
   }, [])
+
+  // // 이미 파티를 시작했는지 가져오기
+  // useEffect(() => {
+  //   if (partyData
+  //     && partyData.state === "active") {
+  //     setAlreadyStart(true);
+  //   }
+  // }, [partyData])
 
 
   if (!(partyData    // partyData 받아오고 선택한 OTT 데이터 받아오면
@@ -171,23 +182,34 @@ const PartyDetailPage = () => {
           </MemberTalkArea>
         </MemberTalkBox>
         {
+          // 파티원이 페이지를 보는 경우
           user?.uid !== partyData.hostUID &&
           <JoinButtonContainer>
             {
-              alreadySubmit ? <Button onClick={() => {
+              alreadySubmit ? (
+                <Button onClick={() => {
                   setShowOpenChatLink(true);
-                }} variant={"outlined"}>오픈 채팅 주소보기</Button>
-                :
-                <Button disabled={partyData.memberUIDs.length === 4} onClick={() => {
+                }} variant={"outlined"}>오픈채팅 링크확인</Button>
+              ) : (
+                <Button disabled={partyData.memberUIDs.length === 4 || partyData.state === "active"} onClick={() => {
                   setJoinPartyOpen(true);
-                }} variant={"outlined"}>파티 참여</Button>
+                }} variant={"outlined"}>파티 참여 신청</Button>
+              )
             }
             <span>현재 {partyAcceptsLength}명이 이 파티에 관심있습니다</span>
           </JoinButtonContainer>
         }
         {
-          user?.uid === partyData.hostUID &&
-          <PartyAcceptTable partyId={partyData.id} getUserData={getUserData}/>
+          // 파티장이 페이지를 보는 경우
+          user?.uid === partyData.hostUID  &&
+          <>
+            <PartyAcceptTable partyId={partyData.id} getUserData={getUserData}/>
+            <StartButtonContainer>
+              <Button disabled={partyData.state === "active"} onClick={() => {
+                setStartPartyOpen(true);
+              }} variant={"outlined"}>파티 시작</Button>
+            </StartButtonContainer>
+          </>
         }
       </DetailBox>
 
@@ -206,6 +228,8 @@ const PartyDetailPage = () => {
       <OpenChatLinkForm showOpenChatLink={showOpenChatLink} setShowOpenChatLink={setShowOpenChatLink}
                         openChatLink={partyData.openChatLink}/>
 
+      {/*파티 시작 모달*/}
+      <StartPartyForm startPartyOpen={startPartyOpen} setStartPartyOpen={setStartPartyOpen} id={partyData.id}/>
 
       <TopCenterSnackBar value={showPartyJoinSuccessSnackBar} setValue={setShowPartyJoinSuccessSnackBar}
                          severity={"success"} content={"파티 참여 메세지 전송 완료!"}/>

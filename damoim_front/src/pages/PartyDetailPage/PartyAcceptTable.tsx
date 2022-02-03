@@ -7,8 +7,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
-import {partyAcceptTypes, postTypes} from "../../utils/types";
-import {documentId, getDocs, query, updateDoc, where} from "firebase/firestore";
+import {partyAcceptTypes, partyTypes, postTypes, userInfoTypes} from "../../utils/types";
+import {doc, documentId, getDoc, getDocs, query, updateDoc, where} from "firebase/firestore";
 import {
   partyAcceptsCollectionRef,
   partysCollectionRef,
@@ -16,6 +16,7 @@ import {
 import moment from "moment";
 import UserWithProfile from "../../components/UserWithProfile/UserWithProfile";
 import {LoadingButton} from "@mui/lab";
+import {db} from "../../firebase-config";
 
 
 interface PartyAcceptTableTypes {
@@ -57,7 +58,36 @@ function PartyAcceptTable({partyId,getUserData}: PartyAcceptTableTypes) {
     const partyData = await getDocs(partyQuery);
 
 
-    if (partyData.docs.map(doc => doc.data()).length < 4) {
+    const memberNum: number = partyData.docs.map(doc => doc.data()).length;
+
+    if (memberNum < 4) {
+
+      /****************************************** 평균 온도 새로 계산 ******************************************/
+      const calAvgTemperature = async () => {
+        const docRef = doc(db, "users", applicantId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const applicantData: userInfoTypes = {...docSnap.data()} as userInfoTypes;
+
+          const resultAvgTemp
+            = Math.round((Number(partyData.docs.map(doc => doc.data())[0].avgTemperature) * memberNum + Number(applicantData.temperature)) / (memberNum + 1));
+          console.log("기존 avgTemperature : ", partyData.docs.map(doc => doc.data())[0].avgTemperature);
+          console.log("기존 avgTemperature의 타입 : ", typeof(Number(partyData.docs.map(doc => doc.data())[0].avgTemperature)));
+          console.log("멤버 수 : ", memberNum);
+          console.log("멤버수 타입 : ", typeof(memberNum));
+          console.log("새로 들어온 멤버 온도 : ", applicantData.temperature);
+          console.log("resultAvgTemp 결과", resultAvgTemp);
+          console.log("반올림 전 결과", (Number(partyData.docs.map(doc => doc.data())[0].avgTemperature) * memberNum + Number(applicantData.temperature)) / (memberNum + 1));
+
+          await updateDoc(partyData.docs[0].ref, {
+            avgTemperature: resultAvgTemp
+          })
+        }
+      }
+      calAvgTemperature()
+      /************************************************** ***************************************************/
+
       await updateDoc(partyAcceptData.docs[0].ref, {
         state: "active"
       })
@@ -111,6 +141,7 @@ function PartyAcceptTable({partyId,getUserData}: PartyAcceptTableTypes) {
             </TableRow>
           </TableHead>
           <TableBody>
+            {/* acceptDatas에 nonActive인 파티 신청이 없을 경우 없다고 뜨게 처리한 것 */}
             {acceptDatas.find((data) => {
               if (data.state === "nonActive") {
                 return true

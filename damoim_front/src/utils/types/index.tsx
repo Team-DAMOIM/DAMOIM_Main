@@ -49,7 +49,8 @@ export interface partyTypes {
   wishPeriod: number;
   createdAt: Timestamp;
   memberTalk: string;
-  avgTemperature:number;
+  avgTemperature: number;
+  state: string;
 }
 
 export interface relationTypes {

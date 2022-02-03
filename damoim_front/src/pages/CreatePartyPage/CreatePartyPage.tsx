@@ -130,7 +130,8 @@ const CreatePartyPage = () => {
       memberTalk: memberTalk,
       hostUID: hostUID,
       avgTemperature: avgTemperature,
-      createdAt: Timestamp.fromDate(new Date())
+      createdAt: Timestamp.fromDate(new Date()),
+      state: "nonActive"
     })
   }
 
