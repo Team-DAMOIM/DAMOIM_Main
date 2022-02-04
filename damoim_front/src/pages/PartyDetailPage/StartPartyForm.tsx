@@ -1,6 +1,6 @@
 import React, {Dispatch, SetStateAction, useState} from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
-import {doc, updateDoc} from 'firebase/firestore';
+import {doc, Timestamp, updateDoc} from 'firebase/firestore';
 import {db} from "../../firebase-config";
 import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
 
@@ -17,7 +17,8 @@ const StartPartyForm = ({ startPartyOpen, setStartPartyOpen, id }: StartPartyFor
   const startParty = async (partyID: string) => {
     const partyRef = doc(db, 'partys', partyID);
     await updateDoc(partyRef, {
-      state: "active"
+      state: "active",
+      activeDate: Timestamp.fromDate(new Date())
     })
     setStartPartyOpen(false);
     setSuccess(true);
