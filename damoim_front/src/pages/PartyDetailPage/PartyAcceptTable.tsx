@@ -8,7 +8,7 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import {partyAcceptTypes, partyTypes, postTypes, userInfoTypes} from "../../utils/types";
-import {doc, documentId, getDoc, getDocs, query, updateDoc, where} from "firebase/firestore";
+import {deleteDoc, doc, documentId, getDoc, getDocs, query, updateDoc, where} from "firebase/firestore";
 import {
   partyAcceptsCollectionRef,
   partysCollectionRef,
@@ -17,15 +17,17 @@ import moment from "moment";
 import UserWithProfile from "../../components/UserWithProfile/UserWithProfile";
 import {LoadingButton} from "@mui/lab";
 import {db} from "../../firebase-config";
+import {getPartySelectedOTTs} from "../../utils/functions";
 
 
 interface PartyAcceptTableTypes {
   partyId: string;
-  getUserData: (uid:string) => void
+  getUserData: (uid:string) => void;
+  selectedOTTs: string[];
 }
 
 
-function PartyAcceptTable({partyId,getUserData}: PartyAcceptTableTypes) {
+function PartyAcceptTable({ partyId, getUserData, selectedOTTs }: PartyAcceptTableTypes) {
 
 
   const [acceptDatas, setAcceptDatas] = useState<partyAcceptTypes[]>([])
@@ -62,23 +64,64 @@ function PartyAcceptTable({partyId,getUserData}: PartyAcceptTableTypes) {
 
     if (memberNum < 4) {
 
-      /****************************************** 평균 온도 새로 계산 ******************************************/
-      const calAvgTemperature = async () => {
-        const docRef = doc(db, "users", applicantId);
-        const docSnap = await getDoc(docRef);
+      /****************************************** 다른 파티 중복 신청 제거 ******************************************/
+      console.log("여기도 안와?")
+      const duplicateAcceptQuery = await query(partyAcceptsCollectionRef, where("applicant", "==", applicantId), where(documentId(), "!=", partyAcceptId), where("state", "==", "nonActive"));
+      console.log("여긴오냐")
+      const duplicateAcceptData = await getDocs(duplicateAcceptQuery);
 
-        if (docSnap.exists()) {
-          const applicantData: userInfoTypes = {...docSnap.data()} as userInfoTypes;
+      console.log("0");
 
-          const resultAvgTemp
-            = Math.round((Number(partyData.docs.map(doc => doc.data())[0].avgTemperature) * memberNum + Number(applicantData.temperature)) / (memberNum + 1));
+      if (duplicateAcceptData.docs.length !== 0) {
+        console.log("1");
+        duplicateAcceptData.docs.map(duplicateDoc => {
 
-          await updateDoc(partyData.docs[0].ref, {
-            avgTemperature: resultAvgTemp
-          })
-        }
+          console.log("duplicateDoc : ", duplicateDoc);
+
+          const deleteDuplicate = async (partyID: string, partyAcceptID: string) => {
+            const docRef = doc(db, 'partys', partyID);
+            const docSnap = await getDoc(docRef);
+
+
+            if (docSnap.exists()) {
+              // 현재 파티에서 선택한 OTT들(selectedOTTs) 중 하나가 파티 신청자가 신청한 다른 파티의 선택 OTT(docSnap.data().selectedOTTs)에서도 있다면
+              let isDuplicate: boolean = false;
+              selectedOTTs.map(ott => {
+                if (docSnap.data().selectedOTTs.includes(ott)) {
+                  isDuplicate = true;
+                }
+              })
+              console.log("isDuplicate : ", isDuplicate);
+
+              if (isDuplicate) {
+                // 중복 제거 비동기 함수
+                await deleteDoc(doc(db, 'partyAccepts', partyAcceptID));
+                isDuplicate = false;
+              }
+            }
+          }
+
+          deleteDuplicate(duplicateDoc.data().partyId, duplicateDoc.id);
+        })
+        
       }
-      calAvgTemperature()
+      /**************************************************** *****************************************************/
+
+
+      /****************************************** 평균 온도 새로 계산 ******************************************/
+      const docRef = doc(db, "users", applicantId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const applicantData: userInfoTypes = {...docSnap.data()} as userInfoTypes;
+
+        const resultAvgTemp
+          = Math.round((Number(partyData.docs.map(doc => doc.data())[0].avgTemperature) * memberNum + Number(applicantData.temperature)) / (memberNum + 1));
+
+        await updateDoc(partyData.docs[0].ref, {
+          avgTemperature: resultAvgTemp
+        })
+      }
       /************************************************** ***************************************************/
 
       await updateDoc(partyAcceptData.docs[0].ref, {
