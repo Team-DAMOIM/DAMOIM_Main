@@ -19,18 +19,20 @@ function intersection(a: readonly string[], b: readonly string[]) {
 }
 
 interface CustomTransferListTypes {
-  value: string[];
-  setValue: Dispatch<SetStateAction<string[]>>;
+  leftValue: string[];
+  setLeftValue: Dispatch<SetStateAction<string[]>>;
+  rightValue: string[];
+  setRightValue: Dispatch<SetStateAction<string[]>>;
 }
 
-const CustomTransferList = ({ value, setValue }: CustomTransferListTypes) => {
+const CustomTransferList = ({ leftValue, setLeftValue, rightValue, setRightValue }: CustomTransferListTypes) => {
 
   //**************************************************************//
 
   // UID
   const [checkedUID, setCheckedUID] = useState<string[]>([]);
-  const [leftUID, setLeftUID] = useState<string[]>(value);
-  const [rightUID, setRightUID] = useState<string[]>([]);
+  const [leftUID, setLeftUID] = useState<string[]>(leftValue);
+  const [rightUID, setRightUID] = useState<string[]>(rightValue);
 
   const leftUIDChecked = intersection(checkedUID, leftUID);
   const rightUIDChecked = intersection(checkedUID, rightUID);
@@ -53,8 +55,8 @@ const CustomTransferList = ({ value, setValue }: CustomTransferListTypes) => {
   // leftUID의 uid들을 가지고 user name으로 바꿔줌
   useEffect(() => {
     const getUserName = async () => {
-      for (let i = value.length - 1; i >= 0; i--) {
-        let uid = value[i];
+      for (let i = leftValue.length - 1; i >= 0; i--) {
+        let uid = leftValue[i];
         let docRef = doc(db, "users", uid);
         let docSnap = await getDoc(docRef);
 
@@ -112,7 +114,7 @@ const CustomTransferList = ({ value, setValue }: CustomTransferListTypes) => {
       setChecked(not(checked, leftChecked));
       setCheckedUID(not(checkedUID, leftUIDChecked));
 
-      setValue(rightUID.concat(leftUIDChecked));  // 상위 컴포넌트의 useState의 setValue 함수 (함께할 파티원 배열을 변경함)
+      setRightValue(rightUID.concat(leftUIDChecked));  // 상위 컴포넌트의 useState의 setValue 함수 (함께할 파티원 배열을 변경함)
     }
   };
 
@@ -126,7 +128,7 @@ const CustomTransferList = ({ value, setValue }: CustomTransferListTypes) => {
     setChecked(not(checked, rightChecked));
     setCheckedUID(not(checkedUID, rightUIDChecked));
 
-    setValue(not(rightUID, rightUIDChecked)); // // 상위 컴포넌트의 useState의 setValue 함수 (함께할 파티원 배열을 변경함)
+    setRightValue(not(rightUID, rightUIDChecked)); // // 상위 컴포넌트의 useState의 setValue 함수 (함께할 파티원 배열을 변경함)
   };
 
   const customList = (items: readonly string[], itemsUID: string[]) => (

@@ -19,7 +19,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import {addDoc, doc, getDoc, getDocs, query, Timestamp, where} from 'firebase/firestore';
 import {partysCollectionRef, relationsCollectionRef} from '../../firestoreRef/ref';
 import {db} from '../../firebase-config';
-import {relationTypes} from "../../utils/types";
+import {partyTypes, relationTypes} from "../../utils/types";
 import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
 import LoadingCircularProgress from "../../components/LoadingCircularProgress/LoadingCircularProgress";
 
@@ -28,6 +28,8 @@ const CreatePartyPage = () => {
   const user = useContext(AuthContext);
   const history = useHistory();
   const [selectedOTTs, setSelectedOTTs] = useState<string[]>([]);
+
+  const [friendUIDs, setFriendUIDs] = useState<string[]>([]);
   const [memberUIDs, setMemberUIDs] = useState<string[]>([]);
 
   const [haveFriend, setHaveFriend] = useState<boolean>(false);
@@ -69,7 +71,7 @@ const CreatePartyPage = () => {
     }
   }, [width])
 
-
+  // 친구 목록 불러오기
   useEffect(() => {
     const getRelations = async () => {
       if (user) {
@@ -92,13 +94,40 @@ const CreatePartyPage = () => {
               resultArr.push(mergeData[i].member1)
             }
           }
-          setMemberUIDs(resultArr);
+          setFriendUIDs(resultArr);
           setHaveFriend(true);
         }
 
       }
     }
     getRelations();
+  }, [])
+
+  // 가입한 모든 OTT 불러오기
+  const [userSubscribeOTTs, setUserSubscribeOTTs] = useState<string[]>();
+  useEffect(() => {
+    const getMySubscribeOTTs = async () => {
+      if (user) {
+        const q = await query(partysCollectionRef, where("memberUIDs", "array-contains", user.uid));
+        const data = await getDocs(q);
+
+        let resultArr: string[] = [];
+
+        if (data.docs.length !== 0) {
+          data.docs.map(doc => {
+            resultArr = [...resultArr, ...doc.data().selectedOTTs];
+          });
+
+          // 배열의 중복값 제거
+          const set = new Set(resultArr);
+          resultArr = [];
+          resultArr = [...set];
+        }
+
+        setUserSubscribeOTTs(resultArr);
+      }
+    }
+    getMySubscribeOTTs();
   }, [])
 
   const addParty = async (UIDs: string[], startDate: Date, hostUID: string) => {
@@ -136,8 +165,20 @@ const CreatePartyPage = () => {
   }
 
   const createPartyHandler = async () => {
+
+    // 이미 구독(파티참여)한 OTT가 있는지 검사
+    let duplicateOTTs: string[] = []; // 선택한 OTT와 이미 가입한 OTT(중복된 OTT들) 배열
+    selectedOTTs.map(ott => {
+      if (userSubscribeOTTs?.includes(ott)) {
+        duplicateOTTs.push(ott)
+      }
+    })
+    console.log("duplicateOTTs : ", duplicateOTTs);
+
     if (!selectedOTTs.length) {
       alert('구독할 OTT를 적어도 하나 이상 선택해주세요')
+    } else if (duplicateOTTs.length > 0) {
+      alert(`${duplicateOTTs.toString()}는 이미 구독(파티참여)한 OTT입니다. 동일한 OTT로 여러 개의 파티에 가입할 수 없습니다!`)
     } else if (openChatLink?.slice(0, 23) !== "https://open.kakao.com/" || openChatLink.length < 25) {
       alert('오픈채팅 URL을 양식에 맞게 정확히 입력해주세요')
     } else {
@@ -159,7 +200,7 @@ const CreatePartyPage = () => {
     }
   }
 
-  if (!(user && (haveFriend || noFriend))) return <LoadingCircularProgress/>
+  if (!(user && (haveFriend || noFriend) && userSubscribeOTTs)) return <LoadingCircularProgress/>
 
   return (
     <CreatePartyPageContainer>
@@ -174,6 +215,7 @@ const CreatePartyPage = () => {
         <ColFlexInfoCont>
           {/* OTT 선택하기 부분 */}
           <Typography fontSize={titleFontSize} align='left'>구독할 OTT</Typography>
+          <Typography variant='body1' align='left'>(이미 구독(파티참여) 중인 OTT는 선택이 불가능 합니다)</Typography>
           <OTTSelectBar selectedOTTs={selectedOTTs} setSelectedOTTs={setSelectedOTTs} selectOnlyOne={false}/>
         </ColFlexInfoCont>
 
@@ -183,7 +225,7 @@ const CreatePartyPage = () => {
           <Typography variant='body1' align='left'>(친구추가가 된 유저만 초기 파티원로 추가할 수 있습니다. 초기 파티원이 없다면 넘어가도 됩니다
             😉)</Typography>
           <br/>
-          <CustomTransferList value={memberUIDs} setValue={setMemberUIDs}/>
+          <CustomTransferList leftValue={friendUIDs} setLeftValue={setFriendUIDs} rightValue={memberUIDs} setRightValue={setMemberUIDs}/>
         </ColFlexInfoCont>
 
         <RawFlexInfoCont>

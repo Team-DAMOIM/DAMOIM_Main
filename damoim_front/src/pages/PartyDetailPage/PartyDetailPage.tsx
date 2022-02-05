@@ -30,7 +30,7 @@ import OpenChatLinkForm from "./OpenChatLinkForm";
 import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
 import PartyAcceptTable from "./PartyAcceptTable";
 import LoadingCircularProgress from "../../components/LoadingCircularProgress/LoadingCircularProgress";
-import {partyAcceptsCollectionRef} from "../../firestoreRef/ref";
+import {partyAcceptsCollectionRef, partysCollectionRef} from "../../firestoreRef/ref";
 import {getTemperatureColor} from "../../utils/functions";
 import StartPartyForm from "./StartPartyForm";
 
@@ -114,12 +114,55 @@ const PartyDetailPage = () => {
   //   }
   // }, [partyData])
 
+  // 가입한 모든 OTT 불러오기
+  const [userSubscribeOTTs, setUserSubscribeOTTs] = useState<string[]>();
+  useEffect(() => {
+    const getMySubscribeOTTs = async () => {
+      if (user) {
+        const q = await query(partysCollectionRef, where("memberUIDs", "array-contains", user.uid));
+        const data = await getDocs(q);
+
+        let resultArr: string[] = [];
+
+        if (data.docs.length !== 0) {
+          data.docs.map(doc => {
+            // resultArr.concat(doc.data().selectedOTTs)
+            resultArr = [...resultArr, ...doc.data().selectedOTTs];
+          });
+
+          // 배열의 중복값 제거
+          const set = new Set(resultArr);
+          resultArr = [];
+          resultArr = [...set];
+        }
+
+        setUserSubscribeOTTs(resultArr);
+      }
+    }
+    getMySubscribeOTTs();
+  }, [])
 
   if (!(partyData    // partyData 받아오고 선택한 OTT 데이터 받아오면
     && (partyData.memberUIDs.length !== 0) && (memberData.length >= partyData.memberUIDs.length))) {  // 여기중요! memberUID목록을 받아오면 (length가 0이 아닐 때) 해당 member수와 받아온 memberData 수가 일치하는지 확인
     return <LoadingCircularProgress/>
   }
 
+  // 파티 참여 신청 버튼을 눌렀을 때 실행되는 함수
+  const joinPartySubmit = () => {
+    // 이미 구독(파티참여)한 OTT가 있는지 검사
+    let duplicateOTTs: string[] = []; // 선택한 OTT와 이미 가입한 OTT(중복된 OTT들) 배열
+    partyData.selectedOTTs.map(ott => {
+      if (userSubscribeOTTs?.includes(ott)) {
+        duplicateOTTs.push(ott)
+      }
+    })
+
+    if (duplicateOTTs.length > 0) {
+      alert(`${duplicateOTTs.toString()}는 이미 구독(파티참여)한 OTT입니다. 동일한 OTT로 여러 개의 파티에 가입할 수 없습니다!`)
+    } else {
+      setJoinPartyOpen(true);
+    }
+  }
 
   return (
     <PartyDetailPageContainer>
@@ -191,9 +234,7 @@ const PartyDetailPage = () => {
                   setShowOpenChatLink(true);
                 }} variant={"outlined"}>오픈채팅 링크확인</Button>
               ) : (
-                <Button disabled={partyData.memberUIDs.length === 4 || partyData.state === "active"} onClick={() => {
-                  setJoinPartyOpen(true);
-                }} variant={"outlined"}>파티 참여 신청</Button>
+                <Button disabled={partyData.memberUIDs.length === 4 || partyData.state === "active"} onClick={joinPartySubmit} variant={"outlined"}>파티 참여 신청</Button>
               )
             }
             <span>현재 {partyAcceptsLength}명이 이 파티에 관심있습니다</span>
