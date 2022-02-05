@@ -67,16 +67,14 @@ const HomePage: React.FC<Props> = (props) => {
       <OTTSelectBar selectedOTTs={selectedOTTs} setSelectedOTTs={setSelectedOTTs} selectOnlyOne={false}/>
       <PartyCardContainer>
         {partys.map(party => {
-          let headerTextStr = getPartyCardHeaderText(party.memberUIDs.length, party.state);
-
           return (
             <PartyCard
               key={party.id}
               id={party.id}
               OTTsNameArray={party.selectedOTTs}
-              headerText={headerTextStr}
               avgTemperature={party.avgTemperature}
               memberNum={party.memberUIDs.length}
+              state={party.state}
             />
           )
         })}

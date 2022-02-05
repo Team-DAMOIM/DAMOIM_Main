@@ -54,18 +54,15 @@ const JoinPartyPage = () => {
       <HalfTextArea title={"파티찾기"} content={"원하는 OTT 서비스를 찾아봐요😘"}/>
       <OTTSelectBar selectedOTTs={selectedOTTs} setSelectedOTTs={setSelectedOTTs} selectOnlyOne={false}/>
       <PartyCardContainer>
-        {/* 이 밑에 '모집중' 하드코딩된거 추후 수정 */}
         {partys.map(party => {
-          let headerTextStr = getPartyCardHeaderText(party.memberUIDs.length, party.state);
-
           return (
             <PartyCard
               key={party.id}
               id={party.id}
               OTTsNameArray={party.selectedOTTs}
-              headerText={headerTextStr}
               avgTemperature={party.avgTemperature}
               memberNum={party.memberUIDs.length}
+              state={party.state}
             />
           )
         })}

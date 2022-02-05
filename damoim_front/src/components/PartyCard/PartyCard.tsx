@@ -15,26 +15,27 @@ import {
   PersonIconArea, PersonIconImg,
   TemperatureText
 } from './partyCardStyles';
-import {getTemperatureColor} from "../../utils/functions";
+import {getPartyCardHeaderColor, getPartyCardHeaderText, getTemperatureColor} from "../../utils/functions";
 
 interface PartyCardProps {
   id: string;
   OTTsNameArray: string[];
-  headerText: string;
   avgTemperature: number;
   memberNum: number;
+  state: string;
 }
 
-const PartyCard = ({id, OTTsNameArray, headerText, avgTemperature, memberNum}: PartyCardProps) => {
+const PartyCard = ({id, OTTsNameArray, avgTemperature, memberNum, state}: PartyCardProps) => {
 
-
-  const textColor = getTemperatureColor(avgTemperature)
+  const headerText = getPartyCardHeaderText(memberNum, state);
+  const headerBackColor = getPartyCardHeaderColor(headerText);
+  const temperatureTextColor = getTemperatureColor(avgTemperature);
 
   return (
     <PartyCardContainer>
       <PartyDetailLink to={`/partyDetail/${id}`}>
         <PartyCardInner>
-          <PartyCardHeader full={memberNum === 4}>
+          <PartyCardHeader backColor={headerBackColor}>
             <HeaderTextArea>{headerText}</HeaderTextArea>
             <IncludedOTTs>
               {OTTsNameArray.map(OTT => {
@@ -66,7 +67,7 @@ const PartyCard = ({id, OTTsNameArray, headerText, avgTemperature, memberNum}: P
               })}
             </PersonIconArea>
             <ExplainText>평균온도</ExplainText>
-            <TemperatureText style={{color: textColor}}>{avgTemperature}도</TemperatureText>
+            <TemperatureText style={{color: temperatureTextColor}}>{avgTemperature}도</TemperatureText>
           </PartyCardBody>
         </PartyCardInner>
       </PartyDetailLink>

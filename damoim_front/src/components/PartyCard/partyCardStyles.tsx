@@ -31,12 +31,12 @@ export const PartyCardInner = styled.div`
   width: 100%;
 `
 
-export const PartyCardHeader = styled.div<{ full: boolean }>`
+export const PartyCardHeader = styled.div<{ backColor: string }>`
   position: relative;
   width: 100%;
   height: 55px;
   border-radius: 21px 21px 0px 0px;
-  background: ${(props) => props.full ? 'rgb(0 0 0)' : "radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)"};
+  background: ${(props) => props.backColor};
 `
 
 export const HeaderTextArea = styled.div`
