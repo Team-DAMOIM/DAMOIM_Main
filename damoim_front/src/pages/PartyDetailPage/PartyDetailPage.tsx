@@ -18,7 +18,7 @@ import {
   MemberTalkArea,
   JoinButtonContainer, StartButtonContainer
 } from './partyDetailPageStyles';
-import {partyTypes, userInfoTypes} from "../../utils/types";
+import {partyAcceptTypes, partyTypes, userInfoTypes} from "../../utils/types";
 import moment from "moment";
 import CardWithIcon from "../../components/CardWithIcon/CardWithIcon";
 import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
@@ -33,6 +33,7 @@ import LoadingCircularProgress from "../../components/LoadingCircularProgress/Lo
 import {partyAcceptsCollectionRef, partysCollectionRef} from "../../firestoreRef/ref";
 import {getTemperatureColor} from "../../utils/functions";
 import StartPartyForm from "./StartPartyForm";
+import LeavePartyForm from "./LeavePartyForm";
 
 const PartyDetailPage = () => {
   const {id} = useParams<{ id: string }>();
@@ -43,11 +44,14 @@ const PartyDetailPage = () => {
   const [joinPartyOpen, setJoinPartyOpen] = useState<boolean>(false)
   const [showOpenChatLink, setShowOpenChatLink] = useState<boolean>(false)
   const [startPartyOpen, setStartPartyOpen] = useState<boolean>(false);
+  const [leavePartyOpen, setLeavePartyOpen] = useState<boolean>(false);
   const [showPartyJoinSuccessSnackBar, setShowPartyJoinSuccessSnackBar] = useState<boolean>(false);
   const [showPartyJoinDuplicateSnackBar, setShowPartyJoinDuplicateSnackBar] = useState<boolean>(false);
   const [showPartyJoinFailSnackBar, setShowPartyJoinFailSnackBar] = useState<boolean>(false);
   const [partyAcceptsLength, setPartyAcceptsLength] = useState<number>(0);
   const [alreadySubmit, setAlreadySubmit] = useState<boolean>(false);
+  const [partyAcceptData, setPartyAcceptData] = useState<partyAcceptTypes | null>();
+  const [isNotApply, setIsNotApply] = useState<boolean>(false);
   // const [alreadyStart, setAlreadyStart] = useState<boolean>(false);
 
   const getUserData = async (uid: string) => {
@@ -142,6 +146,25 @@ const PartyDetailPage = () => {
     getMySubscribeOTTs();
   }, [])
 
+  // 파티원이 페이지를 보는 경우 partyAccepts 컬랙션에서 파티원의 신청 정보를 불러옴
+  useEffect(() => {
+    if (user && partyData && (user.uid !== partyData.hostUID)) {
+      const getPartyAcceptData = async () => {
+        const q = await query(partyAcceptsCollectionRef, where('applicant', "==", user.uid), where('partyId', "==", partyData.id))
+        const data = await getDocs(q);
+
+        if (data.docs.length !== 0) {
+          setPartyAcceptData({...data.docs[0].data(), id: data.docs[0].id} as partyAcceptTypes);
+        } else {
+          // 해당 파티에 신청한 적이 없는 경우
+          setIsNotApply(true);
+        }
+      }
+
+      getPartyAcceptData();
+    }
+  }, [user, partyData])
+
   if (!(partyData    // partyData 받아오고 선택한 OTT 데이터 받아오면
     && (partyData.memberUIDs.length !== 0) && (memberData.length >= partyData.memberUIDs.length))) {  // 여기중요! memberUID목록을 받아오면 (length가 0이 아닐 때) 해당 member수와 받아온 memberData 수가 일치하는지 확인
     return <LoadingCircularProgress/>
@@ -226,15 +249,20 @@ const PartyDetailPage = () => {
         </MemberTalkBox>
         {
           // 파티원이 페이지를 보는 경우
-          user?.uid !== partyData.hostUID &&
+          user?.uid !== partyData.hostUID && (partyAcceptData || isNotApply) &&
           <JoinButtonContainer>
             {
-              alreadySubmit ? (
-                <Button onClick={() => {
-                  setShowOpenChatLink(true);
-                }} variant={"outlined"}>오픈채팅 링크확인</Button>
-              ) : (
+              isNotApply ? (
                 <Button disabled={partyData.memberUIDs.length === 4 || partyData.state === "active"} onClick={joinPartySubmit} variant={"outlined"}>파티 참여 신청</Button>
+              ) : (
+                <>
+                  <Button onClick={() => {
+                    setLeavePartyOpen(true);
+                  }} variant={"outlined"}>{partyAcceptData?.state === "nonActive" ? "참여 신청 취소" : "탈퇴 요청"}</Button>
+                  <Button onClick={() => {
+                    setShowOpenChatLink(true);
+                  }} variant={"outlined"} style={{marginLeft: '10px'}}>오픈채팅 링크확인</Button>
+                </>
               )
             }
             <span>현재 {partyAcceptsLength}명이 이 파티에 관심있습니다</span>
@@ -268,6 +296,12 @@ const PartyDetailPage = () => {
       {/*오픈 채팅 모달*/}
       <OpenChatLinkForm showOpenChatLink={showOpenChatLink} setShowOpenChatLink={setShowOpenChatLink}
                         openChatLink={partyData.openChatLink}/>
+
+      {/*파티 신청취소 or 탈퇴 요청 모달*/}
+      {
+        user && partyAcceptData &&
+        <LeavePartyForm leavePartyOpen={leavePartyOpen} setLeavePartyOpen={setLeavePartyOpen} acceptState={partyAcceptData.state} partyState={partyData.state} partyAcceptID={partyAcceptData.id} partyID={partyData.id} memberUIDs={partyData.memberUIDs} userUID={user.uid}/>
+      }
 
       {/*파티 시작 모달*/}
       <StartPartyForm startPartyOpen={startPartyOpen} setStartPartyOpen={setStartPartyOpen} id={partyData.id}/>
