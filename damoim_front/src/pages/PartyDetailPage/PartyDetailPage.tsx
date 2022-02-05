@@ -48,6 +48,8 @@ const PartyDetailPage = () => {
   const [showPartyJoinFailSnackBar, setShowPartyJoinFailSnackBar] = useState<boolean>(false);
   const [partyAcceptsLength, setPartyAcceptsLength] = useState<number>(0);
   const [alreadySubmit, setAlreadySubmit] = useState<boolean>(false);
+  const [duplicateError, setDuplicateError] = useState<boolean>(false)
+  const [duplicateOTTs,setDuplicateOTTs] = useState<string[]>([])
   // const [alreadyStart, setAlreadyStart] = useState<boolean>(false);
 
   const getUserData = async (uid: string) => {
@@ -149,16 +151,17 @@ const PartyDetailPage = () => {
 
   // 파티 참여 신청 버튼을 눌렀을 때 실행되는 함수
   const joinPartySubmit = () => {
-    // 이미 구독(파티참여)한 OTT가 있는지 검사
     let duplicateOTTs: string[] = []; // 선택한 OTT와 이미 가입한 OTT(중복된 OTT들) 배열
+    // 이미 구독(파티참여)한 OTT가 있는지 검사
     partyData.selectedOTTs.map(ott => {
       if (userSubscribeOTTs?.includes(ott)) {
         duplicateOTTs.push(ott)
       }
     })
 
+    setDuplicateOTTs(duplicateOTTs)
     if (duplicateOTTs.length > 0) {
-      alert(`${duplicateOTTs.toString()}는 이미 구독(파티참여)한 OTT입니다. 동일한 OTT로 여러 개의 파티에 가입할 수 없습니다!`)
+      setDuplicateError(true)
     } else {
       setJoinPartyOpen(true);
     }
@@ -234,7 +237,8 @@ const PartyDetailPage = () => {
                   setShowOpenChatLink(true);
                 }} variant={"outlined"}>오픈채팅 링크확인</Button>
               ) : (
-                <Button disabled={partyData.memberUIDs.length === 4 || partyData.state === "active"} onClick={joinPartySubmit} variant={"outlined"}>파티 참여 신청</Button>
+                <Button disabled={partyData.memberUIDs.length === 4 || partyData.state === "active"}
+                        onClick={joinPartySubmit} variant={"outlined"}>파티 참여 신청</Button>
               )
             }
             <span>현재 {partyAcceptsLength}명이 이 파티에 관심있습니다</span>
@@ -242,7 +246,7 @@ const PartyDetailPage = () => {
         }
         {
           // 파티장이 페이지를 보는 경우
-          user?.uid === partyData.hostUID  &&
+          user?.uid === partyData.hostUID &&
           <>
             <PartyAcceptTable partyId={partyData.id} getUserData={getUserData}/>
             <StartButtonContainer>
@@ -278,7 +282,8 @@ const PartyDetailPage = () => {
                          severity={"warning"} content={"이미 파티 참여 메세지를 전송하였습니다!"}/>
       <TopCenterSnackBar value={showPartyJoinFailSnackBar} setValue={setShowPartyJoinFailSnackBar} severity={"error"}
                          content={"파티 참여 실패"}/>
-
+      <TopCenterSnackBar value={duplicateError} setValue={setDuplicateError} severity={"error"}
+                         content={`${duplicateOTTs.toString()} 는 이미 구독(파티참여)한 OTT입니다. 동일한 OTT로 여러 개의 파티에 가입할 수 없습니다! `}/>
     </PartyDetailPageContainer>
 
 
