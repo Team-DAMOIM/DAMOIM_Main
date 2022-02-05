@@ -126,6 +126,7 @@ const Navbar = () => {
                       <TextField
                         id="outlined-select-party"
                         select
+                        size={'small'}
                         label="내 파티"
                         value={selectedPartyOTTs}
                         onChange={myPartyHandler}
