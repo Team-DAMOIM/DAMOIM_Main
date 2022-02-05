@@ -1,3 +1,6 @@
+import {doc, getDoc} from "firebase/firestore";
+import {db} from "../../firebase-config";
+
 export const getSortTypeEN = (sortType: string) => {
   let sortTypeEN: string = "createdAt";
   switch (sortType) {
@@ -115,4 +118,15 @@ export const getPartyCardHeaderColor = (headerText: string) => {
   }
 
   return backColor
+}
+
+export const getPartySelectedOTTs = async (partyID: string) => {
+  const docRef = doc(db, 'partys', partyID);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    return docSnap.data().selectedOTTs
+  } else {
+    return
+  }
 }

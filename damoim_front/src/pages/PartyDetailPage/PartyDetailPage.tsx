@@ -248,7 +248,7 @@ const PartyDetailPage = () => {
           // 파티장이 페이지를 보는 경우
           user?.uid === partyData.hostUID &&
           <>
-            <PartyAcceptTable partyId={partyData.id} getUserData={getUserData}/>
+            <PartyAcceptTable partyId={partyData.id} getUserData={getUserData} selectedOTTs={partyData.selectedOTTs}/>
             <StartButtonContainer>
               <Button disabled={partyData.state === "active"} onClick={() => {
                 setStartPartyOpen(true);
