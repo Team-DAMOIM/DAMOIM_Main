@@ -47,6 +47,14 @@ const CreatePartyPage = () => {
   const [fail, setFail] = useState<boolean>(false)
   const [titleFontSize, setTitleFontSize] = useState<number>(40)
 
+  // topsnackbar error
+  const [duplicateError, setDuplicateError] = useState<boolean>(false)
+  const [noSelectError,setNoSelectError] = useState<boolean>(false)
+  const [openChatFormatError,setOpenChatFormatError] = useState<boolean>(false)
+
+
+  const [duplicateOTTs,setDuplicateOTTs] = useState<string[]>([])
+
   const [width, setWidth] = useState(window.innerWidth);
   const handleResize = () => {
     setWidth(window.innerWidth)
@@ -173,14 +181,13 @@ const CreatePartyPage = () => {
         duplicateOTTs.push(ott)
       }
     })
-    console.log("duplicateOTTs : ", duplicateOTTs);
-
+    setDuplicateOTTs(duplicateOTTs)
     if (!selectedOTTs.length) {
-      alert('구독할 OTT를 적어도 하나 이상 선택해주세요')
+      setNoSelectError(true)
     } else if (duplicateOTTs.length > 0) {
-      alert(`${duplicateOTTs.toString()}는 이미 구독(파티참여)한 OTT입니다. 동일한 OTT로 여러 개의 파티에 가입할 수 없습니다!`)
+      setDuplicateError(true)
     } else if (openChatLink?.slice(0, 23) !== "https://open.kakao.com/" || openChatLink.length < 25) {
-      alert('오픈채팅 URL을 양식에 맞게 정확히 입력해주세요')
+      setOpenChatFormatError(true)
     } else {
       setLoading(true);
       if (startDate && user) {
@@ -310,6 +317,12 @@ const CreatePartyPage = () => {
         {/* 파티 만들기 버튼 */}
         <CreatePartyBtn onClick={createPartyHandler}>파티 만들기</CreatePartyBtn>
       </InfoInputBox>
+      <TopCenterSnackBar value={duplicateError} setValue={setDuplicateError} severity={"error"}
+                         content={`${duplicateOTTs.toString()} 는 이미 구독(파티참여)한 OTT입니다. 동일한 OTT로 여러 개의 파티에 가입할 수 없습니다! `}/>
+      <TopCenterSnackBar value={noSelectError} setValue={setNoSelectError} severity={"error"}
+                         content={`구독할 OTT를 적어도 하나 이상 선택해주세요`}/>
+      <TopCenterSnackBar value={openChatFormatError} setValue={setOpenChatFormatError} severity={"error"}
+                         content={`오픈채팅 URL을 양식에 맞게 정확히 입력해주세요`}/>
     </CreatePartyPageContainer>
   );
 };
