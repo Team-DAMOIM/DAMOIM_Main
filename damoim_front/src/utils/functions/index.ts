@@ -73,3 +73,25 @@ export const getTemperatureColor = (avgTemperature: number) => {
   }
   return textColor
 }
+
+export const getPartyCardHeaderText = (memberNum: number, state: string) => {
+  let headerTextStr: string = "";
+
+  if (memberNum === 4) {
+    headerTextStr = "모집완료";
+  } else {
+    switch (state) {
+      case 'nonActive':
+        headerTextStr = "모집중";
+        break;
+      case 'active':
+        headerTextStr = "진행중";
+        break;
+      case 'finish':
+        headerTextStr = "파티종료";
+        break;
+    }
+  }
+
+  return headerTextStr
+}

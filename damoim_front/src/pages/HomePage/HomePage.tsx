@@ -10,6 +10,7 @@ import {DocumentData, getDocs, orderBy, Query, query, where} from 'firebase/fire
 import {partysCollectionRef} from "../../firestoreRef/ref";
 import {partyTypes} from '../../utils/types';
 import LoadingCircularProgress from "../../components/LoadingCircularProgress/LoadingCircularProgress";
+import {getPartyCardHeaderText} from "../../utils/functions";
 
 
 type Props = RouteComponentProps;
@@ -66,12 +67,14 @@ const HomePage: React.FC<Props> = (props) => {
       <OTTSelectBar selectedOTTs={selectedOTTs} setSelectedOTTs={setSelectedOTTs} selectOnlyOne={false}/>
       <PartyCardContainer>
         {partys.map(party => {
+          let headerTextStr = getPartyCardHeaderText(party.memberUIDs.length, party.state);
+
           return (
             <PartyCard
               key={party.id}
               id={party.id}
               OTTsNameArray={party.selectedOTTs}
-              headerText={party.memberUIDs.length === 4 ? "모집완료" : "모집중"}
+              headerText={headerTextStr}
               avgTemperature={party.avgTemperature}
               memberNum={party.memberUIDs.length}
             />

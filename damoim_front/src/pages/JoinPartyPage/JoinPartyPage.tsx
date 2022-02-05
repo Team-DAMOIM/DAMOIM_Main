@@ -7,6 +7,7 @@ import {partysCollectionRef} from "../../firestoreRef/ref";
 import {partyTypes} from '../../utils/types';
 import HalfTextArea from "../../components/HalfTextArea/HalfTextArea";
 import LoadingCircularProgress from "../../components/LoadingCircularProgress/LoadingCircularProgress";
+import {getPartyCardHeaderText} from "../../utils/functions";
 
 const initialSelectedOTTs = ["netflix", "disneyPlus", "watcha", "wavve", "tving", "laftel", "appleTV", "amazon", "welaaa"];
 
@@ -55,12 +56,14 @@ const JoinPartyPage = () => {
       <PartyCardContainer>
         {/* 이 밑에 '모집중' 하드코딩된거 추후 수정 */}
         {partys.map(party => {
+          let headerTextStr = getPartyCardHeaderText(party.memberUIDs.length, party.state);
+
           return (
             <PartyCard
               key={party.id}
               id={party.id}
               OTTsNameArray={party.selectedOTTs}
-              headerText='모집중'
+              headerText={headerTextStr}
               avgTemperature={party.avgTemperature}
               memberNum={party.memberUIDs.length}
             />

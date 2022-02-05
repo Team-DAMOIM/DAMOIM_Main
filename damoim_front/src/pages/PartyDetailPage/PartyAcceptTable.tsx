@@ -72,13 +72,6 @@ function PartyAcceptTable({partyId,getUserData}: PartyAcceptTableTypes) {
 
           const resultAvgTemp
             = Math.round((Number(partyData.docs.map(doc => doc.data())[0].avgTemperature) * memberNum + Number(applicantData.temperature)) / (memberNum + 1));
-          // console.log("기존 avgTemperature : ", partyData.docs.map(doc => doc.data())[0].avgTemperature);
-          // console.log("기존 avgTemperature의 타입 : ", typeof(Number(partyData.docs.map(doc => doc.data())[0].avgTemperature)));
-          // console.log("멤버 수 : ", memberNum);
-          // console.log("멤버수 타입 : ", typeof(memberNum));
-          // console.log("새로 들어온 멤버 온도 : ", applicantData.temperature);
-          // console.log("resultAvgTemp 결과", resultAvgTemp);
-          // console.log("반올림 전 결과", (Number(partyData.docs.map(doc => doc.data())[0].avgTemperature) * memberNum + Number(applicantData.temperature)) / (memberNum + 1));
 
           await updateDoc(partyData.docs[0].ref, {
             avgTemperature: resultAvgTemp
