@@ -101,16 +101,16 @@ export const getPartyCardHeaderColor = (headerText: string) => {
 
   switch (headerText) {
     case '모집완료':
-      backColor = '#08088A';
+      backColor = 'radial-gradient(circle, rgba(214,214,214,1) 0%, rgba(89,89,89,1) 100%)';
       break;
     case '모집중':
       backColor = "radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)";
       break;
     case '진행중':
-      backColor = "#00FF40";
+      backColor = "radial-gradient(circle, rgba(149,214,66,1) 0%, rgba(100,106,255,1) 100%)";
       break;
     case '파티종료':
-      backColor = 'rgb(0 0 0)'
+      backColor = 'radial-gradient(circle, rgba(214,214,214,1) 0%, rgba(89,89,89,1) 100%)'
       break;
   }
 
