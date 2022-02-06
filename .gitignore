@@ -3,3 +3,11 @@
 .env
 **/package-lock.json
 **/.firebase
+
+
+damoim_front/node_modules
+damoim_front/build
+
+.idea
+damoim_front/.firebase
+damoim_front/.idea
