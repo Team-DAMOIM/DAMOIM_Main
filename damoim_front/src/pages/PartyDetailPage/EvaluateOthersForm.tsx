@@ -37,13 +37,9 @@ const EvaluateOthersForm = ({ evaluateOthersOpen, setEvaluateOthersOpen, memberU
     const getMemberInfo = async () => {
 
       // 본인 uid를 제외한 나머지 멤버들의 uid를 구하는 과정 (otherMemberUIDs)
-      let otherMemberUIDs: string[] = [];
-      memberUIDs.map(uid => {
-        if (uid !== userUID) {
-          otherMemberUIDs.push(uid);
-        }
+      const otherMemberUIDs = memberUIDs.filter(uid => {
+        return uid !== userUID
       })
-      console.log(otherMemberUIDs);
       setOtherMemberUIDs(otherMemberUIDs);
 
       const q = query(usersCollectionRef, where("uid", "in", otherMemberUIDs));
