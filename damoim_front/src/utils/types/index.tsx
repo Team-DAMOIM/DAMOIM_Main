@@ -51,6 +51,7 @@ export interface partyTypes {
   memberTalk: string;
   avgTemperature: number;
   state: string;
+  activeDate: Timestamp;
 }
 
 export interface relationTypes {
