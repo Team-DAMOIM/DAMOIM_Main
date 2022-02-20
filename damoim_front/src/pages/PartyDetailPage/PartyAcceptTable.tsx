@@ -22,12 +22,12 @@ import {getPartySelectedOTTs} from "../../utils/functions";
 
 interface PartyAcceptTableTypes {
   partyId: string;
-  getUserData: (uid:string) => void;
+  getUserData: (uid: string) => void;
   selectedOTTs: string[];
 }
 
 
-function PartyAcceptTable({ partyId, getUserData, selectedOTTs }: PartyAcceptTableTypes) {
+function PartyAcceptTable({partyId, getUserData, selectedOTTs}: PartyAcceptTableTypes) {
 
 
   const [acceptDatas, setAcceptDatas] = useState<partyAcceptTypes[]>([])
@@ -95,7 +95,7 @@ function PartyAcceptTable({ partyId, getUserData, selectedOTTs }: PartyAcceptTab
 
           deleteDuplicate(duplicateDoc.data().partyId, duplicateDoc.id);
         })
-        
+
       }
       /**************************************************** *****************************************************/
 
@@ -203,7 +203,7 @@ function PartyAcceptTable({ partyId, getUserData, selectedOTTs }: PartyAcceptTab
                 </TableRow>
               )
             ) : (
-              <div style={{margin: '30px auto', textAlign: 'center'}}>파티 참여를 신청한 사람이 없습니다.</div>
+              <div style={{width: '100%', margin: '30px 0px', textAlign: 'center'}}>파티 참여를 신청한 사람이 없습니다.</div>
             )}
           </TableBody>
         </Table>

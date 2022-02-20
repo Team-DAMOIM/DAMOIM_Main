@@ -9,7 +9,7 @@ import TopCenterSnackBar from "../TopCenterSnackBar/TopCenterSnackBar";
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
 import {Link, useHistory} from 'react-router-dom'
-import {Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from "@mui/material";
+import {Button, MenuItem, TextField} from "@mui/material";
 import {partyTypes} from "../../utils/types";
 import {partysCollectionRef} from "../../firestoreRef/ref";
 
@@ -126,6 +126,7 @@ const Navbar = () => {
                       <TextField
                         id="outlined-select-party"
                         select
+                        size={'small'}
                         label="내 파티"
                         value={selectedPartyOTTs}
                         onChange={myPartyHandler}
