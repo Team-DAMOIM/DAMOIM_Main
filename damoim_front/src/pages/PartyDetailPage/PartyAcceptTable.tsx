@@ -65,23 +65,16 @@ function PartyAcceptTable({partyId, getUserData, selectedOTTs}: PartyAcceptTable
     if (memberNum < 4) {
 
       /****************************************** 다른 파티 중복 신청 제거 ******************************************/
-      console.log("여기도 안와?")
+      // applicant의 다른 파티에 들어간 파티 참여 요청 중 nonActive인 것들을 검색 
       const duplicateAcceptQuery = await query(partyAcceptsCollectionRef, where("applicant", "==", applicantId), where(documentId(), "!=", partyAcceptId), where("state", "==", "nonActive"));
-      console.log("여긴오냐")
       const duplicateAcceptData = await getDocs(duplicateAcceptQuery);
-
-      console.log("0");
-
+      
       if (duplicateAcceptData.docs.length !== 0) {
-        console.log("1");
+        
         duplicateAcceptData.docs.map(duplicateDoc => {
-
-          console.log("duplicateDoc : ", duplicateDoc);
-
           const deleteDuplicate = async (partyID: string, partyAcceptID: string) => {
             const docRef = doc(db, 'partys', partyID);
             const docSnap = await getDoc(docRef);
-
 
             if (docSnap.exists()) {
               // 현재 파티에서 선택한 OTT들(selectedOTTs) 중 하나가 파티 신청자가 신청한 다른 파티의 선택 OTT(docSnap.data().selectedOTTs)에서도 있다면
@@ -91,7 +84,6 @@ function PartyAcceptTable({partyId, getUserData, selectedOTTs}: PartyAcceptTable
                   isDuplicate = true;
                 }
               })
-              console.log("isDuplicate : ", isDuplicate);
 
               if (isDuplicate) {
                 // 중복 제거 비동기 함수

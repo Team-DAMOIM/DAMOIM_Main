@@ -18,7 +18,7 @@ import {
   MemberTalkArea,
   JoinButtonContainer, StartButtonContainer
 } from './partyDetailPageStyles';
-import {partyTypes, userInfoTypes} from "../../utils/types";
+import {partyAcceptTypes, partyTypes, userInfoTypes} from "../../utils/types";
 import moment from "moment";
 import CardWithIcon from "../../components/CardWithIcon/CardWithIcon";
 import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
@@ -30,9 +30,11 @@ import OpenChatLinkForm from "./OpenChatLinkForm";
 import TopCenterSnackBar from "../../components/TopCenterSnackBar/TopCenterSnackBar";
 import PartyAcceptTable from "./PartyAcceptTable";
 import LoadingCircularProgress from "../../components/LoadingCircularProgress/LoadingCircularProgress";
-import {partyAcceptsCollectionRef, partysCollectionRef} from "../../firestoreRef/ref";
+import {evaluationsCollectionRef, partyAcceptsCollectionRef, partysCollectionRef} from "../../firestoreRef/ref";
 import {getTemperatureColor} from "../../utils/functions";
 import StartPartyForm from "./StartPartyForm";
+import LeavePartyForm from "./LeavePartyForm";
+import EvaluateOthersForm from "./EvaluateOthersForm";
 
 const PartyDetailPage = () => {
   const {id} = useParams<{ id: string }>();
@@ -43,14 +45,17 @@ const PartyDetailPage = () => {
   const [joinPartyOpen, setJoinPartyOpen] = useState<boolean>(false)
   const [showOpenChatLink, setShowOpenChatLink] = useState<boolean>(false)
   const [startPartyOpen, setStartPartyOpen] = useState<boolean>(false);
+  const [leavePartyOpen, setLeavePartyOpen] = useState<boolean>(false);
+  const [evaluateOthersOpen, setEvaluateOthersOpen] = useState<boolean>(false);
   const [showPartyJoinSuccessSnackBar, setShowPartyJoinSuccessSnackBar] = useState<boolean>(false);
   const [showPartyJoinDuplicateSnackBar, setShowPartyJoinDuplicateSnackBar] = useState<boolean>(false);
   const [showPartyJoinFailSnackBar, setShowPartyJoinFailSnackBar] = useState<boolean>(false);
   const [partyAcceptsLength, setPartyAcceptsLength] = useState<number>(0);
-  const [alreadySubmit, setAlreadySubmit] = useState<boolean>(false);
-  const [duplicateError, setDuplicateError] = useState<boolean>(false)
-  const [duplicateOTTs,setDuplicateOTTs] = useState<string[]>([])
-  // const [alreadyStart, setAlreadyStart] = useState<boolean>(false);
+  const [partyAcceptData, setPartyAcceptData] = useState<partyAcceptTypes | null>();
+  const [isNotApply, setIsNotApply] = useState<boolean>(false);
+
+  const [duplicateError, setDuplicateError] = useState<boolean>(false);
+  const [duplicateOTTs, setDuplicateOTTs] = useState<string[]>([]);
 
   const getUserData = async (uid: string) => {
     const docRef = doc(db, "users", uid);
@@ -62,6 +67,7 @@ const PartyDetailPage = () => {
       console.log("No such document!");
     }
   }
+
   // 초기 partyDetail 에 대한정보
   useEffect(() => {
     const getPartyData = async (partyId: string) => {
@@ -95,27 +101,6 @@ const PartyDetailPage = () => {
     getPartyAccepts()
   }, [])
 
-
-  // 이미 파티참여를 신청했는지 가져오기
-  useEffect(() => {
-    const partyAlreadyAccept = async () => {
-      const partyAlreadyAcceptQuery = await query(partyAcceptsCollectionRef, where("partyId", "==", id), where("applicant", "==", user?.uid))
-      const data = await getDocs(partyAlreadyAcceptQuery);
-      if (data.docs.map(doc => doc.data())[0]) setAlreadySubmit(true)
-    }
-    if (user) {
-      partyAlreadyAccept();
-    }
-  }, [])
-
-  // // 이미 파티를 시작했는지 가져오기
-  // useEffect(() => {
-  //   if (partyData
-  //     && partyData.state === "active") {
-  //     setAlreadyStart(true);
-  //   }
-  // }, [partyData])
-
   // 가입한 모든 OTT 불러오기
   const [userSubscribeOTTs, setUserSubscribeOTTs] = useState<string[]>();
   useEffect(() => {
@@ -144,6 +129,66 @@ const PartyDetailPage = () => {
     getMySubscribeOTTs();
   }, [])
 
+  // 파티원이 페이지를 보는 경우 partyAccepts 컬랙션에서 파티원의 신청 정보를 불러옴
+  useEffect(() => {
+    if (user && partyData && (user.uid !== partyData.hostUID)) {
+      const getPartyAcceptData = async () => {
+        const q = await query(partyAcceptsCollectionRef, where('applicant', "==", user.uid), where('partyId', "==", partyData.id))
+        const data = await getDocs(q);
+
+        if (data.docs.length !== 0) {
+          setPartyAcceptData({...data.docs[0].data(), id: data.docs[0].id} as partyAcceptTypes);
+        } else {
+          // 해당 파티에 신청한 적이 없는 경우
+          setIsNotApply(true);
+        }
+      }
+
+      getPartyAcceptData();
+    }
+  }, [user, partyData])
+
+
+  // 파티 시작 시점으로부터 한 달마다 다른 유저 평가 가능
+  // 평가 가능 기간은 평가 시작일로부터 일주일
+  // 해당 기간 사이인 경우 isEvaluate 변수가 true가 됨.
+  // 만약 이미 평가를 완료했다면 isEvaluate는 false
+  useEffect(() => {
+    if (user && partyData && partyData.state === "active") {
+
+      const getEvaluation = async () => {
+        let cur = new Date(); // 현재 시간
+        let currentTime = cur.getTime();  // 현재 시간(밀리초)
+        let startTime = partyData.activeDate.toDate().getTime(); // 파티 시작 시간(밀리초)
+
+        let timeDifference = currentTime - startTime; // 시간 차(밀리초)
+        let remainderTime = timeDifference % (1000 * 60 * 60 * 24 * 30); // 시간차를 한달로 나눈 나머지(밀리초)
+
+        if (0 < remainderTime && remainderTime < (1000 * 60 * 60 * 24 * 7)) { // 나머지 시간이 일주일 사이 기간인 경우
+
+          // 현재 시각을 기준으로 일주일 사이 시간에 이미 평가한 적이 있는지 확인
+          const q = await query(evaluationsCollectionRef, where("evaluatorUID", "==", user.uid), where("partyID", "==", partyData.id));
+          const data = await getDocs(q);
+
+          let fetch: boolean = true
+          data.docs.map(doc => {
+            // 여기서 확인
+            if (doc.data().createdAt.toDate().getTime() >= currentTime-(1000 * 60 * 60 * 24 * 7)) {
+              fetch = false;
+            }
+          })
+
+          if (fetch) { // 일주일 사이 기간에 평가한 적이 없는 경우
+            setEvaluateOthersOpen(true);
+          }
+        }
+      }
+
+      getEvaluation();
+    }
+  }, [partyData])
+
+
   if (!(partyData    // partyData 받아오고 선택한 OTT 데이터 받아오면
     && (partyData.memberUIDs.length !== 0) && (memberData.length >= partyData.memberUIDs.length))) {  // 여기중요! memberUID목록을 받아오면 (length가 0이 아닐 때) 해당 member수와 받아온 memberData 수가 일치하는지 확인
     return <LoadingCircularProgress/>
@@ -159,9 +204,10 @@ const PartyDetailPage = () => {
       }
     })
 
-    setDuplicateOTTs(duplicateOTTs)
+    setDuplicateOTTs(duplicateOTTs);
     if (duplicateOTTs.length > 0) {
-      setDuplicateError(true)
+      setDuplicateError(true);
+      alert(`${duplicateOTTs.toString()}는 이미 구독(파티참여)한 OTT입니다. 동일한 OTT로 여러 개의 파티에 가입할 수 없습니다!`);
     } else {
       setJoinPartyOpen(true);
     }
@@ -229,16 +275,20 @@ const PartyDetailPage = () => {
         </MemberTalkBox>
         {
           // 파티원이 페이지를 보는 경우
-          user?.uid !== partyData.hostUID &&
+          user?.uid !== partyData.hostUID && (partyAcceptData || isNotApply) &&
           <JoinButtonContainer>
             {
-              alreadySubmit ? (
-                <Button onClick={() => {
-                  setShowOpenChatLink(true);
-                }} variant={"outlined"}>오픈채팅 링크확인</Button>
+              isNotApply ? (
+                <Button disabled={partyData.memberUIDs.length === 4 || partyData.state === "active"} onClick={joinPartySubmit} variant={"outlined"}>파티 참여 신청</Button>
               ) : (
-                <Button disabled={partyData.memberUIDs.length === 4 || partyData.state === "active"}
-                        onClick={joinPartySubmit} variant={"outlined"}>파티 참여 신청</Button>
+                <>
+                  <Button onClick={() => {
+                    setLeavePartyOpen(true);
+                  }} variant={"outlined"}>{partyAcceptData?.state === "nonActive" ? "참여 신청 취소" : "탈퇴 요청"}</Button>
+                  <Button onClick={() => {
+                    setShowOpenChatLink(true);
+                  }} variant={"outlined"} style={{marginLeft: '10px'}}>오픈채팅 링크확인</Button>
+                </>
               )
             }
             <span>현재 {partyAcceptsLength}명이 이 파티에 관심있습니다</span>
@@ -273,9 +323,22 @@ const PartyDetailPage = () => {
       <OpenChatLinkForm showOpenChatLink={showOpenChatLink} setShowOpenChatLink={setShowOpenChatLink}
                         openChatLink={partyData.openChatLink}/>
 
+      {/*파티 신청취소 or 탈퇴 요청 모달*/}
+      {
+        user && partyAcceptData &&
+        <LeavePartyForm leavePartyOpen={leavePartyOpen} setLeavePartyOpen={setLeavePartyOpen} acceptState={partyAcceptData.state} partyState={partyData.state} partyAcceptID={partyAcceptData.id} partyID={partyData.id} memberUIDs={partyData.memberUIDs} userUID={user.uid}/>
+      }
+
       {/*파티 시작 모달*/}
       <StartPartyForm startPartyOpen={startPartyOpen} setStartPartyOpen={setStartPartyOpen} id={partyData.id}/>
 
+      {/*다른 유저 평가 모달*/}
+      {
+        user && partyData &&
+        <EvaluateOthersForm evaluateOthersOpen={evaluateOthersOpen} setEvaluateOthersOpen={setEvaluateOthersOpen} memberUIDs={partyData.memberUIDs} userUID={user.uid} partyID={partyData.id}/>
+      }
+
+      {/*스낵바들*/}
       <TopCenterSnackBar value={showPartyJoinSuccessSnackBar} setValue={setShowPartyJoinSuccessSnackBar}
                          severity={"success"} content={"파티 참여 메세지 전송 완료!"}/>
       <TopCenterSnackBar value={showPartyJoinDuplicateSnackBar} setValue={setShowPartyJoinDuplicateSnackBar}
@@ -285,8 +348,6 @@ const PartyDetailPage = () => {
       <TopCenterSnackBar value={duplicateError} setValue={setDuplicateError} severity={"error"}
                          content={`${duplicateOTTs.toString()} 는 이미 구독(파티참여)한 OTT입니다. 동일한 OTT로 여러 개의 파티에 가입할 수 없습니다! `}/>
     </PartyDetailPageContainer>
-
-
   );
 };
 
