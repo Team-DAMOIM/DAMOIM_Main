@@ -1,12 +1,12 @@
 import styled from "styled-components";
 
-export const AddCommunityPostPageContainer = styled.div`
-  //max-width: 1400px;
-  //width: 100%;
-  //margin-bottom: 3vh;
+export const EditCommunityPostPageContainer = styled.div`
+  max-width: 1400px;
+  width: 100%;
+  margin-bottom: 3vh;
 `
 
-export const AddCommunitySelectContainer=styled.div`
+export const EditCommunitySelectContainer=styled.div`
   margin-top: 5vh;
   margin-left: 4vw;
   div:first-child{
@@ -14,7 +14,7 @@ export const AddCommunitySelectContainer=styled.div`
   }
 `
 
-export const AddCommunityPostPageInputContainer = styled.div`
+export const EditCommunityPostPageInputContainer = styled.div`
   margin:0 4vw;
   display: flex;
   flex-direction: column;

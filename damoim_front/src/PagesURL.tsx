@@ -10,6 +10,7 @@ import PartyDetailPage from "./pages/PartyDetailPage/PartyDetailPage";
 import CreatePartyPage from "./pages/CreatePartyPage/CreatePartyPage";
 import UserPage from "./pages/UserPage/UserPage";
 import OtherUserPage from "./pages/OtherUserPage/OtherUserPage";
+import ModifyCommunityPostPage from "./pages/ModifyCommunityPostPage/ModifyCommunityPostPage";
 
 
 export default [
@@ -39,10 +40,16 @@ export default [
         component: PartyDetailPage
     },
     {
+        path: "/modifyCommunityPost/:id",
+        component: ModifyCommunityPostPage,
+        private: true
+    },
+    {
         path: "/addCommunityPost",
         component: AddCommunityPostPage,
         private: true
     },
+
     {
         path: "/communityDetail/:id",
         component: CommunityDetailPage

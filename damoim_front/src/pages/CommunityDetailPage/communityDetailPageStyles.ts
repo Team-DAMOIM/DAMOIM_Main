@@ -5,21 +5,29 @@ export const CommunityDetailPageContainer = styled.div`
   padding: 4vw;
   box-shadow: rgb(210 210 210) 20px 20px 20px 20px;
   border-radius: 20px;
-  height: 100%;  
+  height: 100%;
   min-height: 90vh;
-
+  position: relative;
   @media screen and (max-width: 480px) {
     padding: 2vw;
   }
-  
-  h2{
+
+  h2 {
     margin-top: 1vh;
   }
-  
-  .MuiCardActions-spacing{
+
+  .MuiCardActions-spacing {
     justify-content: flex-end;
   }
-  
+
+  .modify-button-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    button{
+      margin: 0 5px;
+    }
+  }
 `
 
 export const UserWithDetailContainer = styled.div`
