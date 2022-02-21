@@ -14,9 +14,10 @@ interface CommentTypes {
     commentLists: SingleCommentTypesWithUser[] | undefined;
     postId: string;
     refreshFunction: (newComment: SingleCommentTypesWithUser) => void;
+    updateDeleteComment : (id:string) => void
 }
 
-function Comment({commentLists, postId, refreshFunction}: CommentTypes) {
+function Comment({commentLists, postId, refreshFunction,updateDeleteComment}: CommentTypes) {
     const user = useContext(AuthContext);
     const [userNotFound,setUserNotFound] = useState<boolean>(false)
     const [Comment, setComment] = useState<string>("")
@@ -67,9 +68,9 @@ function Comment({commentLists, postId, refreshFunction}: CommentTypes) {
             {commentLists?.map((comment: SingleCommentTypesWithUser) => (
                 (!comment.responseTo &&
                     <React.Fragment key={comment.id}>
-                        <SingleComment comment={comment} postId={postId} refreshFunction={refreshFunction}/>
+                        <SingleComment comment={comment} postId={postId} refreshFunction={refreshFunction} updateDeleteComment={updateDeleteComment}/>
                         <ReplyComment commentLists={commentLists} postId={postId} parentCommentId={comment.id}
-                                      refreshFunction={refreshFunction}/>
+                                      refreshFunction={refreshFunction} updateDeleteComment={updateDeleteComment}/>
                     </React.Fragment>
                 )
             ))}

@@ -107,6 +107,14 @@ function CommunityDetailPage() {
     }
   }
 
+  const updateDeleteComment = (id:string) => {
+    if (commentLists) {
+      setCommentLists(commentLists.filter(comment => {
+        return comment.id !== id
+      }))
+    }
+  }
+
   const status = useScript("https://developers.kakao.com/sdk/js/kakao.js");
   // kakao sdk 초기화하기
   // status가 변경될 때마다 실행되며, status가 ready일 때 초기화를 시도합니다.
@@ -202,7 +210,7 @@ function CommunityDetailPage() {
           </CardActions>
         </Card>
         <Comment postId={post.id} commentLists={commentLists}
-                 refreshFunction={updateComment}/>
+                 refreshFunction={updateComment} updateDeleteComment={updateDeleteComment}/>
 
         <ReportForm reportOpen={reportOpen} setReportOpen={setReportOpen} postId={id}/>
         <TopCenterSnackBar value={userNotFound} setValue={setUserNotFound} severity={"error"}
